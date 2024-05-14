@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 [Route("Video")]
 public class VideoController : Controller{
 
+    private readonly string _uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "UploadedVideos");
+
     [HttpGet("Stream")]
     public async Task StreamVideo(CancellationToken token)
     {
@@ -24,6 +26,40 @@ public class VideoController : Controller{
                 len -= bytes;
             }
             Console.WriteLine(len);
+        }
+    }
+
+    [Route("Upload")]
+    [HttpPost]
+    public async Task<IActionResult> UploadVideo()
+    {
+        try
+        {
+            if (!Directory.Exists(_uploadFolder))
+                Directory.CreateDirectory(_uploadFolder);
+
+            var file = Request.Form.Files[0];
+
+            if (file.Length > 0)
+            {
+                // Saves files locally. Eventually saved to a remote file server
+                string fileName = $"{DateTime.Now:yyyyMMddHHmmss}-video.mp4";
+                var filePath = Path.Combine(_uploadFolder, fileName);
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                return Ok(new { message = "File uploaded", fileData = new { SavedAs = fileName, SavedTo = filePath, Size = file.Length } });
+            }
+            else
+            {
+                return BadRequest("No file was received.");
+            }
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
         }
     }
 }

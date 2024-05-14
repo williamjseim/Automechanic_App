@@ -1,0 +1,8 @@
+<mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+
+<div class="step-labels">
+    @for (item of stepLabels; track $index) {
+
+    <span class="step-label">{{ item }}</span>
+    }
+</div>

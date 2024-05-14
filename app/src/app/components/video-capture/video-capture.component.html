@@ -1,0 +1,24 @@
+
+<app-progress-bar [progress]="25"></app-progress-bar>
+<input type="file" accept="video/*" id="fileInput" hidden (change)="onFileSelected($event)">
+<div class="container">
+    
+    @if (!videoURL) {
+        <div class="video-btn">
+            <button (click)="openCamera()">
+                <mat-icon aria-hidden="false" aria-label="Video Icon" fontIcon="videocam">
+                </mat-icon>Optag</button>
+                <button (click)="selectVideo()">
+                    <mat-icon aria-hidden="false" aria-label="Video Icon" fontIcon="upload_file">
+                    </mat-icon>Upload</button>
+                </div>
+    }
+</div>
+@if (videoFile) {
+<div class="video-container">
+    <video controls>
+        <source [src]="videoURL" type="video/mp4">
+        Din browser er ikke understøttet.
+    </video>
+</div>
+}
