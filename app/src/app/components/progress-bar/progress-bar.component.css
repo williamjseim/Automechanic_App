@@ -1,0 +1,4 @@
+.step-labels {
+    display: flex;
+    justify-content: space-evenly;
+}
