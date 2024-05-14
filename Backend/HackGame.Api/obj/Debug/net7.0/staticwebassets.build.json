@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "6vAxRHXNO4hTk9Ta541dbFAtpxOjNFmhixswbN63XtU=",
+  "Source": "HackGame.Api",
+  "BasePath": "_content/HackGame.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
