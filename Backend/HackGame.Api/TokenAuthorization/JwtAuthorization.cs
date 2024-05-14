@@ -13,8 +13,8 @@ namespace HackGame.Api.TokenAuthorization
     public class JwtAuthorization
     {
         private readonly IConfiguration _config;
-        private readonly HackerGameDbContext _db;
-        public JwtAuthorization(IConfiguration config, HackerGameDbContext db)
+        private readonly MechanicDatabase _db;
+        public JwtAuthorization(IConfiguration config, MechanicDatabase db)
         {
             _config = config;
             _db = db;
