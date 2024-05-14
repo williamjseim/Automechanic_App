@@ -1,5 +1,7 @@
 # Automechanic_App
-´´´ts
+
+for frontend
+```ts
 videoStream?:Blob;
   url:string = "";
   ngOnInit(){
@@ -11,4 +13,4 @@ videoStream?:Blob;
       }
     }});
   }
-´´´
+```
