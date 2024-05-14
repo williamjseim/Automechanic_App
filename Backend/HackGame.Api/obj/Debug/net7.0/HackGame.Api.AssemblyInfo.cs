@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("HackGame.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+9a17d4f6cd012bb2eaa869db3b93ee72f1ec213f")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0d4512b507cfdbda4727a65bd900c583889adb1f")]
 [assembly: System.Reflection.AssemblyProductAttribute("HackGame.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("HackGame.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
