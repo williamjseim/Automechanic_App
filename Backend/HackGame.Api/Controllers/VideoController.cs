@@ -17,13 +17,11 @@ public class VideoController : Controller{
         Response.Cookies.Append("Cookie", "Fuck you");
         using (Stream stream = System.IO.File.OpenRead(filepath))
         {
-            Console.WriteLine(len);
             while(len > 0 && (bytes = stream.Read(buffer, 0, buffer.Length))> 0 && !token.IsCancellationRequested) {
                 await HttpContext.Response.BodyWriter.FlushAsync();
                 await HttpContext.Response.BodyWriter.AsStream(false).WriteAsync(buffer, 0, bytes);
                 len -= bytes;
             }
-            Console.WriteLine(len);
         }
     }
 }

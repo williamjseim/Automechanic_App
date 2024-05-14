@@ -46,7 +46,7 @@ namespace HackGame.Api
             //builder.Services.AddDbContext<HackerGameDbContext>(options =>
             //options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
-            builder.Services.AddDbContext<HackerGameDbContext>(options =>
+            builder.Services.AddDbContext<MechanicDatabase>(options =>
             options.UseMySql(builder.Configuration.GetConnectionString("Default"),ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Default"))));
 
             var app = builder.Build();
