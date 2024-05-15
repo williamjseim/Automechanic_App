@@ -51,8 +51,6 @@ export class VideoCaptureComponent {
   }
 
   sendVideoToAPI() {
-    // Implement logic to send the video file to your API
-    // Example:
     const formData = new FormData();
     formData.append('video', this.videoFile);
 
@@ -64,12 +62,5 @@ export class VideoCaptureComponent {
         console.log(error);
       }
     )
-    // Call your API endpoint using HttpClient
-    // Example:
-    // this.http.post('your-api-url', formData).subscribe(response => {
-    //   console.log('Video uploaded successfully:', response);
-    // }, error => {
-    //   console.error('Error uploading video:', error);
-    // });
   }
 }
