@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 import { MatButtonModule } from '@angular/material/button'
 import { LoginService } from '../../services/login.service';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 @Component({
   selector: 'app-login',
@@ -16,7 +17,7 @@ import { LoginService } from '../../services/login.service';
 })
 export class LoginComponent {
 
-  constructor(private loginService: LoginService) {}
+  constructor(private loginService: LoginService, private localStorageService: LocalStorageService) {}
 
   // Form Controls
   usernameControl = new FormControl('', [Validators.required]);
@@ -32,6 +33,7 @@ export class LoginComponent {
       this.loginService.login(loginData).subscribe(
         response => {
           console.log('Login successful:', response);
+          this.localStorageService.addToLocalStorage("token", response);
         },
         error => {
           console.error('Login error:', error);
