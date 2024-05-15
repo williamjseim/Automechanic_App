@@ -9,11 +9,12 @@ export class LoginService {
 
 
   private port = "5142";
-  private url = `http://localhost:${this.port}`
-
+  private url = `http://localhost:${this.port}/User`
+  
   constructor(private http: HttpClient) { }
 
   login(data: any): Observable<any> {
-    return this.http.post(`${this.url}/Login`, data);
+
+    return this.http.put(`${this.url}/Login?username=${data.username}&password=${data.password}`, null, { responseType: "text" });
   }
 }
