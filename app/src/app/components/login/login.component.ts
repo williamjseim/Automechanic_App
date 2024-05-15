@@ -27,20 +27,16 @@ export class LoginComponent {
   usernameControl = new FormControl('', [Validators.required]);
   passwordControl = new FormControl('', [Validators.required]);
 
-
   // Form submit
   onSubmit(username: string, password: string) {
     if (this.usernameControl.invalid && this.passwordControl.invalid) {
       this.router.navigateByUrl("record");
     }
     if (this.usernameControl.valid || this.passwordControl.valid) {
-      const loginData = { username, password };
-      
-      this.loginService.login(loginData).subscribe(
+      console.log(username, password)
+      this.loginService.login(username, password).subscribe(
         response => {
-          console.log('Login successful:', response);
 
-          // Write token 
           this.localStorageService.addToLocalStorage("token", response);
           this.router.navigateByUrl("record");
         },

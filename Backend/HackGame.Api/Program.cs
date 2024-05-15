@@ -51,6 +51,7 @@ namespace HackGame.Api
 
             var app = builder.Build();
 
+            app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -60,7 +61,6 @@ namespace HackGame.Api
 
             app.UseHttpsRedirection();
 
-            app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
 
             app.MapControllers();
 

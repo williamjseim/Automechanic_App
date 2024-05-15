@@ -3,6 +3,7 @@ using HackGame.Api.Models;
 using HackGame.Api.TokenAuthorization;
 using HackGame.Api.Filters;
 using Microsoft.AspNetCore.Mvc;
+using System.Text;
 namespace HackGame.Api.Controllers
 {
     [Route("User")]
@@ -16,7 +17,7 @@ namespace HackGame.Api.Controllers
             this._db = db;
         }
 
-        [HttpPut("Login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login(string username, string password)
         {
             username = username.ToLower();
@@ -25,19 +26,26 @@ namespace HackGame.Api.Controllers
                 var user = _db.Users.Where(i => i.Username == username).FirstOrDefault();
                 if (user != null && user.Password == PasswordHasher.HashPassword(password + _config["Password:Seed"])){
                     var token = JwtAuthorization.GenerateJsonWebToken(user, _config, _db);
-                    var json = Json(token);
-                    if(Encrypter.Encrypt(json.ToString(), out string encryptedText))
+                    if(user.Role == Role.Admin)
                     {
-                        return Ok(encryptedText);
+                        Response.Headers.Add("AdminKey", "True");
+
+                    }
+                    if(Encrypter.Encrypt(token, out byte[] encryptedText, _config))
+                    {
+                        var base64 = Convert.ToBase64String(encryptedText);
+                        Console.WriteLine(base64);
+                        return Ok(base64.ToString());
                     }
                     return StatusCode(500, " Something went wrong");
                 }
                 return StatusCode(500, " Something went wrong");
             }
             catch {
-                return StatusCode(500, " Something went wrong");
+                return StatusCode(500, " Something went wrong Error");
             }
         }
+
 
         [JwtRoleAuthorization(Role.Admin)]
         [HttpPut("Register")]
@@ -59,5 +67,30 @@ namespace HackGame.Api.Controllers
                 return StatusCode(500, " Something went wrong");
             }
         }
+
+#if DEBUG
+        [HttpGet("decrypt")]
+        public async Task<IActionResult> Decrypt(string encryptedtext)
+        {
+            Encrypter.Decrypt(Convert.FromBase64String(encryptedtext), out byte[] decrypt, _config);
+            return Ok(Encoding.UTF8.GetString(decrypt));
+        }
+
+        [HttpPut("TestRegister")]
+        public async Task<IActionResult> TestRegister()
+        {
+            try
+            {
+                var newUser = new User("admin", "admin", "admin@email.com", Role.Admin, _config);
+                await _db.AddAsync(newUser);
+                await _db.SaveChangesAsync();
+                return Ok("Welcome " + "admin");
+            }
+            catch
+            {
+                return StatusCode(500, " Something went wrong");
+            }
+        }
+#endif
     }
 }
