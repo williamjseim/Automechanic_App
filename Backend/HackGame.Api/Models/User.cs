@@ -15,7 +15,7 @@ namespace HackGame.Api.Models
         {
             
         }
-        public User(string username, string password, string email, IConfiguration config)
+        public User(string username, string password, string email, Role role, IConfiguration config)
         {
             Id = Guid.NewGuid();
             this.CreationDate = DateTime.Now;
