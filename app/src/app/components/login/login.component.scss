@@ -1,9 +1,9 @@
 .login-wrapper {
     height: 100%;
-        display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .box {
@@ -46,11 +46,7 @@
     z-index: -1;
 }
 
-.login-wrapper .example-form {
-    min-width: 100%;
-    max-width: 300px;
-    width: 100%;
-}
+
 
 .login-wrapper .example-full-width,
 .login-wrapper .btn-block {
@@ -80,4 +76,14 @@
 
 .login-wrapper .mat-form-field-appearance-legacy .mat-form-field-infix {
     padding: 0.8375em 0;
+}
+
+.container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
 }

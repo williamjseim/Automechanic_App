@@ -1,21 +1,18 @@
 <div class="login-wrapper" fxLayout="row" fxLayoutAlign="center center">
-    <form (ngSubmit)="onSubmit(username.value, password.value)">
-
-        <!-- TODO: Fix mat-form-field must contain a MatFormFieldControl...  -->
-    </form>
+    <!-- TODO: Fix mat-form-field must contain a MatFormFieldControl...  -->
     <mat-card class="box">
         <mat-card-header>
             <mat-card-title>Log in</mat-card-title>
         </mat-card-header>
-        <form class="example-form">
+        <form (ngSubmit)="onSubmit(username.value, password.value)">
             <mat-card-content>
-                <mat-form-field class="example-full-width">
+                <mat-form-field [hideRequiredMarker]="true" class="example-full-width">
                     <mat-label>Username</mat-label>
-                    <input #username placeholder="abc" matInput>
+                    <input matInput [formControl]="usernameControl" #username>
                 </mat-form-field>
-                <mat-form-field class="example-full-width">
+                <mat-form-field [hideRequiredMarker]="true" class="example-full-width">
                     <mat-label>Password</mat-label>
-                    <input  #password placeholder="abc" matInput>
+                    <input matInput [formControl]="passwordControl" #password>
                 </mat-form-field>
             </mat-card-content>
             <button type="submit" mat-stroked-button color="accent" class="btn-block">Log in</button>
