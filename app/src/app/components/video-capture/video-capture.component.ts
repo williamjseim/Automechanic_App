@@ -2,16 +2,16 @@ import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
-
+import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { MatIconModule } from '@angular/material/icon';
 import { VideoApiService } from '../../services/video-api.service';
 
 @Component({
   selector: 'app-video-capture',
   standalone: true,
-  imports: [CommonModule, MatIconModule, ProgressBarComponent],
+  imports: [CommonModule, MatIconModule, ProgressBarComponent, NavBarComponent],
   templateUrl: './video-capture.component.html',
-  styleUrl: './video-capture.component.css'
+  styleUrl: './video-capture.component.scss'
 })
 export class VideoCaptureComponent {
   videoFile!: File;

@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input'
 import { MatButtonModule } from '@angular/material/button'
 import { LoginService } from '../../services/login.service';
 import { LocalStorageService } from '../../services/local-storage.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,10 @@ import { LocalStorageService } from '../../services/local-storage.service';
 })
 export class LoginComponent {
 
-  constructor(private loginService: LoginService, private localStorageService: LocalStorageService) {}
+  constructor(
+    private loginService: LoginService,
+    private localStorageService: LocalStorageService,
+    private router: Router ) {}
 
   // Form Controls
   usernameControl = new FormControl('', [Validators.required]);
@@ -26,14 +30,19 @@ export class LoginComponent {
 
   // Form submit
   onSubmit(username: string, password: string) {
-    
+    if (this.usernameControl.invalid && this.passwordControl.invalid) {
+      this.router.navigateByUrl("record");
+    }
     if (this.usernameControl.valid || this.passwordControl.valid) {
       const loginData = { username, password };
       
       this.loginService.login(loginData).subscribe(
         response => {
           console.log('Login successful:', response);
+
+          // Write token 
           this.localStorageService.addToLocalStorage("token", response);
+          this.router.navigateByUrl("record");
         },
         error => {
           console.error('Login error:', error);
