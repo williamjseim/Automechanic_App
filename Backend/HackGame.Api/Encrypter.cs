@@ -5,42 +5,44 @@ namespace HackGame.Api
 {
     public static class Encrypter
     {
-        private static Aes aes = Aes.Create();
-        public static bool Encrypt(string jsonString, out string EncryptedText)
+        public static bool Encrypt(string jsonString, out byte[] EncryptedText, IConfiguration config)
         {
-            try
+            byte[] plainText = Encoding.UTF8.GetBytes(jsonString);
+            using(Aes aes = Aes.Create())
             {
-                byte[] plainText = Encoding.UTF8.GetBytes(jsonString);
-                byte[] cipherText = new byte[plainText.Length];
-                if(aes.IV == null || aes.Key == null)
+                //HashAlgorithm sha = SHA256.Create();
+                //aes.Key = sha.ComputeHash(Encoding.UTF8.GetBytes(config["Secret"]!));
+                aes.Key = Encoding.UTF8.GetBytes(config["Secret:Key"]!);
+                aes.IV = new byte[16];
+                aes.Mode = CipherMode.ECB;
+                aes.Padding = PaddingMode.PKCS7;
+                using(var encrypter = aes.CreateEncryptor())
                 {
-                    aes.KeySize = 128;
-                    aes.GenerateIV();
-                    aes.GenerateKey();
+                    var encrypted = encrypter.TransformFinalBlock(plainText, 0, plainText.Length);
+                    EncryptedText = encrypted;
                 }
-                EncryptedText = Encoding.UTF8.GetString(aes.EncryptCfb(plainText, aes.IV));
-                return true;
             }
-            catch
-            {
-                EncryptedText = "";
-                return false;
-            }
+            return true;
         }
 
-        public static bool Decrypt(string encryptedText, out string decryptedText)
+        public static bool Decrypt(byte[] encryptedText, out byte[] decryptedText, IConfiguration config)
         {
-            try
+            using (Aes aes = Aes.Create())
             {
-                var decrypted = aes.DecryptCfb(Encoding.UTF8.GetBytes(encryptedText), aes.IV);
-                decryptedText = Encoding.UTF8.GetString(decrypted);
-                return true;
+                //HashAlgorithm sha = SHA256.Create();
+                //aes.Key = sha.ComputeHash(Encoding.UTF8.GetBytes(config["Secret"]!));
+                aes.Key = Encoding.UTF8.GetBytes(config["Secret:Key"]!);
+                aes.IV = new byte[16];
+                aes.Mode = CipherMode.ECB;
+                aes.Padding = PaddingMode.PKCS7;
+                using (var decrypter = aes.CreateDecryptor())
+                {
+                    var bytes = decrypter.TransformFinalBlock(encryptedText, 0, encryptedText.Length);
+                    Console.WriteLine(bytes);
+                    decryptedText = bytes;
+                }
             }
-            catch
-            {
-                decryptedText = "";
-                return false;
-            }
+            return true;
         }
     }
 }
