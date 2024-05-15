@@ -33,7 +33,6 @@ namespace HackGame.Api.Filters
                 };
                 
                 var result = handler.ValidateToken(token, parameters, out SecurityToken validatedToken);
-                //Database.Instance.UserExists(result.Claims.Where(i => i.Type == "username").FirstOrDefault().Value);
                 context.Result = new OkResult();
                 return;
             }
