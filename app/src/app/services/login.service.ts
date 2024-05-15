@@ -16,4 +16,8 @@ export class LoginService {
   login(username:string, password:string): Observable<any> {
     return this.http.post(`${this.url}/Login?username=${username}&password=${password}`,null, { responseType: "text"});
   }
+
+  verifyToken(token: any): Observable<any> {
+    return this.http.put(`${this.url}/Verify?token=${token}`, null)
+  }
 }
