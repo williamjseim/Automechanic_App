@@ -1,11 +1,7 @@
 ﻿using HackGame.Api.Data;
 using HackGame.Api.Models;
-using Microsoft.AspNetCore.Components;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using System.Diagnostics;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
 using System.Text;
 
@@ -29,8 +25,9 @@ namespace HackGame.Api.TokenAuthorization
                 _config["JwtSettings:Issuer"],
                 _config["JwtSettings:Issuer"],
                 claims,
-                expires: DateTime.Now.AddMinutes(5),
-                signingCredentials: credentials);
+                expires: DateTime.Now.AddMinutes(20),
+                signingCredentials: credentials
+            );
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
         }

@@ -27,5 +27,20 @@ namespace HackGame.Api
                 return false;
             }
         }
+
+        public static bool Decrypt(string encryptedText, out string decryptedText)
+        {
+            try
+            {
+                var decrypted = aes.DecryptCfb(Encoding.UTF8.GetBytes(encryptedText), aes.IV);
+                decryptedText = Encoding.UTF8.GetString(decrypted);
+                return true;
+            }
+            catch
+            {
+                decryptedText = "";
+                return false;
+            }
+        }
     }
 }
