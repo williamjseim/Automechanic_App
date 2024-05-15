@@ -1,6 +1,7 @@
 ﻿using HackGame.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
@@ -33,20 +34,24 @@ namespace HackGame.Api.Filters
                     ValidateIssuerSigningKey = true,
                     ValidateActor = false,
                 };
-
+                context.Result = new UnauthorizedResult();
                 var result = handler.ValidateToken(token, parameters, out SecurityToken validatedToken);
-                var role = result.Claims.Where(i => i.Type == "Role").First().Value;
-                if (!allowedRoles.Contains(Enum.Parse<Role>(role)))
+                if (validatedToken.ValidFrom > DateTime.Now && validatedToken.SigningKey == new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!)))
                 {
-                    context.Result = new UnauthorizedResult();
-                    this.OnAuthorization(context);
-                    return;
+                    var role = result.Claims.Where(i => i.Type == "Role").First().Value;
+                    if (!allowedRoles.Contains(Enum.Parse<Role>(role)))
+                    {
+                        context.Result = new UnauthorizedResult();
+                    }
+                    context.Result = new OkResult();
                 }
-                context.Result = new OkResult();
+                OnAuthorization(context);
+                return;
             }
             catch
             {
                 context.Result = new UnauthorizedResult();
+                OnAuthorization(context);
                 return;
             }
         }
