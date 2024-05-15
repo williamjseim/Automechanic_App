@@ -17,7 +17,7 @@ namespace HackGame.Api.Controllers
             this._db = db;
         }
 
-        [HttpPut("Login")]
+        [HttpPost("Login")]
         public async Task<IActionResult> Login(string username, string password)
         {
             username = username.ToLower();
@@ -26,18 +26,16 @@ namespace HackGame.Api.Controllers
                 var user = _db.Users.Where(i => i.Username == username).FirstOrDefault();
                 if (user != null && user.Password == PasswordHasher.HashPassword(password + _config["Password:Seed"])){
                     var token = JwtAuthorization.GenerateJsonWebToken(user, _config, _db);
-                    var json = Json(token).Value;
                     if(user.Role == Role.Admin)
                     {
                         Response.Headers.Add("AdminKey", "True");
 
                     }
-                    Console.WriteLine(json);
-                    if(Encrypter.Encrypt(json.ToString()!, out byte[] encryptedText, _config))
+                    if(Encrypter.Encrypt(token, out byte[] encryptedText, _config))
                     {
-                        Console.WriteLine("ok");
                         var base64 = Convert.ToBase64String(encryptedText);
-                        return Ok(base64);
+                        Console.WriteLine(base64);
+                        return Ok(base64.ToString());
                     }
                     return StatusCode(500, " Something went wrong");
                 }

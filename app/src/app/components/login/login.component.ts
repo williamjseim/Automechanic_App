@@ -28,11 +28,9 @@ export class LoginComponent {
   onSubmit(username: string, password: string) {
     
     if (this.usernameControl.valid || this.passwordControl.valid) {
-      const loginData = { username, password };
-      
-      this.loginService.login(loginData).subscribe(
+      console.log(username, password)
+      this.loginService.login(username, password).subscribe(
         response => {
-          console.log('Login successful:', response);
           this.localStorageService.addToLocalStorage("token", response);
         },
         error => {

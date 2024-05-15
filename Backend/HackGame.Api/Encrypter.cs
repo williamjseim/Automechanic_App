@@ -38,7 +38,6 @@ namespace HackGame.Api
                 using (var decrypter = aes.CreateDecryptor())
                 {
                     var bytes = decrypter.TransformFinalBlock(encryptedText, 0, encryptedText.Length);
-                    Console.WriteLine(bytes);
                     decryptedText = bytes;
                 }
             }

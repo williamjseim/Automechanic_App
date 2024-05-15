@@ -13,8 +13,7 @@ export class LoginService {
   
   constructor(private http: HttpClient) { }
 
-  login(data: any): Observable<any> {
-
-    return this.http.put(`${this.url}/Login?username=${data.username}&password=${data.password}`, null, { responseType: "text" });
+  login(username:string, password:string): Observable<any> {
+    return this.http.post(`${this.url}/Login?username=${username}&password=${password}`,null, { responseType: "text"});
   }
 }
