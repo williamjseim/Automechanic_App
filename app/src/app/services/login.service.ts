@@ -15,6 +15,6 @@ export class LoginService {
 
   login(data: any): Observable<any> {
 
-    return this.http.put(`${this.url}/Login?username=${data.username}&password=${data.password}`, null);
+    return this.http.put(`${this.url}/Login?username=${data.username}&password=${data.password}`, null, { responseType: "text" });
   }
 }
