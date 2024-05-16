@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "7S3yfASUFiB4xzSe6SqYj0eQyYd60cGyQFftytkGxChRAZ+/a65w5f7oNDuJZJQ0uQ2Wt/xcI5q3U8zIycXUUw==",
+  "dgSpecHash": "O4hctsAPlLAPxNo8OLmp/iZrFBHYYiKSQG55YJK5/bxRicUGNfIDwIdtKbTylKX8TGTJmMcu0Zrz9JgWLR+KLQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\zbcwise\\Documents\\GitHub\\Automechanic_App\\Backend\\HackGame.Api\\HackGame.Api.csproj",
+  "projectFilePath": "C:\\Users\\zbcwise\\Documents\\GitHub\\Automechanic_App\\Backend\\HackGame.Api\\Mechanic.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\zbcwise\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\zbcwise\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",

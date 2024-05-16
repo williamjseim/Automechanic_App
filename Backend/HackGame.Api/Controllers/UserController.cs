@@ -1,10 +1,11 @@
-﻿using HackGame.Api.Data;
-using HackGame.Api.Models;
-using HackGame.Api.TokenAuthorization;
-using HackGame.Api.Filters;
+﻿using Mechanic.Api.Data;
+using Mechanic.Api.Models;
+using Mechanic.Api.TokenAuthorization;
+using Mechanic.Api.Filters;
 using Microsoft.AspNetCore.Mvc;
 using System.Text;
-namespace HackGame.Api.Controllers
+using Microsoft.EntityFrameworkCore;
+namespace Mechanic.Api.Controllers
 {
     [Route("User")]
     public class UserController : Controller
@@ -23,18 +24,16 @@ namespace HackGame.Api.Controllers
             username = username.ToLower();
             try
             {
-                var user = _db.Users.Where(i => i.Username == username).FirstOrDefault();
+                var user = await _db.Users.Where(i => i.Username == username).FirstOrDefaultAsync();
                 if (user != null && user.Password == PasswordHasher.HashPassword(password + _config["Password:Seed"])){
                     var token = JwtAuthorization.GenerateJsonWebToken(user, _config, _db);
                     if(user.Role == Role.Admin)
                     {
                         Response.Headers.Add("AdminKey", "True");
-
                     }
                     if(Encrypter.Encrypt(token, out byte[] encryptedText, _config))
                     {
                         var base64 = Convert.ToBase64String(encryptedText);
-                        Console.WriteLine(base64);
                         return Ok(base64.ToString());
                     }
                     return StatusCode(500, " Something went wrong");
@@ -45,7 +44,6 @@ namespace HackGame.Api.Controllers
                 return StatusCode(500, " Something went wrong Error");
             }
         }
-
 
         [JwtRoleAuthorization(Role.Admin)]
         [HttpPut("Register")]
@@ -68,9 +66,25 @@ namespace HackGame.Api.Controllers
             }
         }
 
+        [JwtRoleAuthorization(Role.Admin)]
+        [HttpPut("Delete")]
+        public async Task<IActionResult> Delete(Guid userId)
+        {
+            try
+            {
+                await _db.Users.Where(i => i.Id == userId).ExecuteDeleteAsync();
+                await _db.SaveChangesAsync();
+                return Ok("User deleted");
+            }
+            catch
+            {
+                return StatusCode(500, " Something went wrong");
+            }
+        }
+
 #if DEBUG
         [HttpGet("decrypt")]
-        public async Task<IActionResult> Decrypt(string encryptedtext)
+        public ActionResult Decrypt(string encryptedtext)
         {
             Encrypter.Decrypt(Convert.FromBase64String(encryptedtext), out byte[] decrypt, _config);
             return Ok(Encoding.UTF8.GetString(decrypt));

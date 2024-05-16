@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace HackGame.Api.Models
+namespace Mechanic.Api.Models
 {
     [Table("Car_Issu3")]
     public partial class CarIssue

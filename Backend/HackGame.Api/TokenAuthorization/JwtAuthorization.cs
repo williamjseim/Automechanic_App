@@ -1,11 +1,12 @@
-﻿using HackGame.Api.Data;
-using HackGame.Api.Models;
+﻿using Mechanic.Api.Data;
+using Mechanic.Api.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
-namespace HackGame.Api.TokenAuthorization
+namespace Mechanic.Api.TokenAuthorization
 {
     public static class JwtAuthorization
     {
@@ -30,6 +31,32 @@ namespace HackGame.Api.TokenAuthorization
             );
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
             return jwt;
+        }
+
+        public static Guid GetUserId(string encryptedBase64, IConfiguration config)
+        {
+            if(Encrypter.Decrypt(Convert.FromBase64String(encryptedBase64), out byte[] cipher, config))
+            {
+                string token = Encoding.UTF8.GetString(cipher);
+                JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+                TokenValidationParameters parameters = new TokenValidationParameters
+                {
+                    ValidIssuer = config["JwtSettings:Issuer"],
+                    ValidAudience = config["JwtSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!)),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    ValidateActor = false,
+                };
+                var result = handler.ValidateToken(token, parameters, out SecurityToken validatedToken);
+                if(Guid.TryParse(result.Claims.First(i => i.Type == JwtRegisteredClaimNames.Jti).Value, out Guid id))
+                {
+                    return id;
+                }
+            }
+            return Guid.Empty;
         }
     }
 }

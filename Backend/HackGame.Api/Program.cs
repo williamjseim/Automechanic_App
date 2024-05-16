@@ -1,12 +1,12 @@
 
-using HackGame.Api.Data;
+using Mechanic.Api.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Web.Http;
 
-namespace HackGame.Api
+namespace Mechanic.Api
 {
     public class Program
     {

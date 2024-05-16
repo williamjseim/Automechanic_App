@@ -1,4 +1,4 @@
-using HackGame.Api;
+using Mechanic.Api;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("Video")]

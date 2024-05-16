@@ -1,4 +1,4 @@
-﻿using HackGame.Api.TokenAuthorization;
+﻿using Mechanic.Api.TokenAuthorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -9,7 +9,7 @@ using System.Net;
 using System.Text;
 using System.Web.Http.Controllers;
 
-namespace HackGame.Api.Filters
+namespace Mechanic.Api.Filters
 {
     public class JwtTokenAuthorization : Attribute, IAuthorizationFilter
     {
@@ -38,7 +38,9 @@ namespace HackGame.Api.Filters
 
                     var result = handler.ValidateToken(token, parameters, out SecurityToken validatedToken);
                     context.Result = new OkResult();
+                    return;
                 }
+                context.Result = new UnauthorizedResult();
                 return;
             }
             catch
