@@ -5,6 +5,10 @@ body{
     gap: 1%;
 }
 
+.test{
+    min-width: 100%;
+}
+
 .ButtonDiv{
     display: flex;
     justify-content: center;
@@ -16,17 +20,75 @@ body{
     width: 95%;
 }
 
+@mixin TBody{
+    border-collapse: initial;
+    border: 2px solid black;
+    td{
+        border-right: 2px solid black;
+    }
+    td:last-child{
+        border: 0;
+    }
+}
+
+.EvenTBody{
+    @include TBody;
+    background-color: white;
+}
+
+.OddTBody{
+    @include TBody;
+    background-color: gray;
+}
+
 table{
     width: 100%;
+    border-collapse: collapse;
 }
 
 th{
+    
     border: 1px black solid;
+    pointer-events: none;
 }
 
 td{
     text-align: center;
     font-size: xx-large;
+}
+
+.PageSwapBtn{
+    background-color: transparent;
+    border: 1px black solid;
+}
+
+.PageSwapBtn:active{
+    background-color: gray !important;
+}
+
+.PageBtn{
+    background-color: transparent;
+    text-align: center;
+    border: 1px black solid;
+    width: 3%;
+    aspect-ratio: 1;
+}
+
+.SelectedPageBtn{
+    background-color: lightblue;
+    text-align: center;
+    border: 1px black solid;
+    width: 3%;
+    aspect-ratio: 1;
+
+}
+
+.SelectedPageBtn:active{
+    background-color: gray;
+}
+
+.PageBtn:active{
+    background-color: gray;
 }
 
 .actionTd{

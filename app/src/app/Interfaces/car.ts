@@ -1,3 +1,6 @@
+import { Observable } from "rxjs";
+import { Issue } from "./issue";
+
 export interface Car {
     Id:string;
     VinNumber:string;
@@ -5,4 +8,5 @@ export interface Car {
     CreationTime:Date;
     Make:string;
     Model:string;
+    issues:Observable<Issue[]>;
 }

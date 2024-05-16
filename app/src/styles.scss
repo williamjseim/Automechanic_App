@@ -4,5 +4,9 @@
 
     --zbc-blue: #004A6C;
 }
-html, body { height: 100%; }
+html {
+    height: 100%;
+    overflow-y: scroll;
+} 
+body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

@@ -4,6 +4,7 @@ using Mechanic.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Mechanic.Api.Models;
 using Mechanic.Api.TokenAuthorization;
+using Pomelo.EntityFrameworkCore.MySql.Query.Internal;
 
 namespace Mechanic.Api.Controllers
 {
@@ -18,12 +19,12 @@ namespace Mechanic.Api.Controllers
         }
 
         [JwtTokenAuthorization]
-        [HttpGet("Cars")]
-        public async Task<IActionResult> Cars(int startingIndex)
+        [HttpGet("GetCars")]
+        public async Task<IActionResult> GetCars(int startingIndex, int amount)
         {
             try
             {
-                var cars = _db.Cars.Skip(startingIndex).Take(25);
+                var cars = _db.Cars.Skip(startingIndex).Take(amount);
                 return Ok(cars);
             }
             catch (Exception ex)
@@ -34,8 +35,24 @@ namespace Mechanic.Api.Controllers
         }
 
         [JwtTokenAuthorization]
+        [HttpGet("CarPages")]
+        public async Task<IActionResult> CarPages(int amountPrPage)
+        {
+            try
+            {
+                var amount = (int)MathF.Ceiling(_db.Cars.Count()/amountPrPage);
+                return Ok(amount);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return NotFound();
+            }
+        }
+
+        [JwtTokenAuthorization]
         [HttpGet("CreateCar")]
-        public async Task<IActionResult> Cars(string make, string model, string plate, string vinnr)
+        public async Task<IActionResult> CreateCar(string make, string model, string plate, string vinnr)
         {
             try
             {

@@ -1,24 +1,51 @@
-<body>
+<body (click)="SelectRow(-1, $event)" *ngIf="(cars|async); else elseBlock">
+    <div><button>Add Car</button></div>
     <div class="tableDiv">
-        <table *ngIf="(cars|async)">
-            <th>Make</th>
-            <th>Model</th>
-            <th>Plate</th>
-            <th>Vin Number</th>
-            <th>Actions</th>
-            <tr [ngStyle]="{ 'background-color' : i%2==1 ? 'lightgray' : 'white' }" *ngFor="let item of (cars|async); let i = index">
-                <td>{{item.Make}}</td>
-                <td>{{item.Model}}</td>
-                <td>{{item.Plate}}</td>
-                <td>{{item.VinNumber}}</td>
-                <td class="actionTd"><input type="button" *ngIf="isAdmin" class="DeleteButton" value="Delete"> <input type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Edit"></td>
-            </tr>
+        <table>
+            <thead>
+                <th>Make</th>
+                <th>Model</th>
+                <th>Plate</th>
+                <th>Vin Number</th>
+                <th>Actions</th>
+            </thead>
+            <tbody (click)="SelectRow(row, $event)" [class]="[row%2==0 ? 'EvenTBody':'OddTBody']" *ngFor="let item of (cars|async); let row = index">
+                <tr style="border-bottom: 2px solid black;">
+                    <td>{{item.Make}}</td>
+                    <td>{{item.Model}}</td>
+                    <td>{{item.Plate}}</td>
+                    <td>{{item.VinNumber}}</td>
+                    <td class="actionTd"><input type="button" *ngIf="isAdmin" class="DeleteButton" value="Delete"> <input type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Edit"></td>
+                </tr>
+                <tr>
+                    <tr>
+                        <td style="padding: 0; margin: 0;" colspan="5">
+                            <div *ngIf="row==SelectedRow" style="width: 100%; background-color: transparent;">
+                                <table *ngIf="(item.issues|async); else elseBlock" style="font-size: large;">
+                                    <thead>
+                                        <th>Issues</th>
+                                        <th>Tags</th>
+                                        <th>Creation Date</th>
+                                        <th>Description</th>
+                                        <th>Price</th>
+                                        <th>Actions</th>
+                                    </thead>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+            </tbody>
         </table>
+        <div ></div>
     </div>
     <div class="ButtonDiv">
-        <button>Previous</button>
-        <button>1</button>
-        <button>2</button>
-        <button>Next</button>
+        <button *ngIf="currentPage != 0" class="PageSwapBtn">Prev</button>
+        <button [ngClass]="[i==currentPage ? 'SelectedPageBtn' : 'PageBtn']" *ngFor="let item of pages; let i = index">{{i+1}}</button>
+        <button *ngIf="currentPage != pages.length-1" class="PageSwapBtn">Next</button>
     </div>
 </body>
+<ng-template #elseBlock>
+    <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    </div>
+</ng-template>
