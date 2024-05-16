@@ -1,7 +1,7 @@
-﻿using HackGame.Api.Models;
+﻿using Mechanic.Api.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace HackGame.Api.Data
+namespace Mechanic.Api.Data
 {
     public class MechanicDatabase : DbContext
     {

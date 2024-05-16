@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using HackGame.Api.Filters;
-using HackGame.Api.Data;
+using Mechanic.Api.Filters;
+using Mechanic.Api.Data;
 using Microsoft.EntityFrameworkCore;
-using HackGame.Api.Models;
+using Mechanic.Api.Models;
+using Mechanic.Api.TokenAuthorization;
 
-namespace HackGame.Api.Controllers
+namespace Mechanic.Api.Controllers
 {
     public class CarController : Controller
     {
@@ -27,6 +28,7 @@ namespace HackGame.Api.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 return NotFound();
             }
         }
@@ -62,6 +64,7 @@ namespace HackGame.Api.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 return NotFound();
             }
         }
@@ -77,7 +80,8 @@ namespace HackGame.Api.Controllers
                 {
                     return NotFound("Car not found");
                 }
-                User user = await _db.Users.FirstOrDefaultAsync(i => i.Id == Guid.Empty);
+                string token = this.HttpContext.Request.Headers.First(i => i.Key == "Bearer").Value;
+                User user = await _db.Users.FirstOrDefaultAsync(i => i.Id == JwtAuthorization.GetUserId(token, _config));
                 if(user == null)
                 {
                     return Unauthorized("User doesnt exist");
@@ -90,8 +94,34 @@ namespace HackGame.Api.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 return NotFound();
             }
         }
+
+        [JwtTokenAuthorization]
+        [HttpGet("UpdateCarIssue")]
+        public async Task<IActionResult> UpdateCarIssue(Guid IssueId, string description, decimal price)
+        {
+            try
+            {
+                CarIssue issue = await _db.CarIssues.FirstOrDefaultAsync(i=>i.Id == IssueId);
+                if(issue == null)
+                {
+                    return NotFound("Issue not found");
+                }
+                issue.Price = price;
+                issue.Description = description;
+                _db.Update(issue);
+                _db.SaveChanges();
+                return Ok("Issue edited");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return NotFound();
+            }
+        }
+
     }
 }

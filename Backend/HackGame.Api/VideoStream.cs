@@ -1,6 +1,6 @@
 ﻿using System.Net;
 
-namespace HackGame.Api
+namespace Mechanic.Api
 {
     public class VideoStream
     {

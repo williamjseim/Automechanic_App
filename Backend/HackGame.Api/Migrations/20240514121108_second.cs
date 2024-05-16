@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace HackGame.Api.Migrations
+namespace Mechanic.Api.Migrations
 {
     /// <inheritdoc />
     public partial class second : Migration

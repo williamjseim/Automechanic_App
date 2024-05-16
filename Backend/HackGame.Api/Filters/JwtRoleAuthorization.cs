@@ -1,11 +1,11 @@
-﻿using HackGame.Api.Models;
+﻿using Mechanic.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
-namespace HackGame.Api.Filters
+namespace Mechanic.Api.Filters
 {
     public class JwtRoleAuthorization : Attribute, IAuthorizationFilter
     {
@@ -27,8 +27,8 @@ namespace HackGame.Api.Filters
                     JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
                     TokenValidationParameters parameters = new TokenValidationParameters
                     {
-                        ValidIssuer = config["JwtSettings:Issuer"],
-                        ValidAudience = config["JwtSettings:Audience"],
+                        ValidIssuer = config!["JwtSettings:Issuer"]!,
+                        ValidAudience = config!["JwtSettings:Audience"]!,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!)),
                         ValidateIssuer = true,
                         ValidateAudience = true,
@@ -43,10 +43,12 @@ namespace HackGame.Api.Filters
                     {
                         context.Result = new UnauthorizedResult();
                         this.OnAuthorization(context);
-                        return;
                     }
                     context.Result = new OkResult();
+                    return;
                 }
+                context.Result = new UnauthorizedResult();
+                return;
             }
             catch
             {

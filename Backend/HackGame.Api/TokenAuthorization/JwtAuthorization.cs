@@ -1,11 +1,12 @@
-﻿using HackGame.Api.Data;
-using HackGame.Api.Models;
+﻿using Mechanic.Api.Data;
+using Mechanic.Api.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
 using System.Security.Claims;
 using System.Text;
 
-namespace HackGame.Api.TokenAuthorization
+namespace Mechanic.Api.TokenAuthorization
 {
     public static class JwtAuthorization
     {
@@ -49,8 +50,11 @@ namespace HackGame.Api.TokenAuthorization
                     ValidateIssuerSigningKey = true,
                     ValidateActor = false,
                 };
-
                 var result = handler.ValidateToken(token, parameters, out SecurityToken validatedToken);
+                if(Guid.TryParse(result.Claims.First(i => i.Type == JwtRegisteredClaimNames.Jti).Value, out Guid id))
+                {
+                    return id;
+                }
             }
             return Guid.Empty;
         }
