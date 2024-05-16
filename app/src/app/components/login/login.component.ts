@@ -5,8 +5,8 @@ import { MatCardModule } from '@angular/material/card'
 import { MatFormFieldModule } from '@angular/material/form-field'
 import { MatInputModule } from '@angular/material/input'
 import { MatButtonModule } from '@angular/material/button'
-import { LoginService } from '../../services/login.service';
-import { LocalStorageService } from '../../services/local-storage.service';
+
+import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,8 +19,7 @@ import { Router } from '@angular/router';
 export class LoginComponent {
 
   constructor(
-    private loginService: LoginService,
-    private localStorageService: LocalStorageService,
+    private loginService: AuthService,
     private router: Router ) {}
 
   // Form Controls
@@ -36,17 +35,11 @@ export class LoginComponent {
     if (this.usernameControl.valid || this.passwordControl.valid) {
       const loginData = { username, password };
       
-      this.loginService.login(loginData).subscribe(
-        response => {
-          console.log('Login successful:', response);
-
-          // Write token 
-          this.localStorageService.addToLocalStorage("token", response);
-          this.router.navigateByUrl("record");
-        },
-        error => {
-          console.error('Login error:', error);
-        });
+      this.loginService.login(loginData)
+      .subscribe(r => {
+        console.log(`Login successful: ${r}`);
+        this.router.navigateByUrl("record");
+      });
       }
   }
 }
