@@ -8482,9 +8482,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\zbcwise\\Documents\\GitHub\\Automechanic_App\\Backend\\HackGame.Api\\HackGame.Api.csproj",
-      "projectName": "HackGame.Api",
-      "projectPath": "C:\\Users\\zbcwise\\Documents\\GitHub\\Automechanic_App\\Backend\\HackGame.Api\\HackGame.Api.csproj",
+      "projectUniqueName": "C:\\Users\\zbcwise\\Documents\\GitHub\\Automechanic_App\\Backend\\HackGame.Api\\Mechanic.Api.csproj",
+      "projectName": "Mechanic.Api",
+      "projectPath": "C:\\Users\\zbcwise\\Documents\\GitHub\\Automechanic_App\\Backend\\HackGame.Api\\Mechanic.Api.csproj",
       "packagesPath": "C:\\Users\\zbcwise\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\zbcwise\\Documents\\GitHub\\Automechanic_App\\Backend\\HackGame.Api\\obj\\",
       "projectStyle": "PackageReference",

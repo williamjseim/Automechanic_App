@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace HackGame.Api.Migrations
+namespace Mechanic.Api.Migrations
 {
     /// <inheritdoc />
     public partial class First : Migration

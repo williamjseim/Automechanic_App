@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace HackGame.Api
+namespace Mechanic.Api
 {
     public static class PasswordHasher
     {
