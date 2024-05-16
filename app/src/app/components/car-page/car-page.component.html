@@ -1,0 +1,24 @@
+<body>
+    <div class="tableDiv">
+        <table *ngIf="(cars|async)">
+            <th>Make</th>
+            <th>Model</th>
+            <th>Plate</th>
+            <th>Vin Number</th>
+            <th>Actions</th>
+            <tr [ngStyle]="{ 'background-color' : i%2==1 ? 'lightgray' : 'white' }" *ngFor="let item of (cars|async); let i = index">
+                <td>{{item.Make}}</td>
+                <td>{{item.Model}}</td>
+                <td>{{item.Plate}}</td>
+                <td>{{item.VinNumber}}</td>
+                <td class="actionTd"><input type="button" *ngIf="isAdmin" class="DeleteButton" value="Delete"> <input type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Edit"></td>
+            </tr>
+        </table>
+    </div>
+    <div class="ButtonDiv">
+        <button>Previous</button>
+        <button>1</button>
+        <button>2</button>
+        <button>Next</button>
+    </div>
+</body>
