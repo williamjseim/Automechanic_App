@@ -5,9 +5,13 @@ using Microsoft.EntityFrameworkCore;
 using Mechanic.Api.Models;
 using Mechanic.Api.TokenAuthorization;
 using Pomelo.EntityFrameworkCore.MySql.Query.Internal;
+using Microsoft.Identity.Client;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Mechanic.Api.Controllers
 {
+    [Route("/cars")]
     public class CarController : Controller
     {
         private MechanicDatabase _db;
@@ -24,8 +28,9 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                var cars = _db.Cars.Skip(startingIndex).Take(amount);
-                return Ok(cars);
+                var cars = _db.Cars.Skip(startingIndex).Take(amount).Distinct().OrderBy(i=>i.CreationTime);
+                Console.WriteLine(cars.Count());
+                return Ok(cars.ToArray());
             }
             catch (Exception ex)
             {
@@ -76,8 +81,8 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                var issues = _db.CarIssues.Where(i=>i.Id == carId).Skip(startingIndex).Take(25);
-                return Ok(issues);
+                var issues = _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(25).Distinct().OrderBy(I=>I.Car);
+                return Ok(issues.ToArray());
             }
             catch (Exception ex)
             {
@@ -138,6 +143,42 @@ namespace Mechanic.Api.Controllers
                 Console.WriteLine(ex);
                 return NotFound();
             }
+        }
+
+        [HttpPut("Debug fill database")]
+        public async Task<IActionResult> DebugFill()
+        {
+            var user = await _db.Users.Where(i => i.Username == "admin").FirstOrDefaultAsync();
+            if(user == null)
+            {
+                return BadRequest("not found");
+            }
+            var cars = new Car[] {
+                new("vin number", "plate", "volvo", "246"),
+                new("vin number", "plate", "volvo", "246"),
+                new("vin number", "plate", "volvo", "246"),
+                new("vin number", "plate", "volvo", "246"),
+                new("vin number", "plate", "volvo", "246"),
+                new("vin number", "plate", "volvo", "246"),
+                new("vin number", "plate", "volvo", "246"),
+                new("vin number", "plate", "volvo", "246"),
+            };
+            await _db.AddRangeAsync(cars);
+            foreach (var item in cars)
+            {
+                for (global::System.Int32 i = 0; i < 3; i++)
+                {
+                    var issues = new CarIssue[]{
+                        new(item, user, "nothing", 500),
+                        new(item, user, "nothing", 500),
+                        new(item, user, "nothing", 500),
+                        new(item, user, "nothing", 500),
+                    };
+                    await _db.AddRangeAsync(issues);
+                }
+            }
+            await _db.SaveChangesAsync();
+            return Ok();
         }
 
     }

@@ -1,0 +1,18 @@
+import { HttpEvent, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
+import { inject } from '@angular/core';
+import { Router } from '@angular/router';
+import { map } from 'rxjs';
+
+export const accessDeniedInterceptor: HttpInterceptorFn = (req, next) => {
+  const router = inject(Router);
+  return next(req).pipe(map((event:HttpEvent<any>)=>{
+    console.log("intercepted");
+    if(event instanceof HttpResponse){
+      if(event.status == 401){
+        router.navigate(['']);
+      }
+      return event;
+    }
+    return event;
+  }));
+};

@@ -5,6 +5,8 @@ import { AsyncPipe } from '@angular/common';
 import { NgIf, NgFor, NgClass} from '@angular/common';
 import { NgStyle } from '@angular/common';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { CarDataService } from '../../services/car-data.service';
+import { Issue } from '../../Interfaces/issue';
 @Component({
   selector: 'app-car-page',
   standalone: true,
@@ -13,7 +15,10 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
   styleUrl: './car-page.component.scss'
 })
 export class CarPageComponent {
-  cars?:Observable<Car[]>; 
+
+  constructor(private carHttp:CarDataService){}
+
+  cars?:Car[]; 
   isAdmin:boolean = false;
   pages = Array(5);
   currentPage:number = 0;
@@ -24,20 +29,9 @@ export class CarPageComponent {
       this.isAdmin = true;
     }
     this.isAdmin = true;
-    this.GetCars();
-  }
-
-  GetCars(){
-    let cars:Car[] = []
-    for (let i = 0; i < 10; i++) {
-        let car:Car = {} as Car;
-        car.Make = "volvo";
-        car.Model = "2024";
-        car.Plate = "Sick";
-        car.VinNumber = "304"
-        cars.push(car);
-    }
-    this.cars = of(cars);
+    this.GetCarsHttp().subscribe({next:(value)=>{
+      this.cars = value;
+    }});
   }
 
   SelectRow(index:number, event:Event){
@@ -47,7 +41,19 @@ export class CarPageComponent {
       return;
     }
     else{
+      this.GetCarIssuesHttp(this.cars![index].id).subscribe({next:(value)=>{
+        this.cars![index].issues = value;
+        console.log(value);
+      }});
       this.SelectedRow = index;
     }
+  }
+
+  private GetCarsHttp():Observable<Car[]>{
+    return this.carHttp.GetCars(0, 10);
+  }
+
+  private GetCarIssuesHttp(carId:string):Observable<Issue[]>{
+    return this.carHttp.GetIssues(carId, 0);
   }
 }

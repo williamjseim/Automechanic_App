@@ -1,10 +1,9 @@
+C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\bin\Debug\net7.0\Mechanic.Api.dll
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\bin\Debug\net7.0\appsettings.Development.json
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\bin\Debug\net7.0\appsettings.json
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\bin\Debug\net7.0\Mechanic.Api.exe
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\bin\Debug\net7.0\Mechanic.Api.deps.json
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\bin\Debug\net7.0\Mechanic.Api.runtimeconfig.json
-C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\bin\Debug\net7.0\Mechanic.Api.dll
-C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\bin\Debug\net7.0\Mechanic.Api.pdb
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\bin\Debug\net7.0\Azure.Core.dll
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\bin\Debug\net7.0\Azure.Identity.dll
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\bin\Debug\net7.0\Humanizer.dll
@@ -81,4 +80,5 @@ C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\obj\Debu
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\obj\Debug\net7.0\refint\Mechanic.Api.dll
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\obj\Debug\net7.0\Mechanic.Api.pdb
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\obj\Debug\net7.0\Mechanic.Api.genruntimeconfig.cache
+C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\bin\Debug\net7.0\Mechanic.Api.pdb
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\obj\Debug\net7.0\ref\Mechanic.Api.dll

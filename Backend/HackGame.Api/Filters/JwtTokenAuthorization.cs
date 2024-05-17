@@ -18,9 +18,12 @@ namespace Mechanic.Api.Filters
             try
             {
                 IConfiguration config = context.HttpContext.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration;
-                string EncryptedToken = context.HttpContext.Request.Headers.First(x => x.Key == "Authorization").Value!;
-                EncryptedToken = EncryptedToken.Replace("Bearer ", string.Empty);
-                if (Encrypter.Decrypt(Convert.FromBase64String(EncryptedToken), out byte[] cipherbytes, config!))
+                //string EncryptedToken = context.HttpContext.Request.Headers.FirstOrDefault(x => x.Key == "Authorization").Value;
+                string base64Token = context.HttpContext.Request.Headers.Authorization;
+                base64Token = base64Token.Replace("Bearer", string.Empty);
+                base64Token = base64Token.Replace("\"", string.Empty);
+                byte[] cipher = Convert.FromBase64String(base64Token);
+                if (Encrypter.Decrypt(cipher, out byte[] cipherbytes, config!))
                 {
                     var token = Encoding.UTF8.GetString(cipherbytes);
                     JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
@@ -37,7 +40,6 @@ namespace Mechanic.Api.Filters
                     };
 
                     var result = handler.ValidateToken(token, parameters, out SecurityToken validatedToken);
-                    context.Result = new OkResult();
                     return;
                 }
                 context.Result = new UnauthorizedResult();

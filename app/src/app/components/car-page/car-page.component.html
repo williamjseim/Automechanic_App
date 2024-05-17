@@ -1,4 +1,4 @@
-<body (click)="SelectRow(-1, $event)" *ngIf="(cars|async); else elseBlock">
+<body (click)="SelectRow(-1, $event)" *ngIf="cars != null; else elseBlock">
     <div><button>Add Car</button></div>
     <div class="tableDiv">
         <table>
@@ -9,19 +9,19 @@
                 <th>Vin Number</th>
                 <th>Actions</th>
             </thead>
-            <tbody (click)="SelectRow(row, $event)" [class]="[row%2==0 ? 'EvenTBody':'OddTBody']" *ngFor="let item of (cars|async); let row = index">
+            <tbody (click)="SelectRow(row, $event)" [class]="[row%2==0 ? 'EvenTBody':'OddTBody']" *ngFor="let item of cars; let row = index">
                 <tr style="border-bottom: 2px solid black;">
-                    <td>{{item.Make}}</td>
-                    <td>{{item.Model}}</td>
-                    <td>{{item.Plate}}</td>
-                    <td>{{item.VinNumber}}</td>
-                    <td class="actionTd"><input type="button" *ngIf="isAdmin" class="DeleteButton" value="Delete"> <input type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Edit"></td>
+                    <td>{{item.make}}</td>
+                    <td>{{item.model}}</td>
+                    <td>{{item.plate}}</td>
+                    <td>{{item.vinNumber}}</td>
+                    <td (click)="$event.stopPropagation()" class="actionTd"><input type="button" *ngIf="isAdmin" class="DeleteButton" value="Delete"> <input type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Edit"></td>
                 </tr>
                 <tr>
-                    <tr>
+                    <tr (click)="$event.stopPropagation()">
                         <td style="padding: 0; margin: 0;" colspan="5">
                             <div *ngIf="row==SelectedRow" style="width: 100%; background-color: transparent;">
-                                <table *ngIf="(item.issues|async); else elseBlock" style="font-size: large;">
+                                <table *ngIf="item.issues !=  null; else elseBlock" style="font-size: large;">
                                     <thead>
                                         <th>Issues</th>
                                         <th>Tags</th>
@@ -30,6 +30,14 @@
                                         <th>Price</th>
                                         <th>Actions</th>
                                     </thead>
+                                    <tbody>
+                                        <tr *ngFor="let item of item.issues">
+                                            <td>{{item.creator}}</td>
+                                            <td>{{item.createTime}}</td>
+                                            <td>{{item.description}}</td>
+                                            <td>{{item.price}}</td>
+                                        </tr>
+                                    </tbody>
                                 </table>
                             </div>
                         </td>

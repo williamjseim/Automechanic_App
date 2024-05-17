@@ -7,8 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class VideoApiService {
 
-  private port = "5142";
-  private url = `http://localhost:${this.port}/Video`
+  private port = "7247";
+  private url = `https://localhost:${this.port}/Video`
 
   constructor(private http: HttpClient) { }
 

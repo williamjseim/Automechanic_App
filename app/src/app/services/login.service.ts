@@ -8,8 +8,8 @@ import { Observable } from 'rxjs';
 export class LoginService {
 
 
-  private port = "5142";
-  private url = `http://localhost:${this.port}/User`
+  private port = "7247";
+  private url = `https://localhost:${this.port}/User`
   
   constructor(private http: HttpClient) { }
 
