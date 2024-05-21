@@ -6,7 +6,7 @@ import { HttpInterceptorFn } from '@angular/common/http';
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   try {
-    const Token = localStorage.getItem('token');
+    const Token = localStorage.getItem('token')?.replace(/^"|"$/g, '');
     if (!Token) {
       return next(req);
     }
