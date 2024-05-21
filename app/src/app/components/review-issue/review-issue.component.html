@@ -1,0 +1,61 @@
+<app-progress-bar [progress]="60"></app-progress-bar>
+
+<div class="container">
+<section class="small-details">
+    <form class="example-form">
+        <mat-form-field class="example-full-width">
+            <mat-label>Mærke</mat-label>
+            <input type="text" matInput [formControl]="makeFormControl" [errorStateMatcher]="matcher"
+            placeholder="Volvo">
+            @if (makeFormControl.hasError('required')) {
+                <mat-error>Mærke er <strong>Nødvendigt</strong></mat-error>
+            }
+        </mat-form-field>
+        
+        <mat-form-field class="example-full-width">
+            <mat-label>Model</mat-label>
+            <input type="text" matInput [formControl]="modelFormControl" [errorStateMatcher]="matcher"
+            placeholder="c40">
+            @if (emailFormControl.hasError('required')) {
+                <mat-error>Model er <strong>Nødvendigt</strong></mat-error>
+            }
+        </mat-form-field>
+        
+        <mat-form-field class="example-full-width">
+            <mat-label>Other</mat-label>
+            <input type="text" matInput [formControl]="otherFormControl" [errorStateMatcher]="matcher"
+            placeholder="Other">
+            @if (otherFormControl.hasError('required')) {
+                <mat-error>Other is <strong>required</strong></mat-error>
+            }
+        </mat-form-field>
+        
+        <mat-form-field class="example-full-width">
+            <mat-label>Other</mat-label>
+            <input type="text" matInput [formControl]="anotherFormControl" [errorStateMatcher]="matcher"
+            placeholder="Other">
+            @if (anotherFormControl.hasError('required')) {
+                <mat-error>Other is <strong>required</strong></mat-error>
+            }
+        </mat-form-field>
+    </form>
+</section>
+    
+    <section>
+        
+        <div class="video-container">
+            <video controls>
+            <source [src]="testUrl" type="video/mp4">
+            Fejl i hentning af video | Din browser er ikke understøttet.
+        </video>
+    </div>
+    @if (videoUrl) {
+        <div class="video-container">
+            <video controls>
+                <source [src]="videoUrl" type="video/mp4">
+                Fejl i hentning af video | Din browser er ikke understøttet.
+            </video>
+        </div>
+    }
+</section>
+</div>

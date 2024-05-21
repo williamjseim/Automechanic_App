@@ -9,12 +9,23 @@ import { environment } from '../environment.dev';
 })
 export class VideoApiService {
 
+  private videoFile: File | null = null;
+
+  
   private url = `${environment.API_URL}/Video`
-
-
+  
+  
   constructor(private http: HttpClient) { }
-
+  
   uploadVideo(data: FormData): Observable<any> {
     return this.http.post(`${this.url}/Upload`, data)
+  }
+  
+  setVideo(file: File): void {
+    this.videoFile = file;
+  }
+
+  getVideo(): File | null {
+    return this.videoFile;
   }
 }
