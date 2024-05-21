@@ -29,7 +29,6 @@ namespace Mechanic.Api.Controllers
             try
             {
                 var cars = _db.Cars.Skip(startingIndex).Take(amount).Distinct().OrderBy(i=>i.CreationTime);
-                Console.WriteLine(cars.Count());
                 return Ok(cars.ToArray());
             }
             catch (Exception ex)
@@ -45,7 +44,9 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                var amount = (int)MathF.Ceiling(_db.Cars.Count()/amountPrPage);
+                float pages = (float)_db.Cars.Count() / (float)amountPrPage;
+                Console.WriteLine(pages+ " pages"+ _db.Cars.Count());
+                var amount = (int)MathF.Ceiling(pages);
                 return Ok(amount);
             }
             catch (Exception ex)

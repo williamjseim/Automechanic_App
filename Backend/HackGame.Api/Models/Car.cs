@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Buffers.Text;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Mechanic.Api.Models
 {
@@ -19,6 +20,7 @@ namespace Mechanic.Api.Models
             this.Model = model;
         }
         public Guid Id { get; set; }
+        //public string CarImageBase64 {  get; set; }
         public string VinNumber { get; set; }
         public string Plate { get; set; }
         public DateTime CreationTime { get; set; }

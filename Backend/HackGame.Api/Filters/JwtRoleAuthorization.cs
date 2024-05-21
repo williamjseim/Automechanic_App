@@ -9,6 +9,7 @@ namespace Mechanic.Api.Filters
 {
     public class JwtRoleAuthorization : Attribute, IAuthorizationFilter
     {
+        //array of roles that are allowed to acces this api call
         Role[] allowedRoles;
         public JwtRoleAuthorization(params Role[] roles)
         {
@@ -32,12 +33,17 @@ namespace Mechanic.Api.Filters
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!)),
                         ValidateIssuer = true,
                         ValidateAudience = true,
+#if DEBUG
+                        ValidateLifetime = false,
+#else
                         ValidateLifetime = true,
+#endif
                         ValidateIssuerSigningKey = true,
                         ValidateActor = false,
                     };
-
+                    //checks if token is valid
                     var result = handler.ValidateToken(token, parameters, out SecurityToken validatedToken);
+                    //gets role from validated token
                     var role = result.Claims.Where(i => i.Type == "Role").First().Value;
                     if (!allowedRoles.Contains(Enum.Parse<Role>(role)))
                     {

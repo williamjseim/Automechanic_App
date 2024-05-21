@@ -1,4 +1,15 @@
-<body (click)="SelectRow(-1, $event)" *ngIf="cars != null; else elseBlock">
+<div *ngIf="CarForDeletion != -1" class="DeletionDiv">
+    <span>Write Delete to confirm deletion</span>
+    <input class="DeleteSpan" type="text" value="">
+    <span class="DeleteSpan">This action is permanent <br> and cannot be reversed</span>
+
+    <div>
+        <input class="DeletionBtn DeletionConfirmBtn" type="button" value="Confirm">
+        <input class="DeletionBtn DeletionCancelBtn" type="button" value="Cancel" (click)="CarForDeletion = -1">
+    </div>
+</div>
+<!-- only shows if cars array isnt null -->
+<body (click)="SelectRow(-1, $event); CarForDeletion = -1;" *ngIf="cars != null; else elseBlock">
     <div><button>Add Car</button></div>
     <div class="tableDiv">
         <table>
@@ -9,13 +20,54 @@
                 <th>Vin Number</th>
                 <th>Actions</th>
             </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <mat-form-field>
+                            <mat-label>Search by make</mat-label>
+                            <input matInput>
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field>
+                            <mat-label>Search by model</mat-label>
+                            <input matInput>
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field>
+                            <mat-label>Search by plate</mat-label>
+                            <input matInput>
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field>
+                            <mat-label>Search by vin</mat-label>
+                            <input matInput (input)="Test('asdwaw')" (keyup.enter)="Test('Enter')">
+                        </mat-form-field>
+                    </td>
+                    <td>
+                        <mat-form-field>
+                            <mat-label style="font-size: large;">Select option</mat-label>
+                            <mat-select value="25" [(value)]="itemsPrPage" (valueChange)="ChangeNumberPrPage()" matNativeControl required>
+                                <mat-option value="30">25 items</mat-option>
+                                <mat-option value="50">50 items</mat-option>
+                                <mat-option value="100">100 items</mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                    </td>
+                </tr>
+            </tbody>
             <tbody (click)="SelectRow(row, $event)" [class]="[row%2==0 ? 'EvenTBody':'OddTBody']" *ngFor="let item of cars; let row = index">
                 <tr style="border-bottom: 2px solid black;">
                     <td>{{item.make}}</td>
                     <td>{{item.model}}</td>
                     <td>{{item.plate}}</td>
                     <td>{{item.vinNumber}}</td>
-                    <td (click)="$event.stopPropagation()" class="actionTd"><input type="button" *ngIf="isAdmin" class="DeleteButton" value="Delete"> <input type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Edit"></td>
+                    <td (click)="$event.stopPropagation()" class="actionTd">
+                        <input type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Issues">
+                        <input type="button" *ngIf="isAdmin" (click)="CarForDeletion = row" class="DeleteButton" value="Delete">
+                    </td>
                 </tr>
                 <tr>
                     <tr (click)="$event.stopPropagation()">
@@ -46,10 +98,10 @@
         </table>
         <div ></div>
     </div>
-    <div class="ButtonDiv">
-        <button *ngIf="currentPage != 0" class="PageSwapBtn">Prev</button>
+    <div *ngIf="pages != null" class="ButtonDiv">
+        <button *ngIf="currentPage > 1" class="PageSwapBtn">Prev</button>
         <button [ngClass]="[i==currentPage ? 'SelectedPageBtn' : 'PageBtn']" *ngFor="let item of pages; let i = index">{{i+1}}</button>
-        <button *ngIf="currentPage != pages.length-1" class="PageSwapBtn">Next</button>
+        <button *ngIf="currentPage < pages!.length-1" class="PageSwapBtn">Next</button>
     </div>
 </body>
 <ng-template #elseBlock>

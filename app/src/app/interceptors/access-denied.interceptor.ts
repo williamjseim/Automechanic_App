@@ -6,7 +6,6 @@ import { map } from 'rxjs';
 export const accessDeniedInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   return next(req).pipe(map((event:HttpEvent<any>)=>{
-    console.log("intercepted");
     if(event instanceof HttpResponse){
       if(event.status == 401){
         router.navigate(['']);

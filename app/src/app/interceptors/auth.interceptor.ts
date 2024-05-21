@@ -6,7 +6,6 @@ import { HttpHeaders, HttpInterceptorFn, HttpResponse } from '@angular/common/ht
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
 
   if(next instanceof HttpResponse){
-    console.log("response");
   }
 
   try {

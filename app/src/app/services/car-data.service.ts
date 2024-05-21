@@ -13,8 +13,8 @@ export class CarDataService {
   
   constructor(private http: HttpClient) { }
 
-  GetPageAmount():Observable<any>{
-    return this.http.get(this.url);
+  GetPageAmount(amountPrPage:number):Observable<any>{
+    return this.http.get(this.url+`/CarPages?amountPrPage=${amountPrPage}`);
   }
 
   //Amount is the amount of car rows pr page

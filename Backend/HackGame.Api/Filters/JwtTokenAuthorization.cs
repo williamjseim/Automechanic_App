@@ -34,7 +34,11 @@ namespace Mechanic.Api.Filters
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!)),
                         ValidateIssuer = true,
                         ValidateAudience = true,
+#if DEBUG
+                        ValidateLifetime = false,
+#else
                         ValidateLifetime = true,
+#endif
                         ValidateIssuerSigningKey = true,
                         ValidateActor = false,
                     };
