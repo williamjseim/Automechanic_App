@@ -1,6 +1,6 @@
 using Mechanic.Api;
 using Microsoft.AspNetCore.Mvc;
-
+using Mechanic.Api.Filters;
 [Route("Video")]
 public class VideoController : Controller{
 
@@ -26,7 +26,8 @@ public class VideoController : Controller{
             }
         }
     }
-
+    
+    [JwtTokenAuthorization]
     [Route("Upload")]
     [HttpPost]
     public async Task<IActionResult> UploadVideo()
