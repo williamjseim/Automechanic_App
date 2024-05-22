@@ -4,9 +4,14 @@ using Mechanic.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Mechanic.Api.Models;
 using Mechanic.Api.TokenAuthorization;
+using Pomelo.EntityFrameworkCore.MySql.Query.Internal;
+using Microsoft.Identity.Client;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.EntityFrameworkCore.Internal;
 
 namespace Mechanic.Api.Controllers
 {
+    [Route("/cars")]
     public class CarController : Controller
     {
         private MechanicDatabase _db;
@@ -18,13 +23,31 @@ namespace Mechanic.Api.Controllers
         }
 
         [JwtTokenAuthorization]
-        [HttpGet("Cars")]
-        public async Task<IActionResult> Cars(int startingIndex)
+        [HttpGet("GetCars")]
+        public async Task<IActionResult> GetCars(int pageindex, int amount, string make = "", string model = "", string plate = "", string vin = "")
         {
             try
             {
-                var cars = _db.Cars.Skip(startingIndex).Take(25);
-                return Ok(cars);
+                Console.WriteLine(make + model + plate);
+                var cars = _db.Cars.Where(i => i.Make.Contains(make.ToLower()) && i.Model.Contains(model.ToLower()) && i.Plate.Contains(plate.ToLower()) && i.VinNumber.Contains(vin.ToLower())).Skip(pageindex * amount).Take(amount).Distinct().OrderBy(i => i.CreationTime);
+                return Ok(cars.ToArray());
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return NotFound();
+            }
+        }
+
+        [JwtTokenAuthorization]
+        [HttpGet("CarPages")]
+        public async Task<IActionResult> CarPages(int amountPrPage, string make = "", string model = "", string plate = "", string vin = "")
+        {
+            try
+            {
+                float pages = (float)_db.Cars.Where(i => i.Make.Contains(make.ToLower()) || i.Model.Contains(model.ToLower()) || i.Plate.Contains(plate.ToLower()) || i.VinNumber.Contains(vin.ToLower())).Count() / (float)amountPrPage;
+                var amount = (int)MathF.Ceiling(pages);
+                return Ok(amount);
             }
             catch (Exception ex)
             {
@@ -35,11 +58,11 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpGet("CreateCar")]
-        public async Task<IActionResult> Cars(string make, string model, string plate, string vinnr)
+        public async Task<IActionResult> CreateCar(string make, string model, string plate, string vinnr)
         {
             try
             {
-                if(_db.Cars.Where(i=>i.Plate == plate || i.VinNumber == vinnr).Any()) {
+                if (_db.Cars.Where(i => i.Plate == plate || i.VinNumber == vinnr).Any()) {
                     return BadRequest("Car Already exists check vin or plate");
                 }
                 Car car = new(vinnr, plate, make, model);
@@ -53,14 +76,29 @@ namespace Mechanic.Api.Controllers
             }
         }
 
+        [JwtRoleAuthorization(new Role[]{Role.Admin})]
+        [HttpDelete("DeleteCar")]
+        public async Task<IActionResult> DeleteCar(Guid carId)
+        {
+            try
+            {
+                await _db.Cars.Where(i=>i.Id == carId).ExecuteDeleteAsync();
+                return Ok(Json("Deletion successful"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, Json("Something went wrong"));
+            }
+        }
+
         [JwtTokenAuthorization]
         [HttpGet("CarIssues")]
         public async Task<IActionResult> GetCarIssues(Guid carId, int startingIndex)
         {
             try
             {
-                var issues = _db.CarIssues.Where(i=>i.Id == carId).Skip(startingIndex).Take(25);
-                return Ok(issues);
+                var issues = _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(25).Distinct().OrderBy(I=>I.Car);
+                return Ok(issues.ToArray());
             }
             catch (Exception ex)
             {
@@ -121,6 +159,42 @@ namespace Mechanic.Api.Controllers
                 Console.WriteLine(ex);
                 return NotFound();
             }
+        }
+
+        [HttpPut("Debug fill database")]
+        public async Task<IActionResult> DebugFill()
+        {
+            var user = await _db.Users.Where(i => i.Username == "admin").FirstOrDefaultAsync();
+            if(user == null)
+            {
+                return BadRequest("not found");
+            }
+            var cars = new Car[] {
+                new("vin number", "plate", "volvo", "246"),
+                new("vin number", "plate", "volvo", "246"),
+                new("vin number", "plate", "volvo", "246"),
+                new("vin number", "plate", "volvo", "246"),
+                new("vin number", "plate", "volvo", "246"),
+                new("vin number", "plate", "volvo", "246"),
+                new("vin number", "plate", "volvo", "246"),
+                new("vin number", "plate", "volvo", "246"),
+            };
+            await _db.AddRangeAsync(cars);
+            foreach (var item in cars)
+            {
+                for (global::System.Int32 i = 0; i < 3; i++)
+                {
+                    var issues = new CarIssue[]{
+                        new(item, user, "nothing", 500),
+                        new(item, user, "nothing", 500),
+                        new(item, user, "nothing", 500),
+                        new(item, user, "nothing", 500),
+                    };
+                    await _db.AddRangeAsync(issues);
+                }
+            }
+            await _db.SaveChangesAsync();
+            return Ok();
         }
 
     }

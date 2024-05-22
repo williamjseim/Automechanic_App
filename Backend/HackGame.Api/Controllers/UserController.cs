@@ -34,7 +34,8 @@ namespace Mechanic.Api.Controllers
                     if(Encrypter.Encrypt(token, out byte[] encryptedText, _config))
                     {
                         var base64 = Convert.ToBase64String(encryptedText);
-                        return Ok(base64.ToString());
+                        Console.WriteLine(base64);
+                        return Ok(base64);
                     }
                     return StatusCode(500, " Something went wrong");
                 }
