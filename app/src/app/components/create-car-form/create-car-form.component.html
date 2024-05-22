@@ -1,0 +1,19 @@
+<body>
+        <mat-form-field appearance="outline" class="matField">
+            <mat-label>Make</mat-label>
+            <input #make required matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="matField">
+            <mat-label>Model</mat-label>
+            <input #model required matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="matField">
+            <mat-label>Plate</mat-label>
+            <input #plate required matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="matField">
+            <mat-label>Vin number</mat-label>
+            <input #vin required matInput>
+        </mat-form-field>
+        <button class="btn" mat-raised-button color="success" (click)="CreateCar()">Submit</button>
+</body>
