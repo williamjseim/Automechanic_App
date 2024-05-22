@@ -1,0 +1,20 @@
+body{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.btn{
+    width: 20vw;
+}
+
+.mat-success{
+    background-color: limegreen;
+    color: #fff;
+}
+
+.matField{
+    text-align: center;
+    width: 20vw;
+}
