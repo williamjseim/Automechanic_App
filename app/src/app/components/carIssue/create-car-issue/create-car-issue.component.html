@@ -1,0 +1,79 @@
+<app-progress-bar [progress]="60"></app-progress-bar>
+
+<div class="container">
+    <form class="example-form" [formGroup]="carIssueForm" (ngSubmit)="onSubmit()" #form>
+        <section class="small-details">
+
+            <mat-form-field class="example-full-width">
+                <mat-label>Bil</mat-label>
+                <mat-select formControlName="car" required>
+                    <mat-option></mat-option>
+                    @for (car of cars; track $index) {
+                    <mat-option [value]="car">{{ car.make}} {{car.model}} <br> <strong
+                            class="car-plate">({{car.plate}})</strong></mat-option>
+                    <hr>
+                    }
+                </mat-select>
+                @if (carIssueForm.hasError('required')) {
+                <mat-error>Valg af bil er <strong>nødvendigt</strong></mat-error>}
+            </mat-form-field>
+
+            <mat-form-field class="example-full-width">
+                <mat-label>Pris</mat-label>
+                <input type="text" matInput formControlName="price" [errorStateMatcher]="matcher"
+                    placeholder="Eks. 1000">
+                @if (carIssueForm.hasError('required')) {
+                <mat-error>Pris er <strong>nødvendigt</strong></mat-error>
+                }
+            </mat-form-field>
+            <br>
+            <mat-form-field class="example-full-width textarea">
+                <mat-label>Beskrivelse</mat-label>
+                <textarea matInput formControlName="description" [errorStateMatcher]="matcher"
+                    placeholder=""></textarea>
+            </mat-form-field>
+        </section>
+        @if (!videoUrl) {
+        <div class="video-container">
+            <video controls>
+                <source [src]="testUrl" type="video/mp4">
+                Fejl i hentning af video | Din browser er ikke understøttet.
+            </video>
+            <div class="navigation-button">
+
+                <button class="rounded-btn" (click)="onCancel()" type="button">
+                    <mat-icon aria-hidden="false" aria-label="Video Icon" fontIcon="arrow_back">
+                    </mat-icon>
+                </button>
+
+                <button class="rounded-btn" type="submit">
+                    <mat-icon aria-hidden="false" aria-label="Video Icon" fontIcon="arrow_forward">
+                    </mat-icon>
+                </button>
+
+            </div>
+        </div>
+        }
+        @if (videoUrl) {
+        <div class="video-container">
+            <video controls>
+                <source [src]="videoUrl" type="video/mp4">
+                Fejl i hentning af video | Din browser er ikke understøttet.
+            </video>
+            <div class="navigation-button">
+
+                <button class="rounded-btn" (click)="onCancel()" type="button">
+                    <mat-icon aria-hidden="false" aria-label="Video Icon" fontIcon="arrow_back">
+                    </mat-icon>
+                </button>
+
+                <button class="rounded-btn" type="submit">
+                    <mat-icon aria-hidden="false" aria-label="Video Icon" fontIcon="arrow_forward">
+                    </mat-icon>
+                </button>
+
+            </div>
+        </div>
+        }
+    </form>
+</div>

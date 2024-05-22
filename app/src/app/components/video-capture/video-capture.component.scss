@@ -21,6 +21,10 @@
     padding: 12px;
     margin: 12px;
     width: 15vh;
+    border: none;
+    border-radius: 10%;
+    color: var(--zbc-foreground);
+    background-color: var(--zbc-blue);
 }
 
 .video-btn .mat-icon {
@@ -28,28 +32,47 @@
     margin-bottom: 12px;
 }
 
-.video-container {
+button {
+    margin: 5px;
+}
+.rounded-btn {
+    padding: 4vh;
+    border-radius: 50%;
+    color: var(--zbc-foreground);
+    background-color: var(--zbc-blue);
+    border: none;
+}
+.rounded-btn .mat-icon {
+    scale: 3;
+}
+.navigation-button {
     display: flex;
-    justify-content: center;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-right: -50%;
-    transform: translate(-50%, -50%);
+    justify-content: space-between;
+}
+.video-container {
+
+    transform: translate(0, 10vh);
+    // display: flex;
+    // justify-content: center;
+    // position: absolute;
+    // top: 50%;
+    // left: 50%;
+    // margin-right: -50%;
+    // transform: translate(-50%, -50%);
 
     /* Set a maximum width for the video container */
-    margin: 0 auto;
+    // margin: 0 auto;
     /* Center the container horizontally */
 
 }
 
-.video-container video {
+video {
     width: 480px;
     height: 320px;
 }
 
 @media screen and (max-width: 450px) {
-    .video-container video {
+video {
         width: 240px;
         height: 185px;
     }
