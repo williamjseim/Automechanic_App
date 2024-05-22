@@ -24,11 +24,12 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpGet("GetCars")]
-        public async Task<IActionResult> GetCars(int startingIndex, int amount)
+        public async Task<IActionResult> GetCars(int pageindex, int amount, string make = "", string model = "", string plate = "", string vin = "")
         {
             try
             {
-                var cars = _db.Cars.Skip(startingIndex).Take(amount).Distinct().OrderBy(i=>i.CreationTime);
+                Console.WriteLine(make + model + plate);
+                var cars = _db.Cars.Where(i => i.Make.Contains(make.ToLower()) && i.Model.Contains(model.ToLower()) && i.Plate.Contains(plate.ToLower()) && i.VinNumber.Contains(vin.ToLower())).Skip(pageindex*amount).Take(amount).Distinct().OrderBy(i=>i.CreationTime);
                 return Ok(cars.ToArray());
             }
             catch (Exception ex)
@@ -40,12 +41,11 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpGet("CarPages")]
-        public async Task<IActionResult> CarPages(int amountPrPage)
+        public async Task<IActionResult> CarPages(int amountPrPage, string make = "", string model = "", string plate = "", string vin = "")
         {
             try
             {
-                float pages = (float)_db.Cars.Count() / (float)amountPrPage;
-                Console.WriteLine(pages+ " pages"+ _db.Cars.Count());
+                float pages = (float)_db.Cars.Where(i=>i.Make.Contains(make.ToLower()) || i.Model.Contains(model.ToLower()) || i.Plate.Contains(plate.ToLower()) || i.VinNumber.Contains(vin.ToLower())).Count() / (float)amountPrPage;
                 var amount = (int)MathF.Ceiling(pages);
                 return Ok(amount);
             }

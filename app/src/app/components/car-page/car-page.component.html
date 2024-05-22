@@ -25,34 +25,34 @@
                     <td>
                         <mat-form-field>
                             <mat-label>Search by make</mat-label>
-                            <input matInput>
+                            <input #MakeFilter matInput value="" (keyup.enter)="Search()">
                         </mat-form-field>
                     </td>
                     <td>
                         <mat-form-field>
                             <mat-label>Search by model</mat-label>
-                            <input matInput>
+                            <input #ModelFilter matInput value="" (keyup.enter)="Search()">
                         </mat-form-field>
                     </td>
                     <td>
                         <mat-form-field>
                             <mat-label>Search by plate</mat-label>
-                            <input matInput>
+                            <input #PlateFilter matInput value="" (keyup.enter)="Search()">
                         </mat-form-field>
                     </td>
                     <td>
                         <mat-form-field>
                             <mat-label>Search by vin</mat-label>
-                            <input matInput (input)="Test('asdwaw')" (keyup.enter)="Test('Enter')">
+                            <input #VinFilter matInput value="" (keyup.enter)="Search()">
                         </mat-form-field>
                     </td>
                     <td>
                         <mat-form-field>
                             <mat-label style="font-size: large;">Select option</mat-label>
-                            <mat-select value="25" [(value)]="itemsPrPage" (valueChange)="ChangeNumberPrPage()" matNativeControl required>
-                                <mat-option value="30">25 items</mat-option>
+                            <mat-select value="10" [(value)]="itemsPrPage" (valueChange)="ChangeNumberPrPage()" matNativeControl required>
+                                <mat-option value="10">10 items</mat-option>
+                                <mat-option value="25">25 items</mat-option>
                                 <mat-option value="50">50 items</mat-option>
-                                <mat-option value="100">100 items</mat-option>
                             </mat-select>
                         </mat-form-field>
                     </td>
