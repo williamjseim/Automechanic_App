@@ -1,10 +1,10 @@
 <div *ngIf="CarForDeletion != -1" class="DeletionDiv">
     <span>Write Delete to confirm deletion</span>
-    <input class="DeleteSpan" type="text" value="">
+    <input #delete class="DeleteSpan" type="text" value="">
     <span class="DeleteSpan">This action is permanent <br> and cannot be reversed</span>
 
     <div>
-        <input class="DeletionBtn DeletionConfirmBtn" type="button" value="Confirm">
+        <input (click)="RemoveCar(delete.value)" class="DeletionBtn DeletionConfirmBtn" type="button" value="Confirm">
         <input class="DeletionBtn DeletionCancelBtn" type="button" value="Cancel" (click)="CarForDeletion = -1">
     </div>
 </div>
@@ -20,41 +20,35 @@
                 <th>Vin Number</th>
                 <th>Actions</th>
             </thead>
-            <tbody>
+            <tbody >
                 <tr>
-                    <td>
+                    <td [colSpan]="5">
                         <mat-form-field>
                             <mat-label>Search by make</mat-label>
                             <input #MakeFilter matInput value="" (keyup.enter)="Search()">
                         </mat-form-field>
-                    </td>
-                    <td>
                         <mat-form-field>
                             <mat-label>Search by model</mat-label>
                             <input #ModelFilter matInput value="" (keyup.enter)="Search()">
                         </mat-form-field>
-                    </td>
-                    <td>
                         <mat-form-field>
                             <mat-label>Search by plate</mat-label>
                             <input #PlateFilter matInput value="" (keyup.enter)="Search()">
                         </mat-form-field>
-                    </td>
-                    <td>
                         <mat-form-field>
                             <mat-label>Search by vin</mat-label>
                             <input #VinFilter matInput value="" (keyup.enter)="Search()">
                         </mat-form-field>
-                    </td>
-                    <td>
                         <mat-form-field>
                             <mat-label style="font-size: large;">Select option</mat-label>
-                            <mat-select value="10" [(value)]="itemsPrPage" (valueChange)="ChangeNumberPrPage()" matNativeControl required>
+                            <mat-select value="10" [(value)]="itemsPrPage" (valueChange)="ChangeNumberPrPage()" matNativeControl>
                                 <mat-option value="10">10 items</mat-option>
                                 <mat-option value="25">25 items</mat-option>
                                 <mat-option value="50">50 items</mat-option>
                             </mat-select>
                         </mat-form-field>
+                        <button (click)="Search()" mat-fab style="background-color: limegreen; margin-left: 1%;"><mat-icon>search</mat-icon></button>
+                        <button (click)="RemoveFilters()" mat-fab style="background-color: limegreen; margin-left: 1%;"><mat-icon>filter_alt_off</mat-icon></button>
                     </td>
                 </tr>
             </tbody>
@@ -65,8 +59,8 @@
                     <td>{{item.plate}}</td>
                     <td>{{item.vinNumber}}</td>
                     <td (click)="$event.stopPropagation()" class="actionTd">
-                        <input type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Issues">
-                        <input type="button" *ngIf="isAdmin" (click)="CarForDeletion = row" class="DeleteButton" value="Delete">
+                        <input type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Open">
+                        <input type="button" *ngIf="isAdmin" (click)="CarForDeletion = row" class="DeleteButton" (click)="OpenDeleteDialog(row)" value="Delete">
                     </td>
                 </tr>
                 <tr>

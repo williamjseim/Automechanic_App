@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
+using System.Formats.Asn1;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
@@ -22,7 +23,8 @@ namespace Mechanic.Api.Filters
                 IConfiguration config = context.HttpContext.RequestServices.GetService(typeof(IConfiguration)) as IConfiguration;
                 string EncryptedToken = context.HttpContext.Request.Headers.First(x => x.Key == "Authorization").Value!;
                 EncryptedToken = EncryptedToken.Replace("Bearer ", string.Empty);
-                if(Encrypter.Decrypt(Convert.FromBase64String(EncryptedToken), out byte[] cipherbytes, config!))
+                EncryptedToken = EncryptedToken.Replace("\"", string.Empty);
+                if (Encrypter.Decrypt(Convert.FromBase64String(EncryptedToken), out byte[] cipherbytes, config!))
                 {
                     var token = Encoding.UTF8.GetString(cipherbytes);
                     JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
@@ -44,13 +46,12 @@ namespace Mechanic.Api.Filters
                     //checks if token is valid
                     var result = handler.ValidateToken(token, parameters, out SecurityToken validatedToken);
                     //gets role from validated token
-                    var role = result.Claims.Where(i => i.Type == "Role").First().Value;
+                    var role = result.Claims.Where(i => i.Type == JwtRegisteredClaimNames.Aud).First().Value;
                     if (!allowedRoles.Contains(Enum.Parse<Role>(role)))
                     {
                         context.Result = new UnauthorizedResult();
-                        this.OnAuthorization(context);
+                        return;
                     }
-                    context.Result = new OkResult();
                     return;
                 }
                 context.Result = new UnauthorizedResult();

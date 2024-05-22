@@ -26,4 +26,8 @@ export class CarDataService {
     return this.http.get(this.url+`/CarIssues?carId=${carId}&startingIndex=${startingIndex}`)
   }
 
+  DeleteCar(carId:string):Observable<any>{
+    return this.http.delete(this.url+`/DeleteCar?carId=${carId}`);
+  }
+
 }

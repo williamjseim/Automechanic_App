@@ -18,7 +18,7 @@ namespace Mechanic.Api.TokenAuthorization
             var claims = new[]
             {
                 new Claim("username", user.Username),
-                new Claim("role", user.Role.ToString()),
+                new Claim(JwtRegisteredClaimNames.Aud, user.Role.ToString()),
                 new Claim(JwtRegisteredClaimNames.Jti, user.Id.ToString()),
             };
 

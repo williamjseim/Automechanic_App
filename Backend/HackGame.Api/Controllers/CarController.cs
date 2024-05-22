@@ -29,7 +29,7 @@ namespace Mechanic.Api.Controllers
             try
             {
                 Console.WriteLine(make + model + plate);
-                var cars = _db.Cars.Where(i => i.Make.Contains(make.ToLower()) && i.Model.Contains(model.ToLower()) && i.Plate.Contains(plate.ToLower()) && i.VinNumber.Contains(vin.ToLower())).Skip(pageindex*amount).Take(amount).Distinct().OrderBy(i=>i.CreationTime);
+                var cars = _db.Cars.Where(i => i.Make.Contains(make.ToLower()) && i.Model.Contains(model.ToLower()) && i.Plate.Contains(plate.ToLower()) && i.VinNumber.Contains(vin.ToLower())).Skip(pageindex * amount).Take(amount).Distinct().OrderBy(i => i.CreationTime);
                 return Ok(cars.ToArray());
             }
             catch (Exception ex)
@@ -45,7 +45,7 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                float pages = (float)_db.Cars.Where(i=>i.Make.Contains(make.ToLower()) || i.Model.Contains(model.ToLower()) || i.Plate.Contains(plate.ToLower()) || i.VinNumber.Contains(vin.ToLower())).Count() / (float)amountPrPage;
+                float pages = (float)_db.Cars.Where(i => i.Make.Contains(make.ToLower()) || i.Model.Contains(model.ToLower()) || i.Plate.Contains(plate.ToLower()) || i.VinNumber.Contains(vin.ToLower())).Count() / (float)amountPrPage;
                 var amount = (int)MathF.Ceiling(pages);
                 return Ok(amount);
             }
@@ -62,7 +62,7 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                if(_db.Cars.Where(i=>i.Plate == plate || i.VinNumber == vinnr).Any()) {
+                if (_db.Cars.Where(i => i.Plate == plate || i.VinNumber == vinnr).Any()) {
                     return BadRequest("Car Already exists check vin or plate");
                 }
                 Car car = new(vinnr, plate, make, model);
@@ -73,6 +73,21 @@ namespace Mechanic.Api.Controllers
             catch (Exception ex)
             {
                 return NotFound();
+            }
+        }
+
+        [JwtRoleAuthorization(new Role[]{Role.Admin})]
+        [HttpDelete("DeleteCar")]
+        public async Task<IActionResult> DeleteCar(Guid carId)
+        {
+            try
+            {
+                await _db.Cars.Where(i=>i.Id == carId).ExecuteDeleteAsync();
+                return Ok(Json("Deletion successful"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, Json("Something went wrong"));
             }
         }
 

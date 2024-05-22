@@ -10,10 +10,12 @@ import { Issue } from '../../Interfaces/issue';
 import {MatSelectModule} from '@angular/material/select';
 import {MatInput, MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 @Component({
   selector: 'app-car-page',
   standalone: true,
-  imports: [AsyncPipe, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [AsyncPipe, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
   templateUrl: './car-page.component.html',
   styleUrl: './car-page.component.scss'
 })
@@ -49,6 +51,7 @@ export class CarPageComponent {
     let plate = this.plateFilter.nativeElement.value ?? "";
     let vin = this.vinFilter.nativeElement.value ?? "";
     this.GetCarsHttp(make, model, plate, vin)
+    this.SelectedRow = -1;
   }
 
   // stops click event from going to the parent of the element and either opens or closes a car row so some issues are visible
@@ -64,6 +67,27 @@ export class CarPageComponent {
       }});
       this.SelectedRow = index;
     }
+  }
+
+  OpenDeleteDialog(index:number){
+    this.CarForDeletion = index;
+  }
+
+  RemoveCar(confirmText:string){
+    if(confirmText.toLocaleLowerCase() == "delete"){
+      let car = this.cars![this.CarForDeletion];
+      this.DeleteCar(car.id);
+      this.cars?.splice(this.CarForDeletion, 1);
+      this.CarForDeletion = -1;
+    }
+  }
+
+  RemoveFilters(){
+    this.makefilter.nativeElement.value = "";
+    this.modelFilter.nativeElement.value = "";
+    this.plateFilter.nativeElement.value = "";
+    this.vinFilter.nativeElement.value = "";
+    this.Search();
   }
 
   ChangeNumberPrPage(){
@@ -91,6 +115,11 @@ export class CarPageComponent {
   private GetCarPages(amountPrPage:number){
     this.carHttp.GetPageAmount(amountPrPage).subscribe({next:(value)=>{
       this.pages = Array(value);
+    }});
+  }
+
+  private DeleteCar(carId:string){
+    this.carHttp.DeleteCar(carId).subscribe({next:(value)=>{
     }});
   }
 }
