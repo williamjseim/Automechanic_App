@@ -1,0 +1,44 @@
+.review-container {
+    padding: 20px;
+    text-align: center;
+}
+
+.car-details,
+.issue-details {
+    margin-bottom: 20px;
+}
+
+.car-details img {
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.issue-details video {
+    width: 100%;
+    max-width: 640px;
+    height: auto;
+    margin-top: 10px;
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    max-width: 640px;
+    margin: 20px auto 0;
+}
+
+.rounded-btn {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    width: 48%;
+}
+
+.rounded-btn:hover {
+    background-color: #0056b3;
+}

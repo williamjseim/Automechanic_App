@@ -12,12 +12,26 @@
             </mat-icon>Upload</button>
     </div>
     }
+    @if (videoFile) {
+    <div class="video-container">
+        <video controls>
+            <source [src]="videoURL" type="video/mp4">
+            Din browser er ikke understøttet.
+        </video>
+        <div class="navigation-button">
+
+            <button class="rounded-btn" type="button">
+                <mat-icon aria-hidden="false" aria-label="Video Icon" fontIcon="arrow_back">
+                </mat-icon>
+            </button>
+            
+            <button class="rounded-btn" (click)="onAdvance()" type="button">
+                <mat-icon aria-hidden="false" aria-label="Video Icon" fontIcon="arrow_forward">
+                </mat-icon>
+            </button>
+        </div>
+    </div>
+
+    }
+
 </div>
-@if (videoFile) {
-<div class="video-container">
-    <video controls>
-        <source [src]="videoURL" type="video/mp4">
-        Din browser er ikke understøttet.
-    </video>
-</div>
-}

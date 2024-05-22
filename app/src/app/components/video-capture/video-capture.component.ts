@@ -6,6 +6,7 @@ import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { MatIconModule } from '@angular/material/icon';
 import { VideoApiService } from '../../services/video-api.service';
 import { Router } from '@angular/router';
+import { SharedService } from '../../services/shared.service';
 
 @Component({
   selector: 'app-video-capture',
@@ -20,6 +21,7 @@ export class VideoCaptureComponent {
 
   constructor(
     private apiService: VideoApiService,
+    private sharedService: SharedService,
     private router: Router
   ) { }
   openCamera() {
@@ -60,13 +62,17 @@ export class VideoCaptureComponent {
 
     this.apiService.uploadVideo(formData).subscribe(
       response => {
-        this.apiService.setVideo(this.videoFile);
-        this.router.navigateByUrl("review");
+        this.sharedService.setVideo(this.videoFile);
+        // this.router.navigateByUrl("review");
         console.log(`File sent to api `, response);
       },
       error => {
         console.log(error);
       }
     )
+  }
+
+  onAdvance() {
+    this.router.navigate(['issue']);
   }
 }
