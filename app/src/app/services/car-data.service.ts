@@ -30,4 +30,8 @@ export class CarDataService {
     return this.http.delete(this.url+`/DeleteCar?carId=${carId}`);
   }
 
+  GetCar(carId:string):Observable<any>{
+    return this.http.get(this.url+`/GetCar?carId=${carId}`)
+  }
+
 }

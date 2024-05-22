@@ -1,7 +1,9 @@
+import { User } from "./user";
+
 export interface Issue {
     id:string;
-    creator:string;
+    creator:User;
     description:string;
     price:number;
-    createTime:Date;
+    creationTime:Date;
 }

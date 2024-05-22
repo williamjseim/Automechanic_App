@@ -6,6 +6,7 @@ import { LogoutComponent } from './components/logout/logout.component';
 import { ErrorComponent } from './components/error/error.component';
 import { CreateCarFormComponent } from './components/create-car-form/create-car-form.component';
 import { CarPageComponent } from './components/car-page/car-page.component';
+import { CarProfileComponent } from './components/car-profile/car-profile.component';
 
 export const routes: Routes = [
 
@@ -14,5 +15,6 @@ export const routes: Routes = [
  { path: 'logout', component: LogoutComponent },
  { path: 'createcar', component: CreateCarFormComponent },
  { path: 'cars', component: CarPageComponent },
+ { path: 'carprofile', component: CarProfileComponent},
  { path: '**', component: ErrorComponent },
 ];

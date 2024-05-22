@@ -1,0 +1,72 @@
+body{
+    overflow-x: hidden;
+}
+
+.profileDiv{
+    width: 100vw;
+    height: 50vh;
+    display: flex;
+}
+
+.imgDiv{
+    height: 100%;
+    aspect-ratio: 1;
+    background-size: 100%;
+    background-repeat: round;
+}
+
+.infoDiv{
+    margin-left: 2%;
+    margin-top: 1%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:flex-start;
+    flex-wrap: wrap;
+}
+
+.btn{
+    flex-grow: 0;
+}
+
+.even{
+    background-color: white;
+}
+
+.odd{
+    background-color: lightgray;
+}
+
+.issueTable{
+    border-collapse:collapse;
+    th{
+        border: 2px solid black;
+    }
+    tr{
+        border: 1px solid black;
+        text-align: center;
+    }
+    tr:last-child{
+        border-bottom: 2px solid black;
+    }
+    td{
+        border-right: 2px solid black;
+    }
+    td:first-child{
+        border-left: 2px solid black;
+    }
+    td:last-child{
+        padding: 0;
+        margin: 0;
+    }
+}
+
+.openBtn{
+    width: 50%;
+    
+}
+
+.deleteBtn{
+    width: 50%;
+
+}

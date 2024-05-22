@@ -78,8 +78,8 @@
                                     </thead>
                                     <tbody>
                                         <tr *ngFor="let item of item.issues">
-                                            <td>{{item.creator}}</td>
-                                            <td>{{item.createTime}}</td>
+                                            <td>{{item.creator.username}}</td>
+                                            <td>{{item.creationTime}}</td>
                                             <td>{{item.description}}</td>
                                             <td>{{item.price}}</td>
                                         </tr>

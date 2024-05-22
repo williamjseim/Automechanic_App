@@ -40,6 +40,22 @@ namespace Mechanic.Api.Controllers
         }
 
         [JwtTokenAuthorization]
+        [HttpGet("GetCar")]
+        public async Task<IActionResult> GetCar(Guid carId)
+        {
+            try
+            {
+                var car = await _db.Cars.FirstOrDefaultAsync(i => i.Id == carId);
+                return Ok(car);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return NotFound("Car not found");
+            }
+        }
+
+        [JwtTokenAuthorization]
         [HttpGet("CarPages")]
         public async Task<IActionResult> CarPages(int amountPrPage, string make = "", string model = "", string plate = "", string vin = "")
         {
@@ -97,8 +113,8 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                var issues = _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(25).Distinct().OrderBy(I=>I.Car);
-                return Ok(issues.ToArray());
+                var issues = _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(25).Include(x=>x.Creator).Distinct().OrderBy(I=>I.Car).ToArray();
+                return Ok(issues);
             }
             catch (Exception ex)
             {
