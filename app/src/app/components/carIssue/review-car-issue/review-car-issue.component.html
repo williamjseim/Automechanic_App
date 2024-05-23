@@ -1,0 +1,35 @@
+<app-progress-bar [progress]="82"></app-progress-bar>
+
+<div *ngIf="loading" class="overlay">
+    <mat-spinner></mat-spinner>
+</div>
+
+<div class="review-container" *ngIf="formData">
+    <h2>Car Details</h2>
+    <div class="car-details">
+        <!-- <img [src]="formData.car.image" alt="Billede af {{ formData.car.make }} {{ formData.car.model }}"> -->
+        <p><strong>Make:</strong> {{ formData.car.make }}</p>
+        <p><strong>Model:</strong> {{ formData.car.model }}</p>
+        <p><strong>Plate:</strong> {{ formData.car.plate }}</p>
+        <p><strong>VIN:</strong> {{ formData.car.vinNumber }}</p>
+    </div>
+
+    <h2>Issue Details</h2>
+    <div class="issue-details">
+        <p><strong>Price:</strong> {{ formData.price }}</p>
+        <p><strong>Description:</strong> {{ formData.description }}</p>
+        <div *ngIf="videoUrl">
+            <h3>Video:</h3>
+            <video [src]="videoUrl" controls></video>
+        </div>
+    </div>
+
+    <div class="action-buttons">
+        <button class="rounded-btn" (click)="onCancel()">
+            Cancel
+        </button>
+        <button class="rounded-btn" (click)="onAccept()">
+            Accept
+        </button>
+    </div>
+</div>

@@ -1,0 +1,84 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.example-form {
+    // min-width: 150px;
+    // max-width: 500px;
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+}
+
+.example-full-width {
+    // width:25%;
+    margin-left: 1vh;
+    margin-right: 1vh;
+}
+
+.textarea {
+    width: 50vh;
+}
+
+button {
+    margin: 5px;
+}
+
+.rounded-btn {
+    padding: 4vh;
+    border-radius: 50%;
+    color: var(--zbc-foreground);
+    background-color: var(--zbc-blue);
+    border: none;
+    margin-left: 10vh;
+    margin-right: 10vh;
+}
+
+.rounded-btn .mat-icon {
+    scale: 3;
+}
+
+.navigation-button {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 640px;
+    /* Same width as the video */
+}
+
+.video-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    /* Set a maximum width for the video container */
+    // margin: 0 auto;
+    /* Center the container horizontally */
+
+}
+
+.video-container video {
+    width: 480px;
+    height: 320px;
+}
+
+@media screen and (max-width: 525px) {
+    .video-container video {
+        width: 240px;
+        height: 185px;
+    }
+
+    .textarea {
+        width: 30vh;
+    }
+
+    .rounded-btn {
+        margin-left: 2vh;
+        margin-right: 2vh;
+
+    }
+
+}

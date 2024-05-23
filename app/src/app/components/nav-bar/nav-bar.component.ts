@@ -4,6 +4,7 @@ import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatButtonModule } from '@angular/material/button'
 
 import { RouterLink } from '@angular/router';
+import { LocalStorageService } from '../../services/local-storage.service';
 
 @Component({
   selector: 'app-nav-bar',
@@ -13,5 +14,7 @@ import { RouterLink } from '@angular/router';
   styleUrl: './nav-bar.component.scss'
 })
 export class NavBarComponent {
+
+  constructor(public localStorageService: LocalStorageService) {}
 
 }
