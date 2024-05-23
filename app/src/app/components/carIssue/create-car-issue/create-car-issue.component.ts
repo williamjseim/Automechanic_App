@@ -21,6 +21,7 @@ import { SharedService } from '../../../services/shared.service';
 import { NewIssue } from '../../../Interfaces/newIssue';
 import { Car } from '../../../Interfaces/car';
 import { CarDataService } from '../../../services/car-data.service';
+import { BehaviorSubject, map, startWith } from 'rxjs';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -37,45 +38,53 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   styleUrl: './create-car-issue.component.scss'
 })
 export class CreateCarIssueComponent {
+
   carIssueForm = new FormGroup({
     car: new FormControl('', [Validators.required]),
     price: new FormControl('', [Validators.required]),
-    description: new FormControl(''),
+    description: new FormControl('', [Validators.required]),
+    searchPlate: new FormControl(''),
   });
+
 
   matcher = new MyErrorStateMatcher();
   loading = false;
 
-  cars: any[] = [];
-
-  testUrl: string = "assets/20240521110232-video.mp4";
-  videoUrl: string | ArrayBuffer | null = null;
-
+  cars: Car[] = [];
+  filteredCars$: BehaviorSubject<Car[]> = new BehaviorSubject<Car[]>([]);
+  
+  
   constructor(
-    public videoService: VideoApiService,
     public sharedService: SharedService,
     private router: Router,
     private route: ActivatedRoute,
     private carService: CarDataService
-  ) { }
-
+  ) { 
+    this.carIssueForm.controls.searchPlate.valueChanges.pipe(
+      startWith(''),
+      map(value => this.filterCars(value!))
+    ).subscribe(filteredCars => this.filteredCars$.next(filteredCars))
+  }
 
   ngOnInit(): void {
-    const file = this.sharedService.getVideo();
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event: any) => {
-        this.videoUrl = event.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
 
+    this.getCars();
+    this.filterCars('');
+  }
+
+  getCars() {
     this.loading = true;
     this.carService.GetCars(0, 5000)
       .subscribe(res => {
         this.cars = res;
         this.loading = false;
       });
+  }
+
+  private filterCars(value: string): Car[] {
+    console.log("wow");
+    const filterValue = value.toLowerCase();
+    return this.cars.filter(car => car.plate.toLowerCase().includes(filterValue));
   }
 
   onSubmit() {
