@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { NewIssue } from '../Interfaces/newIssue';
 
 @Injectable({
   providedIn: 'root'
@@ -6,7 +7,7 @@ import { Injectable } from '@angular/core';
 export class SharedService {
 
   private videoFile: File | null = null;
-  private carIssueFormData: any
+  private carIssueFormData: NewIssue | null = null
   
   constructor() { }
 
@@ -19,10 +20,10 @@ export class SharedService {
     return this.videoFile;
   }
 
-  setCarIssueData(data: any) {
+  setCarIssueData(data: NewIssue) {
     this.carIssueFormData = data;
   }
-  getCarIssueData(): any  {
+  getCarIssueData(): NewIssue | null  {
     return this.carIssueFormData;
   }
 }
