@@ -42,4 +42,8 @@ export class CarDataService {
     return this.http.put(this.url+`/CreateCar?make=${make}&model=${model}&plate=${plate}&vinnr=${vin}`,"")
   }
 
+  CreateIssue(carId:string, description:string, price:number){
+    return this.http.put(this.url+`/CreateCarIssue?carId=${carId}&description=${description}&price=${price}`,"");
+  }
+
 }
