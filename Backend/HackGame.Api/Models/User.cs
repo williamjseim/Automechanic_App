@@ -32,5 +32,7 @@ namespace Mechanic.Api.Models
         [JsonIgnore]
         public string Email { get; set; }
         public DateTime CreationDate { get; set; }
+        [NotMapped]
+        public string RoleName { get { return Role.ToString(); } }
     }
 }

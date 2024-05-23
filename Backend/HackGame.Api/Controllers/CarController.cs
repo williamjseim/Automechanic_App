@@ -62,7 +62,7 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                float pages = (float)_db.Cars.Where(i => i.Make.Contains(make.ToLower()) || i.Model.Contains(model.ToLower()) || i.Plate.Contains(plate.ToLower()) || i.VinNumber.Contains(vin.ToLower())).Count() / (float)amountPrPage;
+                float pages = (float)_db.Cars.Where(i => i.Make.Contains(make.ToLower()) && i.Model.Contains(model.ToLower()) && i.Plate.Contains(plate.ToLower()) && i.VinNumber.Contains(vin.ToLower())).Count() / (float)amountPrPage;
                 var amount = (int)MathF.Ceiling(pages);
                 return Ok(amount);
             }
@@ -130,7 +130,25 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                var issues = _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(amount).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArray();
+                CarIssue[] issues;
+                issues = _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(amount).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArray();
+                return Ok(issues);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(500, Json("something went wrong"));
+            }
+        }
+
+        [JwtTokenAuthorization]
+        [HttpGet("UserIssues")]
+        public async Task<IActionResult> GetUserIssues(Guid creatorId, int startingIndex = 0, int amount = 0, string make = "", string model = "", string plate = "", string vin = "")
+        {
+            try
+            {
+                CarIssue[] issues;
+                issues = _db.CarIssues.Where(i => i.Creator.Id == creatorId && i.Car.Make.Contains(make.ToLower()) && i.Car.Model.Contains(model.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Car.VinNumber.Contains(vin.ToLower())).Skip(startingIndex).Take(amount).Distinct().OrderBy(I => I.CreationTime).ToArray();
                 return Ok(issues);
             }
             catch (Exception ex)

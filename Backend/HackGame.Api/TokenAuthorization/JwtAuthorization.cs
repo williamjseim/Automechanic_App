@@ -59,6 +59,8 @@ namespace Mechanic.Api.TokenAuthorization
 
         public static Guid GetUserId(string encryptedBase64, IConfiguration config)
         {
+            encryptedBase64 = encryptedBase64.Replace("Bearer ", string.Empty);
+            encryptedBase64 = encryptedBase64.Replace("\"", string.Empty);
             if(Encrypter.Decrypt(Convert.FromBase64String(encryptedBase64), out byte[] cipher, config))
             {
                 string token = Encoding.UTF8.GetString(cipher);
@@ -70,7 +72,11 @@ namespace Mechanic.Api.TokenAuthorization
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!)),
                     ValidateIssuer = true,
                     ValidateAudience = true,
+#if DEBUG
+                    ValidateLifetime = false,
+#else
                     ValidateLifetime = true,
+#endif
                     ValidateIssuerSigningKey = true,
                     ValidateActor = false,
                 };
