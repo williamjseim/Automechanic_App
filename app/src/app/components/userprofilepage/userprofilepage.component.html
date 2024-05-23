@@ -1,0 +1,53 @@
+<div *ngIf="issueForDeletion != -1" class="DeletionDiv">
+    <span>Write Delete to confirm deletion</span>
+    <!--<span *ngIf="deleteError != ''">{{deleteError}}</span>-->
+    <input #delete class="DeleteSpan" type="text" value="">
+    <span class="DeleteSpan">This action is permanent <br> and cannot be reversed</span>
+    <div>
+        <input class="DeletionBtn DeletionConfirmBtn" type="button" value="Confirm">
+        <input class="DeletionBtn DeletionCancelBtn" type="button" value="Cancel">
+    </div>
+</div>
+<body>
+    <div #profileDiv class="profileDiv">
+        <div #imgDiv class="imgDiv" style="background-image: url('../../../assets/NoImage.avif');"></div>
+            <div #infoDiv class="infoDiv">
+                <form #form>
+                    <div>
+                        
+                    </div>
+                    <div>
+                        
+                    </div>
+                    <div style="width: 100%;">
+                        
+                    </div>
+                    <div style="width: 100%; display: flex; justify-content: space-around;">
+                        <button class="btn" mat-raised-button>Save</button>
+                        <button class="btn" *ngIf="!isAdmin" onclick="console.error('not implemented')" mat-raised-button>Delete car</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <div #issueTable class="issueDiv">
+        <table style="font-size: large; width: 100%;" class="issueTable">
+            <thead>
+                <th>Creator</th>
+                <th>CreationTime</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </thead>
+            <tbody *ngIf="car?.issues != null">
+                <tr *ngFor="let item of car!.issues!; let row = index;" [class]="(row%2 == 0) ? 'even':'odd'">
+                    <td><a>{{item.creator.username}}::: todo needs routing</a></td>
+                    <td>{{item.creationTime}}</td>
+                    <td>{{item.price}}</td>
+                    <td>
+                        <button class="openBtn" mat-raised-button>Open</button>
+                        <button class="deleteBtn" mat-raised-button>Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>

@@ -10,6 +10,7 @@ import { ReviewCarIssueComponent } from './components/carIssue/review-car-issue/
 import { CreateCarFormComponent } from './components/create-car-form/create-car-form.component';
 import { CarPageComponent } from './components/car-page/car-page.component';
 import { CarProfileComponent } from './components/car-profile/car-profile.component';
+import { UserprofilepageComponent } from './components/userprofilepage/userprofilepage.component';
 
 
 export const routes: Routes = [
@@ -25,5 +26,6 @@ export const routes: Routes = [
  { path: 'createcar', component: CreateCarFormComponent },
  { path: 'cars', component: CarPageComponent },
  { path: 'carprofile', component: CarProfileComponent},
+ { path: 'profile', component: UserprofilepageComponent},
  { path: '**', component: ErrorComponent },
 ];
