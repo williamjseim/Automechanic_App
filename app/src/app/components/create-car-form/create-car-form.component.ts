@@ -4,6 +4,7 @@ import {MatInput, MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule, matFormFieldAnimations} from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { CarDataService } from '../../services/car-data.service';
 
 @Component({
   selector: 'app-create-car-form',
@@ -13,6 +14,8 @@ import { MatButtonModule } from '@angular/material/button';
   styleUrl: './create-car-form.component.scss'
 })
 export class CreateCarFormComponent {
+  constructor(private carhttp:CarDataService){}
+
   @ViewChild('make') make!:ElementRef<HTMLInputElement>;
   @ViewChild('model') model!:ElementRef<HTMLInputElement>;
   @ViewChild('plate') plate!:ElementRef<HTMLInputElement>;
@@ -24,6 +27,14 @@ export class CreateCarFormComponent {
     let plate = this.plate.nativeElement.value;
     let vin = this.vin.nativeElement.value;
     //add html here
+    this.carhttp.CreateCar(make, model, plate, vin).subscribe({
+      next:(value)=>{
+        console.log(value);
+      },
+      error:(err)=>{
+
+      }
+    })
   }
   
 }

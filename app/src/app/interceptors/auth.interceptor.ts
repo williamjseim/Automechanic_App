@@ -4,10 +4,6 @@ import { HttpHeaders, HttpInterceptorFn, HttpResponse } from '@angular/common/ht
 // Bearer token is added for every request.
 
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
-
-  if(next instanceof HttpResponse){
-  }
-
   try {
     const Token = localStorage.getItem('token')?.replace(/^"|"$/g, '');
     if (!Token) {

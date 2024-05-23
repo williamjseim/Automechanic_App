@@ -8,6 +8,7 @@ using Pomelo.EntityFrameworkCore.MySql.Query.Internal;
 using Microsoft.Identity.Client;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Net.Http.Headers;
 
 namespace Mechanic.Api.Controllers
 {
@@ -40,6 +41,22 @@ namespace Mechanic.Api.Controllers
         }
 
         [JwtTokenAuthorization]
+        [HttpGet("GetCar")]
+        public async Task<IActionResult> GetCar(Guid carId)
+        {
+            try
+            {
+                var car = await _db.Cars.FirstOrDefaultAsync(i => i.Id == carId);
+                return Ok(car);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return NotFound("Car not found");
+            }
+        }
+
+        [JwtTokenAuthorization]
         [HttpGet("CarPages")]
         public async Task<IActionResult> CarPages(int amountPrPage, string make = "", string model = "", string plate = "", string vin = "")
         {
@@ -57,7 +74,7 @@ namespace Mechanic.Api.Controllers
         }
 
         [JwtTokenAuthorization]
-        [HttpGet("CreateCar")]
+        [HttpPut("CreateCar")]
         public async Task<IActionResult> CreateCar(string make, string model, string plate, string vinnr)
         {
             try
@@ -68,11 +85,27 @@ namespace Mechanic.Api.Controllers
                 Car car = new(vinnr, plate, make, model);
                 await _db.AddAsync(car);
                 await _db.SaveChangesAsync();
-                return Ok();
+                return Ok("Car created");
             }
             catch (Exception ex)
             {
-                return NotFound();
+                return StatusCode(500, Json("Something went wrong"));
+            }
+        }
+
+        [JwtRoleAuthorization(Role.Admin)]
+        [HttpDelete("DeleteIssue")]
+        public async Task<IActionResult> DeleteIssue(Guid issueId)
+        {
+            try
+            {
+                var test = await _db.CarIssues.Where(i => i.Id == issueId).ExecuteDeleteAsync();
+                Console.WriteLine(test);
+                return Ok(Json("Deletion successful"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, Json("Something went wrong"));
             }
         }
 
@@ -93,17 +126,17 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpGet("CarIssues")]
-        public async Task<IActionResult> GetCarIssues(Guid carId, int startingIndex)
+        public async Task<IActionResult> GetCarIssues(Guid carId, int startingIndex = 0, int amount = 0)
         {
             try
             {
-                var issues = _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(25).Distinct().OrderBy(I=>I.Car);
-                return Ok(issues.ToArray());
+                var issues = _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(amount).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArray();
+                return Ok(issues);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return NotFound();
+                return StatusCode(500, Json("something went wrong"));
             }
         }
 
@@ -138,7 +171,30 @@ namespace Mechanic.Api.Controllers
         }
 
         [JwtTokenAuthorization]
-        [HttpGet("UpdateCarIssue")]
+        [HttpPut("UpdateCar")]
+        public async Task<IActionResult> UpdateCar(Guid carId, string make, string model, string plate, string vinnr)
+        {
+            try
+            {
+                var car = await _db.Cars.Where(i => i.Id == carId).FirstOrDefaultAsync();
+                if(car == null)
+                {
+                    return NotFound(Json("Car doesnt exist"));
+                }
+                car.Make = make;
+                car.Model = model;
+                car.Plate = plate;
+                car.VinNumber = vinnr;
+                return Ok(Json("Car updated"));
+            }
+            catch(Exception ex)
+            {
+                return StatusCode(500, Json("Something went wrong"));
+            }
+        }
+ 
+        [JwtTokenAuthorization]
+        [HttpPut("UpdateCarIssue")]
         public async Task<IActionResult> UpdateCarIssue(Guid IssueId, string description, decimal price)
         {
             try

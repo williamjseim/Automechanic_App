@@ -31,7 +31,12 @@ namespace Mechanic.Api
 
             var app = builder.Build();
 
-            app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200", "http://localhost:4200/*"));
+            app.UseCors(policy => policy
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .WithOrigins("http://localhost:4200", "http://localhost:4200/*")
+            .WithExposedHeaders("Renew-Token")
+            );
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {

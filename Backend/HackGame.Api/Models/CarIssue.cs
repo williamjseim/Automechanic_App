@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Mechanic.Api.Models
 {
@@ -21,7 +22,7 @@ namespace Mechanic.Api.Models
         public Guid Id { get; set; }
         public Car Car { get; set; }
         public User Creator { get; set; }
-        public String Description { get; set; }
+        public string Description { get; set; }
         public decimal Price { get; set; }
         public DateTime CreationTime { get; set; }
     }

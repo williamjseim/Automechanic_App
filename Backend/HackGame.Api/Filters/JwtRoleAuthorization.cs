@@ -1,4 +1,5 @@
 ﻿using Mechanic.Api.Models;
+using Mechanic.Api.TokenAuthorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.IdentityModel.Tokens;
@@ -47,6 +48,13 @@ namespace Mechanic.Api.Filters
                     var result = handler.ValidateToken(token, parameters, out SecurityToken validatedToken);
                     //gets role from validated token
                     var role = result.Claims.Where(i => i.Type == JwtRegisteredClaimNames.Aud).First().Value;
+                    //var Localtime = validatedToken.ValidTo.ToLocalTime();
+                    //var difference = Localtime - DateTime.Now;
+                    //TimeSpan min = new TimeSpan(0, 5, 0);
+                    //if (difference.CompareTo(min) < 0 || true){
+                    //    Encrypter.Encrypt(JwtAuthorization.RenewToken(result, config), out byte[] bytes, config);
+                    //    context.HttpContext.Response.Headers.Add("renew", Convert.ToBase64String(bytes));
+                    //}
                     if (!allowedRoles.Contains(Enum.Parse<Role>(role)))
                     {
                         context.Result = new UnauthorizedResult();
