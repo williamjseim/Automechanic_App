@@ -1,39 +1,51 @@
+<div *ngIf="issueForDeletion != -1" class="DeletionDiv">
+    <span>Write Delete to confirm deletion</span>
+    <span *ngIf="deleteError != ''">{{deleteError}}</span>
+    <input #delete class="DeleteSpan" type="text" value="">
+    <span class="DeleteSpan">This action is permanent <br> and cannot be reversed</span>
+    <div>
+        <input (click)="RemoveIssue(delete.value)" class="DeletionBtn DeletionConfirmBtn" type="button" value="Confirm">
+        <input class="DeletionBtn DeletionCancelBtn" type="button" value="Cancel" (click)="issueForDeletion = -1">
+    </div>
+</div>
 <body>
     <div #profileDiv class="profileDiv">
         <div #imgDiv class="imgDiv" style="background-image: url({{imagepath}});"></div>
-        <div #infoDiv class="infoDiv">
-            <div>
-                <mat-form-field appearance="outline">
-                    <mat-label>Make</mat-label>
-                    <input [value]="car?.make" #makeInfo matInput>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Model</mat-label>
-                    <input [value]="car?.model" #modelInfo matInput>
-                </mat-form-field>
-            </div>
-            <div>
-                <mat-form-field appearance="outline">
-                    <mat-label>Plate</mat-label>
-                    <input [value]="car?.plate" #plateInfo matInput>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Vin number</mat-label>
-                    <input [value]="car?.vinNumber" #vinInfo matInput>
-                </mat-form-field>
-            </div>
-            <div style="width: 100%;">
-                <mat-form-field style="width: 100%;" appearance="outline">
-                    <mat-label>Creation time</mat-label>
-                    <input [value]="car?.creationTime" #vinInfo matInput>
-                </mat-form-field>
-            </div>
-            <div style="width: 100%; display: flex; justify-content: space-around;">
-                <button class="btn" mat-raised-button>Save</button>
-                <button class="btn" *ngIf="!isAdmin" mat-raised-button>Delete car</button>
+            <div #infoDiv class="infoDiv">
+                <form [formGroup]="carForm" #form>
+                    <div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Make</mat-label>
+                            <input [formControl]="carForm.controls.make" [value]="car?.make" #makeInfo matInput>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Model</mat-label>
+                            <input [formControl]="carForm.controls.model" [value]="car?.model" #modelInfo matInput>
+                        </mat-form-field>
+                    </div>
+                    <div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Plate</mat-label>
+                            <input [formControl]="carForm.controls.plate" [value]="car?.plate" #plateInfo matInput>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Vin number</mat-label>
+                            <input [formControl]="carForm.controls.vinnr" [value]="car?.vinNumber" #vinInfo matInput>
+                        </mat-form-field>
+                    </div>
+                    <div style="width: 100%;">
+                        <mat-form-field style="width: 100%;" appearance="outline">
+                            <mat-label>Creation time</mat-label>
+                            <input readonly [value]="car?.creationTime" #vinInfo matInput>
+                        </mat-form-field>
+                    </div>
+                    <div style="width: 100%; display: flex; justify-content: space-around;">
+                        <button [disabled]="!carForm.dirty" class="btn" mat-raised-button>Save</button>
+                        <button class="btn" *ngIf="!isAdmin" onclick="console.error('not implemented')" mat-raised-button>Delete car</button>
+                    </div>
+                </form>
             </div>
         </div>
-    </div>
     <div #issueTable class="issueDiv">
         <table style="font-size: large; width: 100%;" class="issueTable">
             <thead>
@@ -48,8 +60,8 @@
                     <td>{{item.creationTime}}</td>
                     <td>{{item.price}}</td>
                     <td>
-                        <button mat-raised-button>Open</button>
-                        <button mat-raised-button>Delete</button>
+                        <button class="openBtn" mat-raised-button>Open</button>
+                        <button class="deleteBtn" mat-raised-button (click)="issueForDeletion = row">Delete</button>
                     </td>
                 </tr>
             </tbody>

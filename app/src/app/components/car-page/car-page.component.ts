@@ -12,10 +12,11 @@ import {MatInput, MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-car-page',
   standalone: true,
-  imports: [AsyncPipe, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [AsyncPipe, RouterLink, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
   templateUrl: './car-page.component.html',
   styleUrl: './car-page.component.scss'
 })
@@ -30,6 +31,7 @@ export class CarPageComponent {
   SelectedRow:number = -1;
   CarForDeletion:number = -1;
   itemsPrPage:number = 10;
+  deleteError = "";
 
   @ViewChild('MakeFilter', {read: ElementRef, static: false}) makefilter!: ElementRef<HTMLInputElement>
   @ViewChild('ModelFilter', {read: ElementRef, static: false}) modelFilter!:ElementRef<MatInput>;
@@ -63,7 +65,7 @@ export class CarPageComponent {
     }
     else{
       this.GetCarIssuesHttp(this.cars![index].id).subscribe({next:(value)=>{
-        this.cars![index].issues = value;
+        this.cars![index].issues = value.body;
       }});
       this.SelectedRow = index;
     }
@@ -74,11 +76,15 @@ export class CarPageComponent {
   }
 
   RemoveCar(confirmText:string){
-    if(confirmText.toLocaleLowerCase() == "delete"){
+    if(confirmText == "Delete"){
       let car = this.cars![this.CarForDeletion];
       this.DeleteCar(car.id);
       this.cars?.splice(this.CarForDeletion, 1);
       this.CarForDeletion = -1;
+      this.deleteError = "";
+    }
+    else{
+      this.deleteError = "Wrong input"
     }
   }
 
@@ -107,8 +113,8 @@ export class CarPageComponent {
   }
 
   //gets issues for a specific car
-  private GetCarIssuesHttp(carId:string):Observable<Issue[]>{
-    return this.carHttp.GetIssues(carId, 0);
+  private GetCarIssuesHttp(carId:string):Observable<any>{
+    return this.carHttp.GetIssues(carId, 0, 3);
   }
 
   //gets how many pages of cars that are in the database

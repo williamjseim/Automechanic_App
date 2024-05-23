@@ -1,8 +1,8 @@
 <div *ngIf="CarForDeletion != -1" class="DeletionDiv">
     <span>Write Delete to confirm deletion</span>
+    <span *ngIf="deleteError != ''">{{deleteError}}</span>
     <input #delete class="DeleteSpan" type="text" value="">
     <span class="DeleteSpan">This action is permanent <br> and cannot be reversed</span>
-
     <div>
         <input (click)="RemoveCar(delete.value)" class="DeletionBtn DeletionConfirmBtn" type="button" value="Confirm">
         <input class="DeletionBtn DeletionCancelBtn" type="button" value="Cancel" (click)="CarForDeletion = -1">
@@ -59,7 +59,7 @@
                     <td>{{item.plate}}</td>
                     <td>{{item.vinNumber}}</td>
                     <td (click)="$event.stopPropagation()" class="actionTd">
-                        <input type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Open">
+                        <input [routerLink]="['/carprofile']" [queryParams]="{carId: item.id}" routerLinkActive="router-link-active"  type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Open">
                         <input type="button" *ngIf="isAdmin" (click)="CarForDeletion = row" class="DeleteButton" (click)="OpenDeleteDialog(row)" value="Delete">
                     </td>
                 </tr>
@@ -70,18 +70,16 @@
                                 <table *ngIf="item.issues !=  null; else elseBlock" style="font-size: large;">
                                     <thead>
                                         <th>Issues</th>
-                                        <th>Tags</th>
                                         <th>Creation Date</th>
-                                        <th>Description</th>
                                         <th>Price</th>
                                         <th>Actions</th>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let item of item.issues">
+                                        <tr style="border-bottom: 2px solid black;" *ngFor="let item of item.issues">
                                             <td>{{item.creator.username}}</td>
                                             <td>{{item.creationTime}}</td>
-                                            <td>{{item.description}}</td>
                                             <td>{{item.price}}</td>
+                                            <td><input [routerLink]="['/error']" routerLinkActive="router-link-active"  type="button" style="margin: 0; padding: 0; width: 100%;" class="EditButton" value="Open"></td>
                                         </tr>
                                     </tbody>
                                 </table>

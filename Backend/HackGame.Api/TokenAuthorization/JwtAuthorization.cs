@@ -33,6 +33,30 @@ namespace Mechanic.Api.TokenAuthorization
             return jwt;
         }
 
+        public static string RenewToken(ClaimsPrincipal claims, IConfiguration _config)
+        {
+
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtSettings:Key"]!));
+            var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var newclaims = new[]
+            {
+                new Claim("username", claims.FindFirstValue("username")),
+                new Claim(JwtRegisteredClaimNames.Aud, claims.FindFirstValue(JwtRegisteredClaimNames.Aud)),
+                new Claim(JwtRegisteredClaimNames.Jti, claims.FindFirstValue(JwtRegisteredClaimNames.Jti)),
+            };
+
+            var token = new JwtSecurityToken(
+                _config["JwtSettings:Issuer"],
+                _config["JwtSettings:Issuer"],
+                newclaims,
+                expires: DateTime.Now.AddMinutes(20),
+                signingCredentials: credentials
+            );
+            var jwt = new JwtSecurityTokenHandler().WriteToken(token);
+            return jwt;
+        }
+
         public static Guid GetUserId(string encryptedBase64, IConfiguration config)
         {
             if(Encrypter.Decrypt(Convert.FromBase64String(encryptedBase64), out byte[] cipher, config))
