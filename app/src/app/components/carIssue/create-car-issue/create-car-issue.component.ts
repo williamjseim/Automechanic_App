@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { ProgressBarComponent } from '../../progress-bar/progress-bar.component';
 import { VideoApiService } from '../../../services/video-api.service';
+import { CommonModule } from '@angular/common';
 import {
   FormControl,
   FormGroupDirective,
@@ -17,6 +18,9 @@ import { MatIcon } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select'
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedService } from '../../../services/shared.service';
+import { NewIssue } from '../../../Interfaces/newIssue';
+import { Car } from '../../../Interfaces/car';
+import { CarDataService } from '../../../services/car-data.service';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -28,7 +32,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 @Component({
   selector: 'app-create-car-issue',
   standalone: true,
-  imports: [ProgressBarComponent, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatIcon, MatSelectModule],
+  imports: [ProgressBarComponent, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatIcon, CommonModule, MatSelectModule],
   templateUrl: './create-car-issue.component.html',
   styleUrl: './create-car-issue.component.scss'
 })
@@ -37,30 +41,22 @@ export class CreateCarIssueComponent {
     car: new FormControl('', [Validators.required]),
     price: new FormControl('', [Validators.required]),
     description: new FormControl(''),
-  })
-  // priceFormControl = new FormControl('', [Validators.required]);
-  // descriptionFormControl = new FormControl('');
-  // selectFormControl = new FormControl('', [Validators.required]);
+  });
 
   matcher = new MyErrorStateMatcher();
+  loading = false;
 
-  // mock car data
-  cars: any[] = [
-    { id: "be93ef1e-5f98-4926-a785-e96e8482bc84", model: "API Test", make: "Has GUID", plate: "XY 29 381" },
-    { model: "c40", plate: "ZB 40 432", make: "volvo" },
-    { model: "c40", plate: "AH 34 137", make: "volvo" },
-    { model: "golf", plate: "EG 28 126", make: "volkswagen" },
+  cars: any[] = [];
 
-  ]
-
-  testUrl: string = "assets/20240521110232-video.mp4"
+  testUrl: string = "assets/20240521110232-video.mp4";
   videoUrl: string | ArrayBuffer | null = null;
 
   constructor(
     public videoService: VideoApiService,
     public sharedService: SharedService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private carService: CarDataService
   ) { }
 
 
@@ -73,14 +69,31 @@ export class CreateCarIssueComponent {
       };
       reader.readAsDataURL(file);
     }
+
+    this.loading = true;
+    this.carService.GetCars(0, 5000)
+      .subscribe(res => {
+        this.cars = res;
+        this.loading = false;
+      });
   }
 
   onSubmit() {
     if (this.carIssueForm.valid) {
-      this.sharedService.setCarIssueData(this.carIssueForm.value);
-      this.router.navigate(['submit'], {relativeTo:this.route})
+
+      const formValue = this.carIssueForm.value;
+
+      const newIssue: NewIssue = {
+        car: formValue.car as unknown as Car,
+        price: Number(formValue.price),
+        description: formValue.description as string,
+      };
+
+      this.sharedService.setCarIssueData(newIssue);
+      this.router.navigate(['submit'], { relativeTo: this.route });
     }
   }
+
   onCancel() {
     // Navigate back to the previous page
     this.router.navigateByUrl('record');

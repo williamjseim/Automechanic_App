@@ -7,12 +7,12 @@
             <mat-form-field class="example-full-width">
                 <mat-label>Bil</mat-label>
                 <mat-select formControlName="car" required>
-                    <mat-option></mat-option>
-                    @for (car of cars; track $index) {
-                    <mat-option [value]="car">{{ car.make}} {{car.model}} <br> <strong
-                            class="car-plate">({{car.plate}})</strong></mat-option>
-                    <hr>
-                    }
+                <mat-option disabled *ngIf="loading">Henter biler...</mat-option>
+                @for (car of cars; track $index) {
+                <mat-option *ngIf="!loading" [value]="car">{{ car.make}} {{car.model}} <br> <strong class="car-plate">({{ car.plate
+                        }})</strong></mat-option>
+                <hr>
+                }
                 </mat-select>
                 @if (carIssueForm.hasError('required')) {
                 <mat-error>Valg af bil er <strong>nødvendigt</strong></mat-error>}
