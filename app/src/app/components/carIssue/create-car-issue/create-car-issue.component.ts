@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { ProgressBarComponent } from '../../progress-bar/progress-bar.component';
-import { VideoApiService } from '../../../services/video-api.service';
 import { CommonModule } from '@angular/common';
 import {
   FormControl,
@@ -18,10 +17,8 @@ import { MatIcon } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select'
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedService } from '../../../services/shared.service';
-import { NewIssue } from '../../../Interfaces/newIssue';
 import { Car } from '../../../Interfaces/car';
 import { CarDataService } from '../../../services/car-data.service';
-import { BehaviorSubject, map, startWith } from 'rxjs';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -46,59 +43,54 @@ export class CreateCarIssueComponent {
     searchPlate: new FormControl(''),
   });
 
-
   matcher = new MyErrorStateMatcher();
   loading = false;
 
   cars: Car[] = [];
-  filteredCars$: BehaviorSubject<Car[]> = new BehaviorSubject<Car[]>([]);
-  
-  
+    
   constructor(
     public sharedService: SharedService,
     private router: Router,
     private route: ActivatedRoute,
     private carService: CarDataService
-  ) { 
-    this.carIssueForm.controls.searchPlate.valueChanges.pipe(
-      startWith(''),
-      map(value => this.filterCars(value!))
-    ).subscribe(filteredCars => this.filteredCars$.next(filteredCars))
-  }
+  ) { }
 
   ngOnInit(): void {
 
     this.getCars();
-    this.filterCars('');
+    const savedData = this.sharedService.getFormData();
+    if (savedData) {
+      this.carIssueForm.patchValue(savedData);
+    }
   }
 
   getCars() {
     this.loading = true;
-    this.carService.GetCars(0, 5000)
+    const cars: Car[] = this.sharedService.getCars();
+    if (cars.length > 0) {
+      this.cars = cars;
+      this.loading = false;
+    }
+    else {
+      this.carService.GetCars(0, 5000)
       .subscribe(res => {
         this.cars = res;
+        this.sharedService.setCars(this.cars);
         this.loading = false;
       });
+    }
   }
 
-  private filterCars(value: string): Car[] {
-    console.log("wow");
-    const filterValue = value.toLowerCase();
-    return this.cars.filter(car => car.plate.toLowerCase().includes(filterValue));
+  // 
+  compareCars(car1: any, car2: any) {
+    console.log(car1);
+    console.log(car2);
+    return car1 && car2 && car1.id === car2.id;
   }
 
   onSubmit() {
     if (this.carIssueForm.valid) {
-
-      const formValue = this.carIssueForm.value;
-
-      const newIssue: NewIssue = {
-        car: formValue.car as unknown as Car,
-        price: Number(formValue.price),
-        description: formValue.description as string,
-      };
-
-      this.sharedService.setCarIssueData(newIssue);
+      this.sharedService.setFormData(this.carIssueForm.value);
       this.router.navigate(['submit'], { relativeTo: this.route });
     }
   }

@@ -10,6 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NewIssue } from '../../../Interfaces/newIssue';
 import { CarDataService } from '../../../services/car-data.service';
+import { catchError, finalize, of } from 'rxjs';
 
 @Component({
   selector: 'app-review-car-issue',
@@ -31,8 +32,10 @@ export class ReviewCarIssueComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.formData = this.sharedService.getCarIssueData();
-    console.log(this.formData);
+    this.formData = this.sharedService.getFormData();
+    if (!this.formData) {
+      // this.router.navigateByUrl("/issue");
+    }
     const file = this.sharedService.getVideo();
 
     if (file) {
@@ -52,8 +55,21 @@ export class ReviewCarIssueComponent implements OnInit {
 
     this.loading = true;
     this.carService.CreateIssue(this.formData?.car.id!, this.formData?.description!, this.formData?.price!)
-    .subscribe(r => {
-      this.loading = false;
-    });
+      .pipe(
+        catchError(error => {
+          // Handle the error
+          console.error('An error occurred:', error);
+
+          // Return an empty observable or a default value to suppress the error
+          return of(null);  // You can change 'null' to an appropriate default value if needed
+        }),
+        finalize(() => {
+          this.loading = false;
+        })
+      ).subscribe({
+      next: () => this.loading = false,
+      error: (err) => console.log(err),
+      complete: () => console.info("completed issue request"),  
+    })
   }
 }
