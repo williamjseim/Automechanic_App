@@ -13,10 +13,11 @@ import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 @Component({
   selector: 'app-car-page',
   standalone: true,
-  imports: [AsyncPipe, RouterLink, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [AsyncPipe, RouterLink, ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
   templateUrl: './car-page.component.html',
   styleUrl: './car-page.component.scss'
 })
@@ -33,25 +34,28 @@ export class CarPageComponent {
   itemsPrPage:number = 10;
   deleteError = "";
 
-  @ViewChild('MakeFilter', {read: ElementRef, static: false}) makefilter!: ElementRef<HTMLInputElement>
-  @ViewChild('ModelFilter', {read: ElementRef, static: false}) modelFilter!:ElementRef<MatInput>;
-  @ViewChild('PlateFilter', {read: ElementRef, static: false}) plateFilter!:ElementRef<MatInput>;
-  @ViewChild('VinFilter', {read: ElementRef, static: false}) vinFilter!:ElementRef<MatInput>;
-
   ngOnInit(){
     if(localStorage.getItem("AdminKey") != null){
       this.isAdmin = true;
     }
     this.isAdmin = true;
-    this.GetCarsHttp();
     this.GetCarPages(this.itemsPrPage);
+    this.RemoveFilters();
   }
 
+  searchForm = new FormGroup ({
+    make: new FormControl(),
+    model: new FormControl(),
+    plate: new FormControl(),
+    vinnr: new FormControl()
+  })
+
   Search(){
-    let make = this.makefilter.nativeElement.value ?? "";
-    let model = this.modelFilter.nativeElement.value ?? "";
-    let plate = this.plateFilter.nativeElement.value ?? "";
-    let vin = this.vinFilter.nativeElement.value ?? "";
+    let make = this.searchForm.controls.make.value;
+    let model = this.searchForm.controls.model.value;
+    let plate = this.searchForm.controls.plate.value;
+    let vin = this.searchForm.controls.vinnr.value;
+    console.log(make, model, plate, vin);
     this.GetCarsHttp(make, model, plate, vin)
     this.SelectedRow = -1;
   }
@@ -89,10 +93,10 @@ export class CarPageComponent {
   }
 
   RemoveFilters(){
-    this.makefilter.nativeElement.value = "";
-    this.modelFilter.nativeElement.value = "";
-    this.plateFilter.nativeElement.value = "";
-    this.vinFilter.nativeElement.value = "";
+    let make = this.searchForm.controls.make.reset("");
+    let model = this.searchForm.controls.model.reset("");
+    let plate = this.searchForm.controls.plate.reset("");
+    let vin = this.searchForm.controls.vinnr.reset("");
     this.Search();
   }
 
@@ -106,7 +110,7 @@ export class CarPageComponent {
   }
 
   //gets 10 from  cars from database
-  private GetCarsHttp(make:string="", model:string="", plate:string="", vin:string = ""){
+  private GetCarsHttp(make:string='', model:string='', plate:string='', vin:string = ''){
     this.carHttp.GetCars(this.currentPage*this.itemsPrPage, this.itemsPrPage, make, model, plate, vin).subscribe({next:(value)=>{
       this.cars = value;
     }});

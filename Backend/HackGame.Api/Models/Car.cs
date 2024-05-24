@@ -1,5 +1,6 @@
 ﻿using System.Buffers.Text;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Mechanic.Api.Models
 {
@@ -10,8 +11,9 @@ namespace Mechanic.Api.Models
         {
             
         }
-        public Car(string vinNumber, string plate, string make, string model)
+        public Car(User creator, string vinNumber, string plate, string make, string model)
         {
+            this.Creator = creator;
             this.Id = Guid.NewGuid();
             CreationTime = DateTime.Now;
             this.VinNumber = vinNumber;
@@ -20,6 +22,9 @@ namespace Mechanic.Api.Models
             this.Model = model;
         }
         public Guid Id { get; set; }
+
+        [JsonIgnore]
+        public User Creator { get; set; }
         //public string CarImageBase64 {  get; set; }
         public string VinNumber { get; set; }
         public string Plate { get; set; }

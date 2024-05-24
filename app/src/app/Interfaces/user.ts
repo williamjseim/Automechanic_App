@@ -1,7 +1,7 @@
 export interface User{
     id:string;
     role:number;
-    roleName:string;
+    rolename:string;
     username:string;
     creationDate:Date;
 }

@@ -33,6 +33,6 @@ namespace Mechanic.Api.Models
         public string Email { get; set; }
         public DateTime CreationDate { get; set; }
         [NotMapped]
-        public string RoleName { get { return Role.ToString(); } }
+        public string Rolename { get { return Role.ToString(); } }
     }
 }

@@ -46,4 +46,8 @@ export class CarDataService {
     return this.http.put(this.url+`/CreateCarIssue?carId=${carId}&description=${description}&price=${price}`,"");
   }
 
+  GetUserIssues(startingIndex:number, amount:number, userId:string = "", make:string = "", model:string = "", plate:string = "", vin = "",) :Observable<any>{
+    return this.http.get(this.url+`/UserIssues?startingIndex=${startingIndex}&amount=${amount}&UserId=${userId}&make=${make}&model=${model}&plate=${plate}&vinnr=${vin}`)
+  }
+
 }

@@ -14,44 +14,34 @@
     <div class="tableDiv">
         <table>
             <thead>
+                <tr>
+                    <td [colSpan]="5">
+                        <form formGroupName="searchForm" class="searchForm">
+                            <input formControlName="make" placeholder="Make" #MakeFilter matInput value="" (keyup.enter)="Search()">
+                            <input formControlName="model" placeholder="Model" #ModelFilter matInput value="" (keyup.enter)="Search()">
+                            <input formControlName="plate" placeholder="Plate" #PlateFilter matInput value="" (keyup.enter)="Search()">
+                            <input formControlName="vinnr" placeholder="Vin nr" #VinFilter matInput value="" (keyup.enter)="Search()">
+                            <mat-form-field subscriptSizing="dynamic" >
+                                <mat-label style="font-size: large;">Select option</mat-label>
+                                <mat-select value="10" [(value)]="itemsPrPage" (valueChange)="ChangeNumberPrPage()" matNativeControl>
+                                    <mat-option value="10">10 items</mat-option>
+                                    <mat-option value="25">25 items</mat-option>
+                                    <mat-option value="50">50 items</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+                            <button mat-raised-button (click)="Search()"><mat-icon>search</mat-icon></button>
+                            <button mat-raised-button (click)="RemoveFilters()"><mat-icon>filter_alt_off</mat-icon></button>
+                        </form>
+                    </td>
+                </tr>
+            </thead>
+            <thead>
                 <th>Make</th>
                 <th>Model</th>
                 <th>Plate</th>
                 <th>Vin Number</th>
                 <th>Actions</th>
             </thead>
-            <tbody >
-                <tr>
-                    <td [colSpan]="5">
-                        <mat-form-field>
-                            <mat-label>Search by make</mat-label>
-                            <input #MakeFilter matInput value="" (keyup.enter)="Search()">
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Search by model</mat-label>
-                            <input #ModelFilter matInput value="" (keyup.enter)="Search()">
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Search by plate</mat-label>
-                            <input #PlateFilter matInput value="" (keyup.enter)="Search()">
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Search by vin</mat-label>
-                            <input #VinFilter matInput value="" (keyup.enter)="Search()">
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label style="font-size: large;">Select option</mat-label>
-                            <mat-select value="10" [(value)]="itemsPrPage" (valueChange)="ChangeNumberPrPage()" matNativeControl>
-                                <mat-option value="10">10 items</mat-option>
-                                <mat-option value="25">25 items</mat-option>
-                                <mat-option value="50">50 items</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <button (click)="Search()" mat-fab style="background-color: limegreen; margin-left: 1%;"><mat-icon>search</mat-icon></button>
-                        <button (click)="RemoveFilters()" mat-fab style="background-color: limegreen; margin-left: 1%;"><mat-icon>filter_alt_off</mat-icon></button>
-                    </td>
-                </tr>
-            </tbody>
             <tbody (click)="SelectRow(row, $event)" [class]="[row%2==0 ? 'EvenTBody':'OddTBody']" *ngFor="let item of cars; let row = index">
                 <tr style="border-bottom: 2px solid black;">
                     <td>{{item.make}}</td>
