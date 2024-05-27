@@ -41,7 +41,7 @@
                     </div>
                     <div style="width: 100%; display: flex; justify-content: space-around;">
                         <button [disabled]="!carForm.dirty" class="btn" mat-raised-button>Save</button>
-                        <button class="btn" *ngIf="!isAdmin" onclick="console.error('not implemented')" mat-raised-button>Delete car</button>
+                        <button class="btn" *ngIf="!isAdmin" (click)="Error()" mat-raised-button>Delete car</button>
                     </div>
                 </form>
             </div>

@@ -8,27 +8,24 @@
         <input class="DeletionBtn DeletionCancelBtn" type="button" value="Cancel" (click)="CarForDeletion = -1">
     </div>
 </div>
+
 <!-- only shows if cars array isnt null -->
 <body (click)="SelectRow(-1, $event); CarForDeletion = -1;" *ngIf="cars != null; else elseBlock">
-    <div><button>Add Car</button></div>
     <div class="tableDiv">
         <table>
             <thead>
                 <tr>
                     <td [colSpan]="5">
-                        <form formGroupName="searchForm" class="searchForm">
+                        <form [formGroup]="searchForm" class="searchForm">
                             <input formControlName="make" placeholder="Make" #MakeFilter matInput value="" (keyup.enter)="Search()">
                             <input formControlName="model" placeholder="Model" #ModelFilter matInput value="" (keyup.enter)="Search()">
                             <input formControlName="plate" placeholder="Plate" #PlateFilter matInput value="" (keyup.enter)="Search()">
                             <input formControlName="vinnr" placeholder="Vin nr" #VinFilter matInput value="" (keyup.enter)="Search()">
-                            <mat-form-field subscriptSizing="dynamic" >
-                                <mat-label style="font-size: large;">Select option</mat-label>
-                                <mat-select value="10" [(value)]="itemsPrPage" (valueChange)="ChangeNumberPrPage()" matNativeControl>
-                                    <mat-option value="10">10 items</mat-option>
-                                    <mat-option value="25">25 items</mat-option>
-                                    <mat-option value="50">50 items</mat-option>
-                                </mat-select>
-                            </mat-form-field>
+                            <select #select placeholder="Select Option" (change)="ChangeNumberPrPage($event)">
+                                <option value="10">10 items</option>
+                                <option value="25">25 items</option>
+                                <option value="50">50 items</option>
+                            </select>
                             <button mat-raised-button (click)="Search()"><mat-icon>search</mat-icon></button>
                             <button mat-raised-button (click)="RemoveFilters()"><mat-icon>filter_alt_off</mat-icon></button>
                         </form>
@@ -65,7 +62,7 @@
                                         <th>Actions</th>
                                     </thead>
                                     <tbody>
-                                        <tr style="border-bottom: 2px solid black;" *ngFor="let item of item.issues">
+                                        <tr style="border-bottom: 2px solid black;" [class]="[i%2==0 ? 'OddTBody':'EvenTBody']" *ngFor="let item of item.issues; let i = index">
                                             <td>{{item.creator.username}}</td>
                                             <td>{{item.creationTime}}</td>
                                             <td>{{item.price}}</td>
@@ -80,10 +77,14 @@
         </table>
         <div ></div>
     </div>
-    <div *ngIf="pages != null" class="ButtonDiv">
-        <button *ngIf="currentPage > 1" class="PageSwapBtn">Prev</button>
-        <button [ngClass]="[i==currentPage ? 'SelectedPageBtn' : 'PageBtn']" *ngFor="let item of pages; let i = index">{{i+1}}</button>
-        <button *ngIf="currentPage < pages!.length-1" class="PageSwapBtn">Next</button>
+    <div *ngIf="pages != 0" class="ButtonDiv">
+        <button (click)="JumpToPage(currentPage-1)" [disabled]="!(currentPage >= 1)" class="PageSwapBtn">Prev</button>
+        <button (click)="JumpToPage(currentPage-2)" *ngIf="currentPage-2 >= 0" class="PageBtn">{{currentPage-1}}</button>
+        <button (click)="JumpToPage(currentPage-1)" *ngIf="currentPage-1 >= 0" class="PageBtn">{{currentPage}}</button>
+        <button class="SelectedPageBtn">{{currentPage+1}}</button>
+        <button (click)="JumpToPage(currentPage+1)" *ngIf="currentPage + 1 <= pages-1" class="PageBtn">{{currentPage+2}}</button>
+        <button (click)="JumpToPage(currentPage+2)" *ngIf="currentPage + 2 <= pages-1" class="PageBtn">{{currentPage+3}}</button>
+        <button (click)="JumpToPage(currentPage+1)" [disabled]="!(currentPage < pages-1)" class="PageSwapBtn">Next</button>
     </div>
 </body>
 <ng-template #elseBlock>

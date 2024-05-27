@@ -75,6 +75,10 @@ export class CarProfileComponent {
     })
   }
 
+  Error(){
+    console.log('not implemented');
+  }
+
   RemoveIssue(confirmText:string){
     if(confirmText != "Delete"){
       this.deleteError = "Wrong input"

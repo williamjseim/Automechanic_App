@@ -27,7 +27,7 @@ export class CarPageComponent {
 
   cars?:Car[];
   isAdmin:boolean = false;
-  pages?:any[];
+  pages:number = 0;
   currentPage:number = 0;
   SelectedRow:number = -1;
   CarForDeletion:number = -1;
@@ -50,6 +50,7 @@ export class CarPageComponent {
     vinnr: new FormControl()
   })
 
+  //gets filtered cars from server
   Search(){
     let make = this.searchForm.controls.make.value;
     let model = this.searchForm.controls.model.value;
@@ -100,18 +101,16 @@ export class CarPageComponent {
     this.Search();
   }
 
-  ChangeNumberPrPage(){
+  ChangeNumberPrPage(number:Event){
+    this.itemsPrPage = JSON.parse((number.target as HTMLSelectElement).value)
     this.currentPage = 0;
+    this.GetCarPages(this.itemsPrPage);
     this.Search();
-  }
-
-  Test(text:string){
-    console.log(text);
   }
 
   //gets 10 from  cars from database
   private GetCarsHttp(make:string='', model:string='', plate:string='', vin:string = ''){
-    this.carHttp.GetCars(this.currentPage*this.itemsPrPage, this.itemsPrPage, make, model, plate, vin).subscribe({next:(value)=>{
+    this.carHttp.GetCars(this.currentPage, this.itemsPrPage, make, model, plate, vin).subscribe({next:(value)=>{
       this.cars = value;
     }});
   }
@@ -124,12 +123,21 @@ export class CarPageComponent {
   //gets how many pages of cars that are in the database
   private GetCarPages(amountPrPage:number){
     this.carHttp.GetPageAmount(amountPrPage).subscribe({next:(value)=>{
-      this.pages = Array(value);
+      this.pages = value;
     }});
   }
 
   private DeleteCar(carId:string){
     this.carHttp.DeleteCar(carId).subscribe({next:(value)=>{
     }});
+  }
+
+  JumpToPage(index:number){
+    console.log(index);
+    if(index < 0){
+      index = 0;
+    }
+    this.currentPage = index;
+    this.Search();
   }
 }

@@ -18,7 +18,7 @@ export class AppComponent implements OnInit {
     private localStorageService: LocalStorageService,
     private router: Router) { }
 
-  title = 'app';
+  title = 'Service app';
 
   ngOnInit(): void {
   //   const token = this.localStorageService.getFromLocalStorage("token");

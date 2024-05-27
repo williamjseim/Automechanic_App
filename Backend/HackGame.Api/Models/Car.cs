@@ -13,7 +13,7 @@ namespace Mechanic.Api.Models
         }
         public Car(User creator, string vinNumber, string plate, string make, string model)
         {
-            this.Creator = creator;
+            //this.Creator = creator;
             this.Id = Guid.NewGuid();
             CreationTime = DateTime.Now;
             this.VinNumber = vinNumber;
@@ -23,8 +23,7 @@ namespace Mechanic.Api.Models
         }
         public Guid Id { get; set; }
 
-        [JsonIgnore]
-        public User Creator { get; set; }
+        //public User Creator { get; set; }
         //public string CarImageBase64 {  get; set; }
         public string VinNumber { get; set; }
         public string Plate { get; set; }

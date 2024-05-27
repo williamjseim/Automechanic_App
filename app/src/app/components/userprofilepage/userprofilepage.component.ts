@@ -26,7 +26,6 @@ export class UserprofilepageComponent {
   user?:User;
   issues:Array<Issue> = [];
   isAdmin:boolean = false;
-
   usersIssues?:Array<Issue>;
 
   ngOnInit(){

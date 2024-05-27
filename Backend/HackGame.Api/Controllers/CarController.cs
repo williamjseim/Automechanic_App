@@ -25,18 +25,17 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpGet("GetCars")]
-        public async Task<IActionResult> GetCars(int pageindex, int amount, string make = "", string model = "", string plate = "", string vin = "")
+        public async Task<IActionResult> GetCars(int startingIndex, int amount, string make = "", string model = "", string plate = "", string vin = "")
         {
             try
             {
-                Console.WriteLine(make + model + plate);
-                var cars = _db.Cars.Where(i => i.Make.Contains(make ?? "") && i.Model.Contains(model ?? "") && i.Plate.Contains(plate ?? "") && i.VinNumber.Contains(vin ?? "")).Skip(pageindex * amount).Take(amount).Distinct().OrderBy(i => i.CreationTime);
-                return Ok(cars.ToArray());
+                var cars = _db.Cars.Where(i => i.Make.Contains(make ?? "") && i.Model.Contains(model ?? "") && i.Plate.Contains(plate ?? "") && i.VinNumber.Contains(vin ?? "")).Skip(startingIndex * amount).Take(amount).Distinct().OrderBy(i => i.CreationTime).ToArray();
+                return Ok(cars);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return NotFound();
+                return StatusCode(500, Json("Something went wrong"));
             }
         }
 
@@ -52,7 +51,7 @@ namespace Mechanic.Api.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return NotFound("Car not found");
+                return StatusCode(500, Json("Something went wrong"));
             }
         }
 
@@ -69,7 +68,7 @@ namespace Mechanic.Api.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return NotFound();
+                return StatusCode(500, Json("Something went wrong"));
             }
         }
 
@@ -191,7 +190,7 @@ namespace Mechanic.Api.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return NotFound();
+                return StatusCode(500, Json("Something went wrong"));
             }
         }
 
@@ -238,7 +237,7 @@ namespace Mechanic.Api.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return NotFound();
+                return StatusCode(500, Json("Something went wrong"));
             }
         }
 
