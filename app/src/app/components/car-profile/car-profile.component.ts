@@ -10,11 +10,12 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-request-popup.component';
 
 @Component({
   selector: 'app-car-profile',
   standalone: true,
-  imports: [NgIf, NgFor, FormsModule, ReactiveFormsModule, MatSelectModule, MatIconModule, MatButtonModule, MatInput, MatInputModule, MatFormFieldModule],
+  imports: [NgIf, NgFor, FormsModule, DeleteRequestPopupComponent, ReactiveFormsModule, MatSelectModule, MatIconModule, MatButtonModule, MatInput, MatInputModule, MatFormFieldModule],
   templateUrl: './car-profile.component.html',
   styleUrl: './car-profile.component.scss'
 })
@@ -105,6 +106,19 @@ export class CarProfileComponent {
     let plate = this.searchForm.controls.plate.value;
     let vinnr = this.searchForm.controls.vinnr.value;
     
+  }
+
+  RemoveCar(index:number){
+    if(index == -2){
+      this.carHttp.DeleteCar(this.car!.id).subscribe({next:value=>{
+        this.router.navigate([""]);
+      }})
+    }
+    else{
+      this.carHttp.DeleteIssue(this.car!.issues[index].id).subscribe({next:value=>{
+        this.car!.issues.splice(index, 1);
+      }})
+    }
   }
 
   RemoveFilters(){

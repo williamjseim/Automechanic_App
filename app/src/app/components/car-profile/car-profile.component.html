@@ -1,13 +1,5 @@
-<div *ngIf="issueForDeletion != -1" class="DeletionDiv">
-    <span>Write Delete to confirm deletion</span>
-    <span *ngIf="deleteError != ''">{{deleteError}}</span>
-    <input #delete class="DeleteSpan" type="text" value="">
-    <span class="DeleteSpan">This action is permanent <br> and cannot be reversed</span>
-    <div>
-        <input (click)="RemoveIssue(delete.value)" class="DeletionBtn DeletionConfirmBtn" type="button" value="Confirm">
-        <input class="DeletionBtn DeletionCancelBtn" type="button" value="Cancel" (click)="issueForDeletion = -1">
-    </div>
-</div>
+
+<app-delete-request-popup #Delete [hidden]="Delete.IsHidden" (Complete)="RemoveCar($event)"></app-delete-request-popup>
 <body>
     <div #profileDiv class="profileDiv">
         <div #imgDiv class="imgDiv" style="background-image: url({{imagepath}});"></div>
@@ -41,7 +33,7 @@
                     </div>
                     <div style="width: 100%; display: flex; justify-content: space-around;">
                         <button [disabled]="!carForm.dirty" class="btn" mat-raised-button>Save</button>
-                        <button class="btn" *ngIf="!isAdmin" (click)="Error()" mat-raised-button>Delete car</button>
+                        <button class="btn" *ngIf="!isAdmin" (click)="Delete.Open(-2)" mat-raised-button>Delete car</button>
                     </div>
                 </form>
             </div>
@@ -75,7 +67,7 @@
                     <td>{{item.price}}</td>
                     <td>
                         <button class="openBtn" mat-raised-button (click)="Error()">Open</button>
-                        <button class="deleteBtn" mat-raised-button (click)="issueForDeletion = row">Delete</button>
+                        <button class="deleteBtn" mat-raised-button (click)="Delete.Open(row)">Delete</button>
                     </td>
                 </tr>
             </tbody>

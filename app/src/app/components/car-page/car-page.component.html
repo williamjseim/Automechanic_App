@@ -1,16 +1,7 @@
-<div *ngIf="CarForDeletion != -1" class="DeletionDiv">
-    <span>Write Delete to confirm deletion</span>
-    <span *ngIf="deleteError != ''">{{deleteError}}</span>
-    <input #delete class="DeleteSpan" type="text" value="">
-    <span class="DeleteSpan">This action is permanent <br> and cannot be reversed</span>
-    <div>
-        <input (click)="RemoveCar(delete.value)" class="DeletionBtn DeletionConfirmBtn" type="button" value="Confirm">
-        <input class="DeletionBtn DeletionCancelBtn" type="button" value="Cancel" (click)="CarForDeletion = -1">
-    </div>
-</div>
+<app-delete-request-popup #Delete [hidden]="Delete.IsHidden" (Complete)="RemoveCar($event)"></app-delete-request-popup>
 
 <!-- only shows if cars array isnt null -->
-<body (click)="SelectRow(-1, $event); CarForDeletion = -1;" *ngIf="cars != null; else elseBlock">
+<body (click)="SelectRow(-1, $event);" *ngIf="cars != null; else elseBlock">
     <button class="CarFormBtn" mat-raised-button [routerLink]="['/createcar']" ><mat-icon>add</mat-icon> Create new car</button>
     <div class="tableDiv">
         <table>
@@ -50,7 +41,7 @@
                     <td><mat-icon *ngIf="row != SelectedRow">expand_more</mat-icon><mat-icon *ngIf="row == SelectedRow">expand_less</mat-icon></td>
                     <td (click)="$event.stopPropagation()" class="actionTd">
                         <input [routerLink]="['/carprofile']" [queryParams]="{carId: item.id}" routerLinkActive="router-link-active"  type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Open">
-                        <input type="button" *ngIf="isAdmin" (click)="CarForDeletion = row" class="DeleteButton" (click)="OpenDeleteDialog(row)" value="Delete">
+                        <input type="button" *ngIf="isAdmin" class="DeleteButton" (click)="Delete.Open(row)" value="Delete">
                     </td>
                 </tr>
                 <tr>
