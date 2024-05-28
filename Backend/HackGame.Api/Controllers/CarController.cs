@@ -25,18 +25,17 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpGet("GetCars")]
-        public async Task<IActionResult> GetCars(int pageindex, int amount, string make = "", string model = "", string plate = "", string vin = "")
+        public async Task<IActionResult> GetCars(int startingIndex, int amount, string make = "", string model = "", string plate = "", string vin = "")
         {
             try
             {
-                Console.WriteLine(make + model + plate);
-                var cars = _db.Cars.Where(i => i.Make.Contains(make.ToLower()) && i.Model.Contains(model.ToLower()) && i.Plate.Contains(plate.ToLower()) && i.VinNumber.Contains(vin.ToLower())).Skip(pageindex * amount).Take(amount).Distinct().OrderBy(i => i.CreationTime);
-                return Ok(cars.ToArray());
+                var cars = _db.Cars.Where(i => i.Make.Contains(make ?? "") && i.Model.Contains(model ?? "") && i.Plate.Contains(plate ?? "") && i.VinNumber.Contains(vin ?? "")).Skip(startingIndex * amount).Take(amount).Distinct().OrderBy(i => i.CreationTime).ToArray();
+                return Ok(cars);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return NotFound();
+                return StatusCode(500, Json("Something went wrong"));
             }
         }
 
@@ -52,7 +51,7 @@ namespace Mechanic.Api.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return NotFound("Car not found");
+                return StatusCode(500, Json("Something went wrong"));
             }
         }
 
@@ -62,14 +61,14 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                float pages = (float)_db.Cars.Where(i => i.Make.Contains(make.ToLower()) || i.Model.Contains(model.ToLower()) || i.Plate.Contains(plate.ToLower()) || i.VinNumber.Contains(vin.ToLower())).Count() / (float)amountPrPage;
+                float pages = (float)_db.Cars.Where(i => i.Make.Contains(make) && i.Model.Contains(model.ToLower()) && i.Plate.Contains(plate) && i.VinNumber.Contains(vin)).Count() / (float)amountPrPage;
                 var amount = (int)MathF.Ceiling(pages);
                 return Ok(amount);
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return NotFound();
+                return StatusCode(500, Json("Something went wrong"));
             }
         }
 
@@ -79,10 +78,17 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
+                Guid userId = JwtAuthorization.GetUserId(HttpContext.Request.Headers.Authorization, _config);
                 if (_db.Cars.Where(i => i.Plate == plate || i.VinNumber == vinnr).Any()) {
                     return BadRequest("Car Already exists check vin or plate");
                 }
-                Car car = new(vinnr, plate, make, model);
+                var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == userId);
+                if(user == null)
+                {
+                    return NotFound(Json("User not fount"));
+                }
+
+                Car car = new(user, vinnr, plate, make, model);
                 await _db.AddAsync(car);
                 await _db.SaveChangesAsync();
                 return Ok("Car created");
@@ -130,7 +136,25 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                var issues = _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(amount).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArray();
+                CarIssue[] issues;
+                issues = _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(amount).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArray();
+                return Ok(issues);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(500, Json("something went wrong"));
+            }
+        }
+
+        [JwtTokenAuthorization]
+        [HttpGet("UserIssues")]
+        public async Task<IActionResult> GetUserIssues(int startingIndex = 0, int amount = 0, Guid userId = new(), string make = "", string model = "", string plate = "", string vin = "")
+        {
+            try
+            {
+                CarIssue[] issues;
+                issues = _db.CarIssues.Include(i => i.Creator).Where(i => i.Creator.Id == userId && i.Car.Make.Contains(make.ToLower()) && i.Car.Model.Contains(model.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Car.VinNumber.Contains(vin.ToLower())).Skip(startingIndex).Take(amount).Distinct().OrderBy(I => I.CreationTime).ToArray();
                 return Ok(issues);
             }
             catch (Exception ex)
@@ -166,7 +190,7 @@ namespace Mechanic.Api.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return NotFound();
+                return StatusCode(500, Json("Something went wrong"));
             }
         }
 
@@ -213,7 +237,7 @@ namespace Mechanic.Api.Controllers
             catch (Exception ex)
             {
                 Console.WriteLine(ex);
-                return NotFound();
+                return StatusCode(500, Json("Something went wrong"));
             }
         }
 
@@ -226,14 +250,14 @@ namespace Mechanic.Api.Controllers
                 return BadRequest("not found");
             }
             var cars = new Car[] {
-                new("vin number", "plate", "volvo", "246"),
-                new("vin number", "plate", "volvo", "246"),
-                new("vin number", "plate", "volvo", "246"),
-                new("vin number", "plate", "volvo", "246"),
-                new("vin number", "plate", "volvo", "246"),
-                new("vin number", "plate", "volvo", "246"),
-                new("vin number", "plate", "volvo", "246"),
-                new("vin number", "plate", "volvo", "246"),
+                new(user, "vin number", "plate", "volvo", "246"),
+                new(user, "vin number", "plate", "volvo", "246"),
+                new(user, "vin number", "plate", "volvo", "246"),
+                new(user, "vin number", "plate", "volvo", "246"),
+                new(user, "vin number", "plate", "volvo", "246"),
+                new(user, "vin number", "plate", "volvo", "246"),
+                new(user, "vin number", "plate", "volvo", "246"),
+                new(user, "vin number", "plate", "volvo", "246"),
             };
             await _db.AddRangeAsync(cars);
             foreach (var item in cars)

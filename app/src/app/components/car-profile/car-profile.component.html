@@ -41,13 +41,27 @@
                     </div>
                     <div style="width: 100%; display: flex; justify-content: space-around;">
                         <button [disabled]="!carForm.dirty" class="btn" mat-raised-button>Save</button>
-                        <button class="btn" *ngIf="!isAdmin" onclick="console.error('not implemented')" mat-raised-button>Delete car</button>
+                        <button class="btn" *ngIf="!isAdmin" (click)="Error()" mat-raised-button>Delete car</button>
                     </div>
                 </form>
             </div>
         </div>
     <div #issueTable class="issueDiv">
         <table style="font-size: large; width: 100%;" class="issueTable">
+            <thead>
+                <tr>
+                    <td [colSpan]="5">
+                        <form [formGroup]="searchForm" class="searchForm">
+                            <input [formControl]="searchForm.controls.make" placeholder="Make" #MakeFilter matInput value="" (keyup.enter)="Search()">
+                            <input [formControl]="searchForm.controls.model" placeholder="Model" #ModelFilter matInput value="" (keyup.enter)="Search()">
+                            <input [formControl]="searchForm.controls.plate" placeholder="Plate" #PlateFilter matInput value="" (keyup.enter)="Search()">
+                            <input [formControl]="searchForm.controls.vinnr" placeholder="Vin nr" #VinFilter matInput value="" (keyup.enter)="Search()">
+                            <button mat-raised-button (click)="Search()"><mat-icon>search</mat-icon></button>
+                            <button mat-raised-button (click)="RemoveFilters()"><mat-icon>filter_alt_off</mat-icon></button>
+                        </form>
+                    </td>
+                </tr>
+            </thead>
             <thead>
                 <th>Creator</th>
                 <th>CreationTime</th>
@@ -60,7 +74,7 @@
                     <td>{{item.creationTime}}</td>
                     <td>{{item.price}}</td>
                     <td>
-                        <button class="openBtn" mat-raised-button>Open</button>
+                        <button class="openBtn" mat-raised-button (click)="Error()">Open</button>
                         <button class="deleteBtn" mat-raised-button (click)="issueForDeletion = row">Delete</button>
                     </td>
                 </tr>

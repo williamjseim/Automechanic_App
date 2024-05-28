@@ -57,6 +57,13 @@ export class CarProfileComponent {
     vinnr: new FormControl()
   })
 
+  searchForm = new FormGroup ({
+    make: new FormControl(),
+    model: new FormControl(),
+    plate: new FormControl(),
+    vinnr: new FormControl()
+  })
+
   GetIssues(carId:string){
     this.carHttp.GetIssues(carId, 0, 10).subscribe({
       next:(value)=>{
@@ -66,6 +73,10 @@ export class CarProfileComponent {
         console.log(err);
       }
     })
+  }
+
+  Error(){
+    console.log('not implemented');
   }
 
   RemoveIssue(confirmText:string){
@@ -86,5 +97,21 @@ export class CarProfileComponent {
         }
       })
     }
+  }
+
+  Search(){
+    let make = this.searchForm.controls.make.value;
+    let model = this.searchForm.controls.model.value;
+    let plate = this.searchForm.controls.plate.value;
+    let vinnr = this.searchForm.controls.vinnr.value;
+    
+  }
+
+  RemoveFilters(){
+    this.searchForm.controls.make.reset("");
+    this.searchForm.controls.plate.reset("");
+    this.searchForm.controls.model.reset("");
+    this.searchForm.controls.vinnr.reset("");
+    this.Search();
   }
 }
