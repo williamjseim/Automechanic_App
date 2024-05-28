@@ -74,7 +74,7 @@
                     <td>{{item.creationTime}}</td>
                     <td>{{item.price}}</td>
                     <td>
-                        <button class="openBtn" mat-raised-button>Open</button>
+                        <button class="openBtn" mat-raised-button (click)="Error()">Open</button>
                         <button class="deleteBtn" mat-raised-button (click)="issueForDeletion = row">Delete</button>
                     </td>
                 </tr>
