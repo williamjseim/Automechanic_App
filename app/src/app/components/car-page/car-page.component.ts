@@ -14,10 +14,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-request-popup.component';
 @Component({
   selector: 'app-car-page',
   standalone: true,
-  imports: [AsyncPipe, RouterLink, ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [AsyncPipe, DeleteRequestPopupComponent, RouterLink, ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
   templateUrl: './car-page.component.html',
   styleUrl: './car-page.component.scss'
 })
@@ -30,9 +31,7 @@ export class CarPageComponent {
   pages:number = 0;
   currentPage:number = 0;
   SelectedRow:number = -1;
-  CarForDeletion:number = -1;
   itemsPrPage:number = 10;
-  deleteError = "";
 
   ngOnInit(){
     if(localStorage.getItem("AdminKey") != null){
@@ -76,28 +75,18 @@ export class CarPageComponent {
     }
   }
 
-  OpenDeleteDialog(index:number){
-    this.CarForDeletion = index;
-  }
-
-  RemoveCar(confirmText:string){
-    if(confirmText == "Delete"){
-      let car = this.cars![this.CarForDeletion];
-      this.DeleteCar(car.id);
-      this.cars?.splice(this.CarForDeletion, 1);
-      this.CarForDeletion = -1;
-      this.deleteError = "";
-    }
-    else{
-      this.deleteError = "Wrong input"
-    }
+  RemoveCar(index:number){
+      let car = this.cars![index];
+      this.carHttp.DeleteCar(car.id).subscribe({next:(value)=>{
+        this.cars?.splice(index, 1);
+      }});
   }
 
   RemoveFilters(){
-    let make = this.searchForm.controls.make.reset("");
-    let model = this.searchForm.controls.model.reset("");
-    let plate = this.searchForm.controls.plate.reset("");
-    let vin = this.searchForm.controls.vinnr.reset("");
+    this.searchForm.controls.make.reset("");
+    this.searchForm.controls.model.reset("");
+    this.searchForm.controls.plate.reset("");
+    this.searchForm.controls.vinnr.reset("");
     this.Search();
   }
 
@@ -124,11 +113,6 @@ export class CarPageComponent {
   private GetCarPages(amountPrPage:number){
     this.carHttp.GetPageAmount(amountPrPage).subscribe({next:(value)=>{
       this.pages = value;
-    }});
-  }
-
-  private DeleteCar(carId:string){
-    this.carHttp.DeleteCar(carId).subscribe({next:(value)=>{
     }});
   }
 

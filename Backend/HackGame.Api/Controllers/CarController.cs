@@ -121,7 +121,7 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                await _db.Cars.Where(i=>i.Id == carId).ExecuteDeleteAsync();
+                int i = await _db.Cars.Where(i=>i.Id == carId).ExecuteDeleteAsync();
                 return Ok(Json("Deletion successful"));
             }
             catch (Exception ex)
