@@ -110,6 +110,13 @@ namespace Mechanic.Api.Controllers
             }
         }
 
+        [HttpGet("IsAdmin")]
+        [JwtRoleAuthorization(Role.Admin)]
+        public async Task<IActionResult> IsUserAdmin()
+        {
+            return Ok(true);
+        }
+
 #if DEBUG
         [HttpGet("decrypt")]
         public ActionResult Decrypt(string encryptedtext)

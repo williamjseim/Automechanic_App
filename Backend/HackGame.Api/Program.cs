@@ -26,9 +26,13 @@ namespace Mechanic.Api
             //builder.Services.AddDbContext<HackerGameDbContext>(options =>
             //options.UseSqlServer(builder.Configuration.GetConnectionString("Default")));
 
+#if DEBUG
             builder.Services.AddDbContext<MechanicDatabase>(options =>
             options.UseMySql(builder.Configuration.GetConnectionString("Default"),ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Default"))));
-
+#else
+            builder.Services.AddDbContext<MechanicDatabase>(options =>
+            options.UseMySql(builder.Configuration.GetConnectionString("Prod"),ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Prod"))));
+#endif
             var app = builder.Build();
 
             app.UseCors(policy => policy

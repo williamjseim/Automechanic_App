@@ -2,14 +2,14 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Car } from '../Interfaces/car';
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CarDataService {
 
-  private port = "7247";
-  private url = `https://localhost:${this.port}/cars`
+  private url = `${environment.API_URL}/cars`
   
   constructor(private http: HttpClient) { }
 
