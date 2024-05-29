@@ -129,6 +129,31 @@ namespace Mechanic.Api.Controllers
                 return StatusCode(500, Json("Something went wrong"));
             }
         }
+        
+        [JwtTokenAuthorization]
+        [HttpGet("GetIssue")]
+        public async Task<IActionResult> GetIssue(Guid issueId)
+        {
+            try
+            {
+                var issue = await _db.CarIssues
+                .Include(i => i.Car) // Include related entities in the query result
+                .Include(i => i.Creator)
+                .FirstOrDefaultAsync(i => i.Id == issueId);
+
+                if (issue == null)
+                {
+                    return NotFound("Issue not found");
+                }
+
+                return Ok(issue);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(500, Json("Something went wrong"));
+            }
+        }
 
         [JwtTokenAuthorization]
         [HttpGet("CarIssues")]
