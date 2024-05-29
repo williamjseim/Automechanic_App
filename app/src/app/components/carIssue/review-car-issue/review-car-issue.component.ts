@@ -34,7 +34,7 @@ export class ReviewCarIssueComponent implements OnInit {
   ngOnInit(): void {
     this.formData = this.sharedService.getFormData();
     if (!this.formData) {
-      // this.router.navigateByUrl("/issue");
+      this.router.navigateByUrl("/issue");
     }
     const file = this.sharedService.getVideo();
 

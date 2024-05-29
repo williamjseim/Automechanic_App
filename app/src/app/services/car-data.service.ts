@@ -19,14 +19,10 @@ export class CarDataService {
 
   //Amount is the amount of car rows pr page
   GetCars(page: number, amount: number, make: string = "", model: string = "", plate: string = "", vin: string = ""): Observable<any> {
-    return this.http.get<Car[]>(this.url + `/GetCars?startingIndex=${page}&amount=${amount}&make=${make}&model=${model}&plate=${plate}&vin=${vin}`, { responseType: "json" })
-      .pipe(delay(2000));
-  }
+    return this.http.get<Car[]>(this.url + `/GetCars?startingIndex=${page}&amount=${amount}&make=${make}&model=${model}&plate=${plate}&vin=${vin}`, { responseType: "json" })};
 
   CreateIssue(carId: string, description: string, price: number) {
-    return this.http.get(this.url + `/CreateCarIssue?carId=${carId}&description=${description}&price=${price}`)
-      .pipe(delay(2000));
-  }
+    return this.http.get(this.url + `/CreateCarIssue?carId=${carId}&description=${description}&price=${price}`)};
   GetIssues(carId:string, startingIndex:number):Observable<any>{
     return this.http.get(this.url+`/CarIssues?carId=${carId}&startingIndex=${startingIndex}`)
   }

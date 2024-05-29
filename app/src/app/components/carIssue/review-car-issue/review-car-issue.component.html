@@ -6,40 +6,6 @@
         <mat-spinner></mat-spinner>
     </div>
 
-    <div class="review-container">
-        <h2>Car Details</h2>
-        <div class="info-box">
-            <!-- <img [src]="formData.car.image" alt="Billede af {{ formData.car.make }} {{ formData.car.model }}"> -->
-            <p><strong>Make:</strong> Volvo</p>
-            <p><strong>Model:</strong> C40</p>
-            <p><strong>Plate:</strong> AB 12 345 </p>
-            <p><strong>VIN:</strong> SNHB131312313</p>
-        </div>
-
-        <h2>Issue Details</h2>
-        <div class="info-box">
-            <p><strong>Price:</strong> 5000DKK</p>
-            <p><strong>Description:</strong> Udskiftning af bremse skiver</p>
-            <div *ngIf="videoUrl">
-                <h3>Video:</h3>
-                <video [src]="videoUrl" controls></video>
-            </div>
-        </div>
-
-        <div class="action-buttons">
-            <button class="rounded-btn" (click)="onCancel()">
-                <mat-icon aria-hidden="false" aria-label="Video Icon" fontIcon="arrow_back">
-                </mat-icon>
-            </button>
-            <button class="rounded-btn" (click)="onAccept()">
-                <mat-icon aria-hidden="false" aria-label="Video Icon" fontIcon="check">
-                </mat-icon>
-            </button>
-        </div>
-    </div>
-
-
-
     <div class="review-container" *ngIf="formData">
         <h2>Car Details</h2>
         <div class="info-box">
@@ -54,10 +20,6 @@
         <div class="info-box">
             <p><strong>Price:</strong> {{ formData.price }}</p>
             <p><strong>Description:</strong> {{ formData.description }}</p>
-            <div *ngIf="videoUrl">
-                <h3>Video:</h3>
-                <video [src]="videoUrl" controls></video>
-            </div>
         </div>
 
         <div class="action-buttons">
