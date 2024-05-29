@@ -12,10 +12,13 @@ import {MatInput, MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { RouterLink } from '@angular/router';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-request-popup.component';
 @Component({
   selector: 'app-car-page',
   standalone: true,
-  imports: [AsyncPipe, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [AsyncPipe, DeleteRequestPopupComponent, RouterLink, ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
   templateUrl: './car-page.component.html',
   styleUrl: './car-page.component.scss'
 })
@@ -25,31 +28,34 @@ export class CarPageComponent {
 
   cars?:Car[];
   isAdmin:boolean = false;
-  pages?:any[];
+  pages:number = 0;
   currentPage:number = 0;
   SelectedRow:number = -1;
-  CarForDeletion:number = -1;
   itemsPrPage:number = 10;
-
-  @ViewChild('MakeFilter', {read: ElementRef, static: false}) makefilter!: ElementRef<HTMLInputElement>
-  @ViewChild('ModelFilter', {read: ElementRef, static: false}) modelFilter!:ElementRef<MatInput>;
-  @ViewChild('PlateFilter', {read: ElementRef, static: false}) plateFilter!:ElementRef<MatInput>;
-  @ViewChild('VinFilter', {read: ElementRef, static: false}) vinFilter!:ElementRef<MatInput>;
 
   ngOnInit(){
     if(localStorage.getItem("AdminKey") != null){
       this.isAdmin = true;
     }
     this.isAdmin = true;
-    this.GetCarsHttp();
     this.GetCarPages(this.itemsPrPage);
+    this.RemoveFilters();
   }
 
+  searchForm = new FormGroup ({
+    make: new FormControl(),
+    model: new FormControl(),
+    plate: new FormControl(),
+    vinnr: new FormControl()
+  })
+
+  //gets filtered cars from server
   Search(){
-    let make = this.makefilter.nativeElement.value ?? "";
-    let model = this.modelFilter.nativeElement.value ?? "";
-    let plate = this.plateFilter.nativeElement.value ?? "";
-    let vin = this.vinFilter.nativeElement.value ?? "";
+    let make = this.searchForm.controls.make.value;
+    let model = this.searchForm.controls.model.value;
+    let plate = this.searchForm.controls.plate.value;
+    let vin = this.searchForm.controls.vinnr.value;
+    console.log(make, model, plate, vin);
     this.GetCarsHttp(make, model, plate, vin)
     this.SelectedRow = -1;
   }
@@ -63,63 +69,59 @@ export class CarPageComponent {
     }
     else{
       this.GetCarIssuesHttp(this.cars![index].id).subscribe({next:(value)=>{
-        this.cars![index].issues = value;
+        this.cars![index].issues = value.body;
       }});
       this.SelectedRow = index;
     }
   }
 
-  OpenDeleteDialog(index:number){
-    this.CarForDeletion = index;
-  }
-
-  RemoveCar(confirmText:string){
-    if(confirmText.toLocaleLowerCase() == "delete"){
-      let car = this.cars![this.CarForDeletion];
-      this.DeleteCar(car.id);
-      this.cars?.splice(this.CarForDeletion, 1);
-      this.CarForDeletion = -1;
-    }
+  RemoveCar(index:number){
+      let car = this.cars![index];
+      this.carHttp.DeleteCar(car.id).subscribe({next:(value)=>{
+        this.cars?.splice(index, 1);
+      }});
   }
 
   RemoveFilters(){
-    this.makefilter.nativeElement.value = "";
-    this.modelFilter.nativeElement.value = "";
-    this.plateFilter.nativeElement.value = "";
-    this.vinFilter.nativeElement.value = "";
+    this.searchForm.controls.make.reset("");
+    this.searchForm.controls.model.reset("");
+    this.searchForm.controls.plate.reset("");
+    this.searchForm.controls.vinnr.reset("");
     this.Search();
   }
 
-  ChangeNumberPrPage(){
+  ChangeNumberPrPage(number:Event){
+    this.itemsPrPage = JSON.parse((number.target as HTMLSelectElement).value)
     this.currentPage = 0;
+    this.GetCarPages(this.itemsPrPage);
     this.Search();
-  }
-
-  Test(text:string){
-    console.log(text);
   }
 
   //gets 10 from  cars from database
-  private GetCarsHttp(make:string="", model:string="", plate:string="", vin:string = ""){
-    this.carHttp.GetCars(this.currentPage*this.itemsPrPage, this.itemsPrPage, make, model, plate, vin).subscribe({next:(value)=>{
+  private GetCarsHttp(make:string='', model:string='', plate:string='', vin:string = ''){
+    this.carHttp.GetCars(this.currentPage, this.itemsPrPage, make, model, plate, vin).subscribe({next:(value)=>{
       this.cars = value;
     }});
   }
 
   //gets issues for a specific car
-  private GetCarIssuesHttp(carId:string):Observable<Issue[]>{
-    return this.carHttp.GetIssues(carId, 0);
+  private GetCarIssuesHttp(carId:string):Observable<any>{
+    return this.carHttp.GetIssues(carId, 0, 3);
   }
 
   //gets how many pages of cars that are in the database
   private GetCarPages(amountPrPage:number){
     this.carHttp.GetPageAmount(amountPrPage).subscribe({next:(value)=>{
-      this.pages = Array(value);
+      this.pages = value;
     }});
   }
 
-  private DeleteCar(carId:string){
-    this.carHttp.DeleteCar(carId).subscribe({next:(value)=>{
-    }});
+  JumpToPage(index:number){
+    console.log(index);
+    if(index < 0){
+      index = 0;
+    }
+    this.currentPage = index;
+    this.Search();
   }
 }

@@ -1,0 +1,10 @@
+<div class="DeletionDiv">
+    <span>Write "{{DeleteText}}" to confirm deletion</span>
+    <span style="color: red;" *ngIf="wrong">{{deleteError}}</span>
+    <input #delete class="DeleteSpan" type="text" value="">
+    <span class="DeleteSpan">This action is permanent <br> and cannot be reversed</span>
+    <div>
+        <input (click)="RemoveCar(delete.value)" class="DeletionBtn DeletionConfirmBtn" type="button" value="Confirm">
+        <input class="DeletionBtn DeletionCancelBtn" type="button" value="Cancel" (click)="Cancel()">
+    </div>
+</div>

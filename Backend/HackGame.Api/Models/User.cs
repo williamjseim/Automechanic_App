@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace Mechanic.Api.Models
 {
@@ -26,8 +27,12 @@ namespace Mechanic.Api.Models
         public Guid Id { get; set; }
         public Role Role { get; set; }
         public string Username { get; set; }
+        [JsonIgnore]
         public string Password { get; set; }
+        [JsonIgnore]
         public string Email { get; set; }
         public DateTime CreationDate { get; set; }
+        [NotMapped]
+        public string Rolename { get { return Role.ToString(); } }
     }
 }

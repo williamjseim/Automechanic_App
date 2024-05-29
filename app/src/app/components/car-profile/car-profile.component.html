@@ -1,0 +1,76 @@
+
+<app-delete-request-popup #Delete [hidden]="Delete.IsHidden" (Complete)="RemoveCar($event)"></app-delete-request-popup>
+<body>
+    <div #profileDiv class="profileDiv">
+        <div #imgDiv class="imgDiv" style="background-image: url({{imagepath}});"></div>
+            <div #infoDiv class="infoDiv">
+                <form [formGroup]="carForm" #form>
+                    <div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Make</mat-label>
+                            <input [formControl]="carForm.controls.make" [value]="car?.make" #makeInfo matInput>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Model</mat-label>
+                            <input [formControl]="carForm.controls.model" [value]="car?.model" #modelInfo matInput>
+                        </mat-form-field>
+                    </div>
+                    <div>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Plate</mat-label>
+                            <input [formControl]="carForm.controls.plate" [value]="car?.plate" #plateInfo matInput>
+                        </mat-form-field>
+                        <mat-form-field appearance="outline">
+                            <mat-label>Vin number</mat-label>
+                            <input [formControl]="carForm.controls.vinnr" [value]="car?.vinNumber" #vinInfo matInput>
+                        </mat-form-field>
+                    </div>
+                    <div style="width: 100%;">
+                        <mat-form-field style="width: 100%;" appearance="outline">
+                            <mat-label>Creation time</mat-label>
+                            <input readonly [value]="car?.creationTime" #vinInfo matInput>
+                        </mat-form-field>
+                    </div>
+                    <div style="width: 100%; display: flex; justify-content: space-around;">
+                        <button [disabled]="!carForm.dirty" class="btn" mat-raised-button>Save</button>
+                        <button class="btn" *ngIf="!isAdmin" (click)="Delete.Open(-2)" mat-raised-button>Delete car</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    <div #issueTable class="issueDiv">
+        <table style="font-size: large; width: 100%;" class="issueTable">
+            <thead>
+                <tr>
+                    <td [colSpan]="5">
+                        <form [formGroup]="searchForm" class="searchForm">
+                            <input [formControl]="searchForm.controls.make" placeholder="Make" #MakeFilter matInput value="" (keyup.enter)="Search()">
+                            <input [formControl]="searchForm.controls.model" placeholder="Model" #ModelFilter matInput value="" (keyup.enter)="Search()">
+                            <input [formControl]="searchForm.controls.plate" placeholder="Plate" #PlateFilter matInput value="" (keyup.enter)="Search()">
+                            <input [formControl]="searchForm.controls.vinnr" placeholder="Vin nr" #VinFilter matInput value="" (keyup.enter)="Search()">
+                            <button mat-raised-button (click)="Search()"><mat-icon>search</mat-icon></button>
+                            <button mat-raised-button (click)="RemoveFilters()"><mat-icon>filter_alt_off</mat-icon></button>
+                        </form>
+                    </td>
+                </tr>
+            </thead>
+            <thead>
+                <th>Creator</th>
+                <th>CreationTime</th>
+                <th>Price</th>
+                <th>Actions</th>
+            </thead>
+            <tbody *ngIf="car?.issues != null">
+                <tr *ngFor="let item of car!.issues!; let row = index;" [class]="(row%2 == 0) ? 'even':'odd'">
+                    <td><a>{{item.creator.username}}::: todo needs routing</a></td>
+                    <td>{{item.creationTime}}</td>
+                    <td>{{item.price}}</td>
+                    <td>
+                        <button class="openBtn" mat-raised-button (click)="Error()">Open</button>
+                        <button class="deleteBtn" mat-raised-button (click)="Delete.Open(row)">Delete</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>

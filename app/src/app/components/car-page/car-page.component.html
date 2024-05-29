@@ -1,87 +1,66 @@
-<div *ngIf="CarForDeletion != -1" class="DeletionDiv">
-    <span>Write Delete to confirm deletion</span>
-    <input #delete class="DeleteSpan" type="text" value="">
-    <span class="DeleteSpan">This action is permanent <br> and cannot be reversed</span>
+<app-delete-request-popup #Delete [hidden]="Delete.IsHidden" (Complete)="RemoveCar($event)"></app-delete-request-popup>
 
-    <div>
-        <input (click)="RemoveCar(delete.value)" class="DeletionBtn DeletionConfirmBtn" type="button" value="Confirm">
-        <input class="DeletionBtn DeletionCancelBtn" type="button" value="Cancel" (click)="CarForDeletion = -1">
-    </div>
-</div>
 <!-- only shows if cars array isnt null -->
-<body (click)="SelectRow(-1, $event); CarForDeletion = -1;" *ngIf="cars != null; else elseBlock">
-    <div><button>Add Car</button></div>
+<body (click)="SelectRow(-1, $event);" *ngIf="cars != null; else elseBlock">
+    <button class="CarFormBtn" mat-raised-button [routerLink]="['/createcar']" ><mat-icon>add</mat-icon> Create new car</button>
     <div class="tableDiv">
         <table>
             <thead>
-                <th>Make</th>
-                <th>Model</th>
-                <th>Plate</th>
-                <th>Vin Number</th>
-                <th>Actions</th>
-            </thead>
-            <tbody >
                 <tr>
-                    <td [colSpan]="5">
-                        <mat-form-field>
-                            <mat-label>Search by make</mat-label>
-                            <input #MakeFilter matInput value="" (keyup.enter)="Search()">
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Search by model</mat-label>
-                            <input #ModelFilter matInput value="" (keyup.enter)="Search()">
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Search by plate</mat-label>
-                            <input #PlateFilter matInput value="" (keyup.enter)="Search()">
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label>Search by vin</mat-label>
-                            <input #VinFilter matInput value="" (keyup.enter)="Search()">
-                        </mat-form-field>
-                        <mat-form-field>
-                            <mat-label style="font-size: large;">Select option</mat-label>
-                            <mat-select value="10" [(value)]="itemsPrPage" (valueChange)="ChangeNumberPrPage()" matNativeControl>
-                                <mat-option value="10">10 items</mat-option>
-                                <mat-option value="25">25 items</mat-option>
-                                <mat-option value="50">50 items</mat-option>
-                            </mat-select>
-                        </mat-form-field>
-                        <button (click)="Search()" mat-fab style="background-color: limegreen; margin-left: 1%;"><mat-icon>search</mat-icon></button>
-                        <button (click)="RemoveFilters()" mat-fab style="background-color: limegreen; margin-left: 1%;"><mat-icon>filter_alt_off</mat-icon></button>
+                    <td [colSpan]="6">
+                        <form [formGroup]="searchForm" class="searchForm">
+                            <input formControlName="make" placeholder="Make" #MakeFilter matInput value="" (keyup.enter)="Search()">
+                            <input formControlName="model" placeholder="Model" #ModelFilter matInput value="" (keyup.enter)="Search()">
+                            <input formControlName="plate" placeholder="Plate" #PlateFilter matInput value="" (keyup.enter)="Search()">
+                            <input formControlName="vinnr" placeholder="Vin nr" #VinFilter matInput value="" (keyup.enter)="Search()">
+                            <select #select placeholder="Select Option" (change)="ChangeNumberPrPage($event)">
+                                <option value="10">10 items</option>
+                                <option value="25">25 items</option>
+                                <option value="50">50 items</option>
+                            </select>
+                            <button mat-raised-button (click)="Search()"><mat-icon>search</mat-icon></button>
+                            <button mat-raised-button (click)="RemoveFilters()"><mat-icon>filter_alt_off</mat-icon></button>
+                        </form>
                     </td>
                 </tr>
-            </tbody>
+            </thead>
+            <thead>
+                <th>Make</th>
+                <th>Model</th>
+                <th>Licens Plate</th>
+                <th>Vin</th>
+                <th></th>
+                <th>Actions</th>
+            </thead>
             <tbody (click)="SelectRow(row, $event)" [class]="[row%2==0 ? 'EvenTBody':'OddTBody']" *ngFor="let item of cars; let row = index">
                 <tr style="border-bottom: 2px solid black;">
                     <td>{{item.make}}</td>
                     <td>{{item.model}}</td>
                     <td>{{item.plate}}</td>
                     <td>{{item.vinNumber}}</td>
+                    <td><mat-icon *ngIf="row != SelectedRow">expand_more</mat-icon><mat-icon *ngIf="row == SelectedRow">expand_less</mat-icon></td>
                     <td (click)="$event.stopPropagation()" class="actionTd">
-                        <input type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Open">
-                        <input type="button" *ngIf="isAdmin" (click)="CarForDeletion = row" class="DeleteButton" (click)="OpenDeleteDialog(row)" value="Delete">
+                        <input [routerLink]="['/carprofile']" [queryParams]="{carId: item.id}" routerLinkActive="router-link-active"  type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Open">
+                        <input type="button" *ngIf="isAdmin" class="DeleteButton" (click)="Delete.Open(row)" value="Delete">
                     </td>
                 </tr>
                 <tr>
                     <tr (click)="$event.stopPropagation()">
-                        <td style="padding: 0; margin: 0;" colspan="5">
+                        <td style="padding: 0; margin: 0;" colspan="6">
                             <div *ngIf="row==SelectedRow" style="width: 100%; background-color: transparent;">
                                 <table *ngIf="item.issues !=  null; else elseBlock" style="font-size: large;">
                                     <thead>
                                         <th>Issues</th>
-                                        <th>Tags</th>
                                         <th>Creation Date</th>
-                                        <th>Description</th>
                                         <th>Price</th>
                                         <th>Actions</th>
                                     </thead>
                                     <tbody>
-                                        <tr *ngFor="let item of item.issues">
-                                            <td>{{item.creator}}</td>
-                                            <td>{{item.createTime}}</td>
-                                            <td>{{item.description}}</td>
+                                        <tr style="border-bottom: 2px solid black;" [class]="[i%2==0 ? 'OddTBody':'EvenTBody']" *ngFor="let item of item.issues; let i = index">
+                                            <td>{{item.creator.username}}</td>
+                                            <td>{{item.creationTime}}</td>
                                             <td>{{item.price}}</td>
+                                            <td><input [routerLink]="['/error']" routerLinkActive="router-link-active"  type="button" style="margin: 0; padding: 0; width: 100%;" class="EditButton" value="Open"></td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -92,10 +71,14 @@
         </table>
         <div ></div>
     </div>
-    <div *ngIf="pages != null" class="ButtonDiv">
-        <button *ngIf="currentPage > 1" class="PageSwapBtn">Prev</button>
-        <button [ngClass]="[i==currentPage ? 'SelectedPageBtn' : 'PageBtn']" *ngFor="let item of pages; let i = index">{{i+1}}</button>
-        <button *ngIf="currentPage < pages!.length-1" class="PageSwapBtn">Next</button>
+    <div *ngIf="pages != 0" class="ButtonDiv">
+        <button (click)="JumpToPage(currentPage-1)" [disabled]="!(currentPage >= 1)" class="PageSwapBtn">Prev</button>
+        <button (click)="JumpToPage(currentPage-2)" *ngIf="currentPage-2 >= 0" class="PageBtn">{{currentPage-1}}</button>
+        <button (click)="JumpToPage(currentPage-1)" *ngIf="currentPage-1 >= 0" class="PageBtn">{{currentPage}}</button>
+        <button class="SelectedPageBtn">{{currentPage+1}}</button>
+        <button (click)="JumpToPage(currentPage+1)" *ngIf="currentPage + 1 <= pages-1" class="PageBtn">{{currentPage+2}}</button>
+        <button (click)="JumpToPage(currentPage+2)" *ngIf="currentPage + 2 <= pages-1" class="PageBtn">{{currentPage+3}}</button>
+        <button (click)="JumpToPage(currentPage+1)" [disabled]="!(currentPage < pages-1)" class="PageSwapBtn">Next</button>
     </div>
 </body>
 <ng-template #elseBlock>

@@ -1,7 +1,11 @@
+import { Car } from "./car";
+import { User } from "./user";
+
 export interface Issue {
     id:string;
-    creator:string;
+    creator:User;
+    car:Car;
     description:string;
     price:number;
-    createTime:Date;
+    creationTime:Date;
 }

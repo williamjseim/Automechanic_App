@@ -28,4 +28,8 @@ export class LoginService {
   verifyToken(token: any): Observable<any> {
     return this.http.put(`${this.url}/Verify?token=${token}`, null)
   }
+
+  GetUser():Observable<any>{
+    return this.http.get(this.url+"/GetUser");
+  }
 }

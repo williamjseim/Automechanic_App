@@ -67,6 +67,33 @@ namespace Mechanic.Api.Controllers
             }
         }
 
+        [JwtTokenAuthorization]
+        [HttpGet("GetUser")]
+        public async Task<IActionResult> GetUser()
+        {
+            try
+            {
+                var token = this.HttpContext.Request.Headers.Authorization.ToString();
+                Guid id = JwtAuthorization.GetUserId(token, _config);
+                var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == id);
+                if (user == null)
+                {
+                    return NotFound("no user found");
+                }
+                return Ok(user);
+            }
+            catch {
+                return StatusCode(500, Json("Something went wrong"));
+            }
+        }
+
+        [JwtRoleAuthorization(Role.Admin)]
+        [HttpGet("GetAllUsers")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            throw new NotImplementedException();
+        }
+
         [JwtRoleAuthorization(Role.Admin)]
         [HttpPut("Delete")]
         public async Task<IActionResult> Delete(Guid userId)
