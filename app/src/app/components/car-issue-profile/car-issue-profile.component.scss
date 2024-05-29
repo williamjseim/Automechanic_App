@@ -1,0 +1,84 @@
+body {
+    overflow-y: scroll;
+}
+
+.container {
+    text-align: center;
+    // padding: 0 5vh;
+}
+
+.car-detail-section {
+    padding: 1vh 5vw;
+
+    .car-detail {
+        // display: flex;
+    }
+
+    mat-form-field {
+        width: 20vh;
+    }
+
+    border-bottom: 1px dotted;
+}
+
+.issue-detail-section {
+    padding: 0vh 7vw;
+
+    .issue-detail {
+        display: flex;
+
+        textarea {
+            height: 20vh;
+        }
+
+    }
+    border-bottom: 1px dotted;
+}
+
+.video-section {
+
+    border-bottom: 1px solid;
+}
+
+.button-section {
+    padding-top: 3vh;
+    display: flex;
+    justify-content: space-evenly;
+    button {
+        margin: 5px;
+    }
+    button:hover {
+        background-color: var(--zbc-btn-hover);
+    }
+    .action-button {
+            padding: 4vh;
+                border-radius: 10%;
+                color: var(--zbc-foreground);
+                background-color: var(--zbc-blue);
+                border: none;
+    }
+        .rounded-btn .mat-icon {
+            scale: 3;
+        }
+}
+.small-field {
+    width: 40vw;
+}
+
+mat-form-field {
+    width: 100%;
+}
+
+// Progress spinner overlay
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}

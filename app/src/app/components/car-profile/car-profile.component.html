@@ -66,7 +66,7 @@
                     <td>{{item.creationTime}}</td>
                     <td>{{item.price}}</td>
                     <td>
-                        <button class="openBtn" mat-raised-button (click)="Error()">Open</button>
+                        <button class="openBtn" mat-raised-button [routerLink]="['/issueprofile']" [queryParams]="{issueId: item.id}">Open</button>
                         <button class="deleteBtn" mat-raised-button (click)="Delete.Open(row)">Delete</button>
                     </td>
                 </tr>

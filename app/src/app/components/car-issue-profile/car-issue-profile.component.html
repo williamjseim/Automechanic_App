@@ -1,0 +1,63 @@
+<body>
+
+    @if (loading) {
+    <div class="overlay">
+        <mat-spinner></mat-spinner>
+    </div>
+    }
+    @else {
+    <div class="container">
+        <div class="car-detail-section">
+            <div class="car-detail">
+                <mat-form-field appearance="outline">
+                    <mat-label>Fabrikant</mat-label>
+                    <input matInput readonly="true" [value]="issue?.car?.make">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Model</mat-label>
+                    <input matInput readonly="true" [value]="issue?.car?.model">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Nummerplade</mat-label>
+                    <input matInput readonly="true" [value]="issue?.car?.plate">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>VIN Nummer</mat-label>
+                    <input matInput readonly [value]="issue?.car?.vinNumber">
+                </mat-form-field>
+            </div>
+            <div class="car-detail">
+            </div>
+        </div>
+
+        <div class="video-section">
+            <h2>Video</h2>
+            <!-- Show video if available, else prompt user to record one for this issue -->
+        </div>
+
+        <div class="issue-detail-section">
+            <h2>Detaljer</h2>
+            <div class="issue-detail">
+                <mat-form-field class="small-field" appearance="outline">
+                    <mat-label>Pris</mat-label>
+                    <input matInput readonly [value]="issue?.price">
+                </mat-form-field>
+                <mat-form-field appearance="outline">
+                    <mat-label>Dato for oprettelse</mat-label>
+                    <input matInput readonly [value]="issue?.creationTime | date:'dd/MM/yyyy HH:mm'">
+                </mat-form-field>
+            </div>
+            <div class="issue-detail">
+                <mat-form-field appearance="outline">
+                    <mat-label>Beskrivelse</mat-label>
+                    <textarea matInput readonly [value]="issue?.description"></textarea>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="button-section">
+            <button [routerLink]="'/cars'" routerLinkActive="router-link-active" class="action-button">Gå Tilbage</button>
+            <button class="action-button">Marker som fuldført</button>
+        </div>
+    </div>
+    }
+</body>
