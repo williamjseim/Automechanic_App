@@ -4,23 +4,35 @@ body {
 
 .review-container {
     text-align: center;
-    position: absolute;
-    margin: 0;
-    padding: 0;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border: 1px solid currentColor;
-    border-radius: 10%;
-    padding: 60px 50px 40px 50px;
+    padding: 0 5vh;
 }
 
 p {
     text-align: left;
 }
 
-.info-box {
-    margin-bottom: 20px;
+.flex {
+    display: flex;
+}
+.car-section {
+    display: flex;
+    justify-content: center;
+}
+
+.description-container {
+    text-align: left;
+    width: 100%;
+
+    textarea {
+        height: 20vh;
+    }
+}
+
+.description-content {
+    word-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    max-width: 100%;
 }
 
 .car-details img {

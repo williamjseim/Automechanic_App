@@ -1,6 +1,7 @@
 <body>
     <app-progress-bar [progress]="60"></app-progress-bar>
 
+    <h2>Create Issue</h2>
     <div class="container flex-center-col">
         <form class="flex-center-col" [formGroup]="carIssueForm" (ngSubmit)="onSubmit()" #form>
             <div class="input-form-row">
@@ -23,14 +24,14 @@
                     <mat-error>Valg af bil er <strong>nødvendigt</strong></mat-error>}
                 </mat-form-field>
 
-                <mat-form-field class="form-input-small">
+                <mat-form-field class="form-input-small" appearance="outline">
                     <mat-label>Pris</mat-label>
                     <input type="number" matInput formControlName="price" [errorStateMatcher]="matcher"
                         placeholder="Eks. 1000">
                 </mat-form-field>
             </div>
             <div>
-                <mat-form-field class="form-textarea">
+                <mat-form-field class="form-textarea" appearance="outline">
                     <mat-label>Beskrivelse</mat-label>
                     <textarea matInput formControlName="description" [errorStateMatcher]="matcher"
                         placeholder=""></textarea>
