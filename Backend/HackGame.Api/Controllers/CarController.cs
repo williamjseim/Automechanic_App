@@ -165,23 +165,29 @@ namespace Mechanic.Api.Controllers
         }
 
         [JwtTokenAuthorization]
-        [HttpGet("CreateCarIssue")]
+        [HttpPut("CreateCarIssue")]
         public async Task<IActionResult> CreateCarIssues(Guid carId, string description, decimal price)
         {
             try
             {
+                Guid userId = JwtAuthorization.GetUserId(Request.Headers.Authorization, _config);
+
+                var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == userId);
+                if(userId == null)
+                {
+                    return Unauthorized("User doesnt exist");
+                }
+                else if (user == null)
+                {
+                    return NotFound(Json("User not fount"));
+                }
+
                 Car car = await _db.Cars.FirstOrDefaultAsync(i=>i.Id == carId);
                 if(car == null)
                 {
                     return NotFound("Car not found");
                 }
-                string token = this.HttpContext.Request.Headers.First(i => i.Key == "Bearer").Value;
-                User user = await _db.Users.FirstOrDefaultAsync(i => i.Id == JwtAuthorization.GetUserId(token, _config));
-                if(user == null)
-                {
-                    return Unauthorized("User doesnt exist");
-                }
-
+              
                 CarIssue issue = new(car, user, description, price);
                 await _db.AddAsync(issue);
                 await _db.SaveChangesAsync();

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { ProgressBarComponent } from '../../progress-bar/progress-bar.component';
-import { VideoApiService } from '../../../services/video-api.service';
 import { CommonModule } from '@angular/common';
 import {
   FormControl,
@@ -18,7 +17,6 @@ import { MatIcon } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select'
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedService } from '../../../services/shared.service';
-import { NewIssue } from '../../../Interfaces/newIssue';
 import { Car } from '../../../Interfaces/car';
 import { CarDataService } from '../../../services/car-data.service';
 
@@ -37,59 +35,62 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   styleUrl: './create-car-issue.component.scss'
 })
 export class CreateCarIssueComponent {
+
   carIssueForm = new FormGroup({
     car: new FormControl('', [Validators.required]),
     price: new FormControl('', [Validators.required]),
-    description: new FormControl(''),
+    description: new FormControl('', [Validators.required]),
+    searchPlate: new FormControl(''),
   });
 
   matcher = new MyErrorStateMatcher();
   loading = false;
 
-  cars: any[] = [];
-
-  testUrl: string = "assets/20240521110232-video.mp4";
-  videoUrl: string | ArrayBuffer | null = null;
-
+  cars: Car[] = [];
+    
   constructor(
-    public videoService: VideoApiService,
     public sharedService: SharedService,
     private router: Router,
     private route: ActivatedRoute,
     private carService: CarDataService
   ) { }
 
-
   ngOnInit(): void {
-    const file = this.sharedService.getVideo();
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event: any) => {
-        this.videoUrl = event.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
 
+    this.getCars();
+    const savedData = this.sharedService.getFormData();
+    if (savedData) {
+      this.carIssueForm.patchValue(savedData);
+    }
+  }
+
+  getCars() {
     this.loading = true;
-    this.carService.GetCars(0, 5000)
+    const cars: Car[] = this.sharedService.getCars();
+    if (cars.length > 0) {
+      this.cars = cars;
+      this.loading = false;
+    }
+    else {
+      this.carService.GetCars(0, 5000)
       .subscribe(res => {
         this.cars = res;
+        this.sharedService.setCars(this.cars);
         this.loading = false;
       });
+    }
+  }
+
+  // 
+  compareCars(car1: any, car2: any) {
+    console.log(car1);
+    console.log(car2);
+    return car1 && car2 && car1.id === car2.id;
   }
 
   onSubmit() {
     if (this.carIssueForm.valid) {
-
-      const formValue = this.carIssueForm.value;
-
-      const newIssue: NewIssue = {
-        car: formValue.car as unknown as Car,
-        price: Number(formValue.price),
-        description: formValue.description as string,
-      };
-
-      this.sharedService.setCarIssueData(newIssue);
+      this.sharedService.setFormData(this.carIssueForm.value);
       this.router.navigate(['submit'], { relativeTo: this.route });
     }
   }

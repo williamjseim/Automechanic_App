@@ -1,11 +1,38 @@
-.review-container {
-    padding: 20px;
-    text-align: center;
+body {
+    overflow-y: scroll;
 }
 
-.car-details,
-.issue-details {
-    margin-bottom: 20px;
+.review-container {
+    text-align: center;
+    padding: 0 5vh;
+}
+
+p {
+    text-align: left;
+}
+
+.flex {
+    display: flex;
+}
+.car-section {
+    display: flex;
+    justify-content: center;
+}
+
+.description-container {
+    text-align: left;
+    width: 100%;
+
+    textarea {
+        height: 20vh;
+    }
+}
+
+.description-content {
+    word-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    max-width: 100%;
 }
 
 .car-details img {
@@ -29,20 +56,27 @@
     margin: 20px auto 0;
 }
 
+button {
+    margin: 5px;
+}
+
 .rounded-btn {
-    padding: 10px;
+    padding: 4vh;
+    border-radius: 50%;
+    color: var(--zbc-foreground);
+    background-color: var(--zbc-blue);
     border: none;
-    border-radius: 5px;
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    width: 48%;
 }
 
 .rounded-btn:hover {
     background-color: #0056b3;
 }
 
+.rounded-btn .mat-icon {
+    scale: 3;
+}
+
+// Progress spinner overlay
 .overlay {
     position: fixed;
     top: 0;

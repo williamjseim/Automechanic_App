@@ -1,26 +1,56 @@
-.container {
+body {
+    overflow-y: scroll;
+}
+
+.flex-center-col {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-.example-form {
-    // min-width: 150px;
-    // max-width: 500px;
-    display: inline-block;
-    width: 100%;
+h2 {
     text-align: center;
 }
+.input-form-row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 90vw;
 
-.example-full-width {
-    // width:25%;
-    margin-left: 1vh;
-    margin-right: 1vh;
+    .form-input-small {
+        width: 35vw;
+        max-width: 150px;
+    }
+    .form-input-big {
+        width: 65vw;
+    }
 }
 
-.textarea {
-    width: 50vh;
+
+.form-textarea {
+    width: 84vw;
+
+    textarea {
+        height: 20vh;
+    }
+}
+form {   
+    width: 100%;
+}
+
+mat-form-field {
+    margin-left: 2vh;
+    margin-right: 2vh;
+}
+
+mat-error {
+    overflow: hidden;
+}
+
+.form-input {
+    display: inline-block;
+    width: 50%;
 }
 
 button {
@@ -33,10 +63,10 @@ button {
     color: var(--zbc-foreground);
     background-color: var(--zbc-blue);
     border: none;
-    margin-left: 10vh;
-    margin-right: 10vh;
 }
-
+.rounded-btn:hover {
+    background-color: #0056b3;
+}
 .rounded-btn .mat-icon {
     scale: 3;
 }
@@ -45,40 +75,11 @@ button {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    max-width: 640px;
-    /* Same width as the video */
 }
 
-.video-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 
-    /* Set a maximum width for the video container */
-    // margin: 0 auto;
-    /* Center the container horizontally */
-
-}
-
-.video-container video {
-    width: 480px;
-    height: 320px;
-}
-
-@media screen and (max-width: 525px) {
-    .video-container video {
-        width: 240px;
-        height: 185px;
-    }
-
-    .textarea {
-        width: 30vh;
-    }
-
-    .rounded-btn {
-        margin-left: 2vh;
-        margin-right: 2vh;
-
-    }
-
+.mat-form-search {
+    margin: 0;
+    padding: 0;
+    width: 100%;
 }

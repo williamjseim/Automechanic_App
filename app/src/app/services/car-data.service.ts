@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Car } from '../Interfaces/car';
+
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -18,9 +19,8 @@ export class CarDataService {
   }
 
   //Amount is the amount of car rows pr page
-  GetCars(page:number, amount:number, make:string="", model:string="", plate:string="", vin:string = ""):Observable<any>{
-    return this.http.get<Car[]>(this.url+`/GetCars?startingIndex=${page}&amount=${amount}&make=${make}&model=${model}&plate=${plate}&vin=${vin}`, {responseType: "json"});
-  }
+  GetCars(page: number, amount: number, make: string = "", model: string = "", plate: string = "", vin: string = ""): Observable<any> {
+    return this.http.get<Car[]>(this.url + `/GetCars?startingIndex=${page}&amount=${amount}&make=${make}&model=${model}&plate=${plate}&vin=${vin}`, { responseType: "json" })};
 
   GetIssues(carId:string, startingIndex:number, amount:number):Observable<any>{
     return this.http.get(this.url+`/CarIssues?carId=${carId}&startingIndex=${startingIndex}&amount=${amount}`, {observe: "response"})
