@@ -165,7 +165,7 @@ namespace Mechanic.Api.Controllers
         }
 
         [JwtTokenAuthorization]
-        [HttpGet("CreateCarIssue")]
+        [HttpPut("CreateCarIssue")]
         public async Task<IActionResult> CreateCarIssues(Guid carId, string description, decimal price)
         {
             try
