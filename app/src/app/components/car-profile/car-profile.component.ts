@@ -89,7 +89,6 @@ export class CarProfileComponent {
       console.log(this.car!.issues[this.issueForDeletion].id);
       this.carHttp.DeleteIssue(this.car!.issues[this.issueForDeletion].id).subscribe({
         next:(value)=>{
-          console.log(value);
           this.car!.issues.splice(this.issueForDeletion, 1);
           this.issueForDeletion = -1;
         },
@@ -105,13 +104,13 @@ export class CarProfileComponent {
     let model = this.searchForm.controls.model.value;
     let plate = this.searchForm.controls.plate.value;
     let vinnr = this.searchForm.controls.vinnr.value;
-    
+    //todo add filter call
   }
 
   RemoveCar(index:number){
     if(index == -2){
       this.carHttp.DeleteCar(this.car!.id).subscribe({next:value=>{
-        this.router.navigate([""]);
+        this.router.navigate(["cars"]);
       }})
     }
     else{
@@ -127,5 +126,10 @@ export class CarProfileComponent {
     this.searchForm.controls.model.reset("");
     this.searchForm.controls.vinnr.reset("");
     this.Search();
+  }
+
+  CreateIssue(){
+    console.log("not implemented")
+    this.router.navigate(["eror"])
   }
 }

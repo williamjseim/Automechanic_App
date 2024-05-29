@@ -3,7 +3,15 @@ body{
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    padding-top: 10%;
+    padding-top: 5%;
+    span{
+        font-size: xx-large;
+        color: red;
+    }
+    form{
+        display: flex;
+        flex-direction: column;
+    }
 }
 
 .btn{
