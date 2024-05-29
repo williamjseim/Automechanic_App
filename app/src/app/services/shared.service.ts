@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 import { NewIssue } from '../Interfaces/newIssue';
+import { BehaviorSubject } from 'rxjs';
+import { Car } from '../Interfaces/car';
 
 @Injectable({
   providedIn: 'root'
@@ -7,10 +9,18 @@ import { NewIssue } from '../Interfaces/newIssue';
 export class SharedService {
 
   private videoFile: File | null = null;
-  private carIssueFormData: NewIssue | null = null
-  
+  private cars: Car[] = [];
+  private formDataSubject = new BehaviorSubject<any>(null);
+  formData$ = this.formDataSubject.asObservable();
   constructor() { }
 
+  setFormData(data: any) {
+    this.formDataSubject.next(data);
+  }
+
+  getFormData() {
+    return this.formDataSubject.getValue();
+  }
 
   setVideo(file: File): void {
     this.videoFile = file;
@@ -20,10 +30,11 @@ export class SharedService {
     return this.videoFile;
   }
 
-  setCarIssueData(data: NewIssue) {
-    this.carIssueFormData = data;
+  setCars(cars: Car[]): void {
+    this.cars = cars;
   }
-  getCarIssueData(): NewIssue | null  {
-    return this.carIssueFormData;
+
+  getCars(): Car[] {
+    return this.cars;
   }
 }

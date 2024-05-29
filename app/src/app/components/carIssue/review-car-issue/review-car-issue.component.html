@@ -1,35 +1,36 @@
-<app-progress-bar [progress]="82"></app-progress-bar>
+<body>
 
-<div *ngIf="loading" class="overlay">
-    <mat-spinner></mat-spinner>
-</div>
+    <app-progress-bar [progress]="82"></app-progress-bar>
 
-<div class="review-container" *ngIf="formData">
-    <h2>Car Details</h2>
-    <div class="car-details">
-        <!-- <img [src]="formData.car.image" alt="Billede af {{ formData.car.make }} {{ formData.car.model }}"> -->
-        <p><strong>Make:</strong> {{ formData.car.make }}</p>
-        <p><strong>Model:</strong> {{ formData.car.model }}</p>
-        <p><strong>Plate:</strong> {{ formData.car.plate }}</p>
-        <p><strong>VIN:</strong> {{ formData.car.vinNumber }}</p>
+    <div *ngIf="loading" class="overlay">
+        <mat-spinner></mat-spinner>
     </div>
 
-    <h2>Issue Details</h2>
-    <div class="issue-details">
-        <p><strong>Price:</strong> {{ formData.price }}</p>
-        <p><strong>Description:</strong> {{ formData.description }}</p>
-        <div *ngIf="videoUrl">
-            <h3>Video:</h3>
-            <video [src]="videoUrl" controls></video>
+    <div class="review-container" *ngIf="formData">
+        <h2>Car Details</h2>
+        <div class="info-box">
+            <!-- <img [src]="formData.car.image" alt="Billede af {{ formData.car.make }} {{ formData.car.model }}"> -->
+            <p><strong>Make:</strong> {{ formData.car.make }}</p>
+            <p><strong>Model:</strong> {{ formData.car.model }}</p>
+            <p><strong>Plate:</strong> {{ formData.car.plate }}</p>
+            <p><strong>VIN:</strong> {{ formData.car.vinNumber }}</p>
+        </div>
+
+        <h2>Issue Details</h2>
+        <div class="info-box">
+            <p><strong>Price:</strong> {{ formData.price }}</p>
+            <p><strong>Description:</strong> {{ formData.description }}</p>
+        </div>
+
+        <div class="action-buttons">
+            <button class="rounded-btn" (click)="onCancel()">
+                <mat-icon aria-hidden="false" aria-label="Video Icon" fontIcon="arrow_back">
+                </mat-icon>
+            </button>
+            <button class="rounded-btn" (click)="onAccept()">
+                <mat-icon aria-hidden="false" aria-label="Video Icon" fontIcon="check">
+                </mat-icon>
+            </button>
         </div>
     </div>
-
-    <div class="action-buttons">
-        <button class="rounded-btn" (click)="onCancel()">
-            Cancel
-        </button>
-        <button class="rounded-btn" (click)="onAccept()">
-            Accept
-        </button>
-    </div>
-</div>
+</body>
