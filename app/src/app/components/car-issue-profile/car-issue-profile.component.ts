@@ -44,7 +44,7 @@ export class CarIssueProfileComponent implements OnInit {
       error: (error) => {
         this.issueNotFound = true;
         this.loading = false;
-        this.router.navigate(['/car'])
+        this.router.navigate(['/cars'])
       }
     });
   }
@@ -55,13 +55,13 @@ export class CarIssueProfileComponent implements OnInit {
         this.issue = issue;
         this.loading = false;
         if (issue == null) {
-          this.router.navigate(['/car'])
+          this.router.navigate(['/cars'])
         }
       },
       error: (error) => {
         this.issueNotFound = true;
         this.loading = false
-        this.router.navigate(['/car'])
+        this.router.navigate(['/cars'])
       }
     });
   }
