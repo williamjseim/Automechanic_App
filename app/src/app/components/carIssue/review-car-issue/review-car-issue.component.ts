@@ -10,8 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NewIssue } from '../../../Interfaces/newIssue';
 import { CarDataService } from '../../../services/car-data.service';
-import { catchError, finalize, of } from 'rxjs';
-
+import { MatSnackBar } from '@angular/material/snack-bar'
 @Component({
   selector: 'app-review-car-issue',
   standalone: true,
@@ -28,48 +27,39 @@ export class ReviewCarIssueComponent implements OnInit {
   constructor(
     private router: Router,
     public sharedService: SharedService,
-    private carService: CarDataService
+    private carService: CarDataService,
+    private snackbar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
+    this.getFormData();
+  }
+
+  getFormData() {    
     this.formData = this.sharedService.getFormData();
     if (!this.formData) {
       this.router.navigateByUrl("/issue");
     }
-    const file = this.sharedService.getVideo();
-
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event: any) => {
-        this.videoUrl = event.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
   }
+
+  // Navigate to the previous page
   onCancel() {
-    this.router.navigate(['issue']); // Navigate to the home or previous page
+    this.router.navigate(['issue']); 
   }
 
   // Handle the accept action
   onAccept() {
-
     this.loading = true;
-    this.carService.CreateIssue(this.formData?.car.id!, this.formData?.description!, this.formData?.price!)
-      .pipe(
-        catchError(error => {
-          // Handle the error
-          console.error('An error occurred:', error);
-
-          // Return an empty observable or a default value to suppress the error
-          return of(null);  // You can change 'null' to an appropriate default value if needed
-        }),
-        finalize(() => {
-          this.loading = false;
-        })
-      ).subscribe({
-      next: () => this.loading = false,
-      error: (err) => console.log(err),
-      complete: () => console.info("completed issue request"),  
-    })
+    this.carService.CreateIssue(this.formData?.car.id!, this.formData?.description!, this.formData?.price!).subscribe({
+      next: () => { 
+        this.loading = false;
+        this.sharedService.setFormData(null);
+        this.snackbar.open('Issue created', 'Close', { duration: 4000 });
+        this.router.navigate(['issue']);
+      },
+      error: (err) => { 
+        console.log(err);
+      },
+    });
   }
 }

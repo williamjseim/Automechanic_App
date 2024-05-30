@@ -1,7 +1,7 @@
 import { Component, ElementRef, Input, ViewChild, viewChild } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Car } from '../../Interfaces/car';
-import { AsyncPipe } from '@angular/common';
+import { AsyncPipe, DatePipe } from '@angular/common';
 import { NgIf, NgFor, NgClass} from '@angular/common';
 import { NgStyle } from '@angular/common';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
@@ -18,7 +18,7 @@ import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-requ
 @Component({
   selector: 'app-car-page',
   standalone: true,
-  imports: [AsyncPipe, DeleteRequestPopupComponent, RouterLink, ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [AsyncPipe, DatePipe, DeleteRequestPopupComponent, RouterLink, ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
   templateUrl: './car-page.component.html',
   styleUrl: './car-page.component.scss'
 })

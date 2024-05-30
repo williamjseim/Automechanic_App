@@ -12,8 +12,6 @@ export class ProgressBarComponent {
   @Input() progress: number = 0;
 
   stepLabels: string[] = [
-    "Login",
-    "Record",
     "Review",
     "Submit"
   ];

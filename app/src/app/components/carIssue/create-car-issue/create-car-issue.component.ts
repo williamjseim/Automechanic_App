@@ -56,12 +56,8 @@ export class CreateCarIssueComponent {
   ) { }
 
   ngOnInit(): void {
-
     this.getCars();
-    const savedData = this.sharedService.getFormData();
-    if (savedData) {
-      this.carIssueForm.patchValue(savedData);
-    }
+    this.getExistingData();
   }
 
   getCars() {
@@ -81,11 +77,10 @@ export class CreateCarIssueComponent {
     }
   }
 
-  // 
-  compareCars(car1: any, car2: any) {
-    console.log(car1);
-    console.log(car2);
-    return car1 && car2 && car1.id === car2.id;
+  getExistingData() {
+    const savedData = this.sharedService.getFormData();
+    if (savedData)
+      this.carIssueForm.patchValue(savedData);
   }
 
   onSubmit() {
@@ -93,10 +88,5 @@ export class CreateCarIssueComponent {
       this.sharedService.setFormData(this.carIssueForm.value);
       this.router.navigate(['submit'], { relativeTo: this.route });
     }
-  }
-
-  onCancel() {
-    // Navigate back to the previous page
-    this.router.navigateByUrl('record');
   }
 }
