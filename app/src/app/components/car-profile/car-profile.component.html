@@ -35,6 +35,9 @@
                         <button [disabled]="!carForm.dirty" class="btn" mat-raised-button>Save</button>
                         <button class="btn" *ngIf="!isAdmin" (click)="Delete.Open(-2)" mat-raised-button>Delete car</button>
                     </div>
+                    <div style="width: 100%; padding-top: 1%; display: flex; justify-content: space-around;">
+                        <button class="btn" mat-raised-button (click)="CreateIssue()" >Create Issue</button>
+                    </div>
                 </form>
             </div>
         </div>

@@ -29,6 +29,7 @@ export class DeleteRequestPopupComponent {
     }
     else{
       this.wrong = true;
+      this.Error.emit();
     }
   }
 
