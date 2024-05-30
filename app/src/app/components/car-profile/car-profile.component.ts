@@ -11,11 +11,11 @@ import { MatButtonModule } from '@angular/material/button';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-request-popup.component';
-
+import { RouterLink } from '@angular/router';
 @Component({
   selector: 'app-car-profile',
   standalone: true,
-  imports: [NgIf, NgFor, FormsModule, DeleteRequestPopupComponent, ReactiveFormsModule, MatSelectModule, MatIconModule, MatButtonModule, MatInput, MatInputModule, MatFormFieldModule],
+  imports: [NgIf, NgFor, FormsModule, DeleteRequestPopupComponent, ReactiveFormsModule, MatSelectModule, MatIconModule, MatButtonModule, MatInput, MatInputModule, MatFormFieldModule, RouterLink],
   templateUrl: './car-profile.component.html',
   styleUrl: './car-profile.component.scss'
 })

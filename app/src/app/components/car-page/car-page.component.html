@@ -60,7 +60,7 @@
                                             <td>{{item.creator.username}}</td>
                                             <td>{{item.creationTime}}</td>
                                             <td>{{item.price}}</td>
-                                            <td><input [routerLink]="['/error']" routerLinkActive="router-link-active"  type="button" style="margin: 0; padding: 0; width: 100%;" class="EditButton" value="Open"></td>
+                                            <td><input [routerLink]="['/issueprofile']" [queryParams]="{issueId: item.id}" routerLinkActive="router-link-active"  type="button" style="margin: 0; padding: 0; width: 100%;" class="EditButton" value="Open"></td>
                                         </tr>
                                     </tbody>
                                 </table>

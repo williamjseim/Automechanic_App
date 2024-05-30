@@ -1,11 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { MatIconModule } from '@angular/material/icon';
 import { VideoApiService } from '../../services/video-api.service';
-import { Router } from '@angular/router';
 import { SharedService } from '../../services/shared.service';
 
 @Component({
@@ -16,13 +15,14 @@ import { SharedService } from '../../services/shared.service';
   styleUrl: './video-capture.component.scss'
 })
 export class VideoCaptureComponent {
+
+  @Input() issueId?: string;
+  @Output() uploadStatus = new EventEmitter<{ success: boolean, message: string }>();
   videoFile!: File;
-  videoURL!: string;
 
   constructor(
-    private apiService: VideoApiService,
+    private videoHttp: VideoApiService,
     private sharedService: SharedService,
-    private router: Router
   ) { }
   openCamera() {
     const input = document.createElement('input');
@@ -33,7 +33,6 @@ export class VideoCaptureComponent {
       const target = event.target as HTMLInputElement;
       if (target.files && target.files.length > 0) {
         this.videoFile = target.files[0];
-        this.videoURL = URL.createObjectURL(this.videoFile);
         this.sendVideoToAPI();
       }
     });
@@ -41,8 +40,9 @@ export class VideoCaptureComponent {
   }
 
   selectVideo() {
-    const fileInput = document.getElementById('fileInput');
+    const fileInput = document.getElementById('fileInput') as HTMLInputElement;
     if (fileInput) {
+      fileInput.value = '';
       fileInput.click();
     }
   }
@@ -51,28 +51,26 @@ export class VideoCaptureComponent {
     const file = event.target.files[0];
     if (file) {
       this.videoFile = file;
-      this.videoURL = URL.createObjectURL(file);
       this.sendVideoToAPI();
     }
   }
 
   sendVideoToAPI() {
+    if (!this.issueId) {
+      console.log("Record component does not have an issueId");
+      return;
+    }
     const formData = new FormData();
     formData.append('video', this.videoFile);
 
-    this.apiService.uploadVideo(formData).subscribe(
-      response => {
+    this.videoHttp.uploadVideo(this.issueId ,formData).subscribe({
+      next: (res) => {
         this.sharedService.setVideo(this.videoFile);
-        // this.router.navigateByUrl("review");
-        console.log(`File sent to api `, response);
+        this.uploadStatus.emit({success: true, message: res});
       },
-      error => {
-        console.log(error);
+      error: (err) => {
+        this.uploadStatus.emit({ success: false, message: err });
       }
-    )
-  }
-
-  onAdvance() {
-    this.router.navigate(['issue']);
+    });
   }
 }
