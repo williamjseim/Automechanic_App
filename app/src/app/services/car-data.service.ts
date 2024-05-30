@@ -41,7 +41,7 @@ export class CarDataService {
     return this.http.put(this.url+`/CreateCar?make=${make}&model=${model}&plate=${plate}&vinnr=${vin}`,"")
   }
 
-  GetIssue(issueId: number):Observable<any> {
+  GetIssue(issueId: string):Observable<any> {
     return this.http.get(this.url+`/GetIssue?issueId=${issueId}`);
   } 
 

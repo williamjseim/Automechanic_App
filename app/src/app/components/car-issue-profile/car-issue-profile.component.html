@@ -31,8 +31,23 @@
         </div>
 
         <div class="video-section">
-            <h2>Video</h2>
-            <!-- Show video if available, else prompt user to record one for this issue -->
+            <h2>Videoer</h2>
+            @if (!loadingVideo) {
+            @if (videoNotFound) {
+            Ingen videoer fundet.
+            }
+            @else {
+            <div class="videos">
+
+                @for (item of video; track $index) {
+
+                <video width="250" controls [src]="'http://localhost/uploads/'+ item.videoPath "></video>
+                <!-- Network path to a video -->
+                }
+            </div>
+            }
+            <app-video-capture [issueId]="issue?.id" (uploadStatus)="handleVideoUpload($event)"></app-video-capture>
+            }
         </div>
 
         <div class="issue-detail-section">
@@ -55,7 +70,8 @@
             </div>
         </div>
         <div class="button-section">
-            <button [routerLink]="'/cars'" routerLinkActive="router-link-active" class="action-button">Gå Tilbage</button>
+            <button [routerLink]="'/cars'" routerLinkActive="router-link-active" class="action-button">Gå
+                Tilbage</button>
             <button class="action-button">Marker som fuldført</button>
         </div>
     </div>

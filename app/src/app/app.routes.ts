@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 
 import { LoginComponent } from './components/login/login.component';
-import { VideoCaptureComponent } from './components/video-capture/video-capture.component';
 import { LogoutComponent } from './components/logout/logout.component';
 import { ErrorComponent } from './components/error/error.component';
 import { CreateCarIssueComponent } from './components/carIssue/create-car-issue/create-car-issue.component';
@@ -17,7 +16,6 @@ import { CarIssueProfileComponent } from './components/car-issue-profile/car-iss
 export const routes: Routes = [
 
  { path: '', component: LoginComponent },
- { path: 'record', component: VideoCaptureComponent},
  { path: 'logout', component: LogoutComponent },
  { path: 'issue', component: CarIssueComponent, 
     children: [
