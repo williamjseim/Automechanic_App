@@ -40,8 +40,7 @@ public class VideoController : Controller
 
     }
 
-    [Route("StreamVideo")]
-    [HttpGet]
+    [HttpGet("StreamVideo")]
     public async Task<IResult> Stream(Guid id)
     {
         Video video = _db.Videos.FirstOrDefault(x => x.Id == id );
@@ -64,8 +63,7 @@ public class VideoController : Controller
         }
     }
     [JwtTokenAuthorization]
-    [Route("GetVideoIssue")]
-    [HttpGet]
+    [HttpGet("GetVideoIssue")]
     public async Task<IActionResult> GetVideoIssue(Guid issueId)
     {
         try
@@ -91,8 +89,7 @@ public class VideoController : Controller
     }
 
     [JwtTokenAuthorization]
-    [Route("Upload")]
-    [HttpPut]
+    [HttpPut("Upload")]
     public async Task<IActionResult> UploadVideo(Guid issueId)
     {
         try
