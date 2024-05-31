@@ -1,10 +1,18 @@
 using Mechanic.Api;
 using Microsoft.AspNetCore.Mvc;
 using Mechanic.Api.Filters;
+using Mechanic.Api.Data;
+using Mechanic.Api.TokenAuthorization;
 [Route("Video")]
 public class VideoController : Controller{
+    IConfiguration _config;
+    private MechanicDatabase _db;
 
-    private readonly string _uploadFolder = Path.Combine(Directory.GetCurrentDirectory(), "UploadedVideos");
+    public VideoController(IConfiguration config, MechanicDatabase db)
+    {
+        _config = config;
+        _db = db;
+    }
 
     [HttpGet("Stream")]
     public async Task StreamVideo(CancellationToken token)
@@ -15,8 +23,6 @@ public class VideoController : Controller{
         int len = (int)fileInfo.Length, bytes;
         HttpContext.Response.ContentLength = len;
         byte[] buffer = new byte[256];
-        Console.WriteLine("stream begin");
-        Response.Cookies.Append("Cookie", "Fuck you");
         using (Stream stream = System.IO.File.OpenRead(filepath))
         {
             while(len > 0 && (bytes = stream.Read(buffer, 0, buffer.Length))> 0 && !token.IsCancellationRequested) {
@@ -28,14 +34,15 @@ public class VideoController : Controller{
     }
     
     [JwtTokenAuthorization]
-    [Route("Upload")]
-    [HttpPost]
+    [HttpPost("Upload")]
     public async Task<IActionResult> UploadVideo()
     {
         try
         {
-            if (!Directory.Exists(_uploadFolder))
-                Directory.CreateDirectory(_uploadFolder);
+            Guid username = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+            string basefolder = _config["Videos:FolderPath"]!;
+            if (!Directory.Exists(basefolder))
+                Directory.CreateDirectory(basefolder);
 
             var file = Request.Form.Files[0];
 
@@ -43,7 +50,7 @@ public class VideoController : Controller{
             {
                 // Saves files locally. Eventually saved to a remote file server
                 string fileName = $"{DateTime.Now:yyyyMMddHHmmss}-video.mp4";
-                var filePath = Path.Combine(_uploadFolder, fileName);
+                var filePath = Path.Combine(basefolder, fileName);
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);

@@ -82,3 +82,4 @@ C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\obj\Rele
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\obj\Release\net7.0\Mechanic.Api.pdb
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\obj\Release\net7.0\Mechanic.Api.genruntimeconfig.cache
 C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\obj\Release\net7.0\ref\Mechanic.Api.dll
+C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\bin\Release\net7.0\appsettings.Production.json
