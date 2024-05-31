@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
 import { VideoCaptureComponent } from '../video-capture/video-capture.component';
 import { VideoApiService } from '../../services/video-api.service';
 import { Video } from '../../Interfaces/video';
-
+import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-car-issue-profile',
   standalone: true,
@@ -34,6 +34,8 @@ export class CarIssueProfileComponent implements OnInit {
   videoNotFound: boolean = false;
   issueNotFound: boolean = false;
 
+  environment_API: string = environment.API_URL; // For video streaming directly on the html template
+  
   ngOnInit() {
     this.loading = true;
     this.route.queryParams.subscribe({

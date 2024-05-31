@@ -37,6 +37,31 @@ public class VideoController : Controller
                 len -= bytes;
             }
         }
+
+    }
+
+    [Route("StreamVideo")]
+    [HttpGet]
+    public async Task<IResult> Stream(Guid id)
+    {
+        Video video = _db.Videos.FirstOrDefault(x => x.Id == id );
+        if (video == null)
+        {
+            return Results.NotFound();
+        }
+        try
+        {
+            var fileName = "sample.mp4";
+            string path = Path.Combine(_uploadFolder, video.VideoPath);  // the video file is in the wwwroot/files folder
+
+            var filestream = System.IO.File.OpenRead(path);
+            return Results.File(filestream, contentType: "video/mp4", fileDownloadName: fileName, enableRangeProcessing: true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message, $"Something Went Wrong in the {nameof(Stream)}");
+            return Results.BadRequest();
+        }
     }
     [JwtTokenAuthorization]
     [Route("GetVideoIssue")]

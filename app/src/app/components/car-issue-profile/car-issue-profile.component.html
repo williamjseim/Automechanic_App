@@ -41,7 +41,7 @@
 
                 @for (item of video; track $index) {
 
-                <video width="250" controls [src]="'http://localhost/uploads/'+ item.videoPath "></video>
+                <video width="250" controls [src]="environment_API+'/Video/StreamVideo?id='+ item.id "></video>
                 <!-- Network path to a video -->
                 }
             </div>
