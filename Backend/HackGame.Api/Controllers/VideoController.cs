@@ -1,61 +1,114 @@
 using Mechanic.Api;
 using Microsoft.AspNetCore.Mvc;
 using Mechanic.Api.Filters;
+using Mechanic.Api.Models;
 using Mechanic.Api.Data;
-using Mechanic.Api.TokenAuthorization;
+using Microsoft.EntityFrameworkCore;
 [Route("Video")]
-public class VideoController : Controller{
-    IConfiguration _config;
+public class VideoController : Controller
+{
+
     private MechanicDatabase _db;
 
-    public VideoController(IConfiguration config, MechanicDatabase db)
+    // Local upload destination
+    private readonly string _uploadFolder = Path.Combine("C:\\xampp\\htdocs", "Uploads");
+
+    public VideoController(MechanicDatabase db)
     {
-        _config = config;
         _db = db;
     }
-
     [HttpGet("Stream")]
-    public async Task StreamVideo(CancellationToken token)
+    public async Task StreamVideo(CancellationToken token, string filePath)
     {
         HttpContext.Response.ContentType = "Video/Webm";
-        string filepath = @"C:\Users\zbcwise\Desktop\Angular Videoplayer\1 hour timer.mp4";
-        FileInfo fileInfo = new FileInfo(filepath);
+        // string filepath = @"C:\Users\zbcwise\Desktop\Angular Videoplayer\1 hour timer.mp4";
+        FileInfo fileInfo = new FileInfo(filePath);
         int len = (int)fileInfo.Length, bytes;
         HttpContext.Response.ContentLength = len;
         byte[] buffer = new byte[256];
-        using (Stream stream = System.IO.File.OpenRead(filepath))
+        Console.WriteLine("stream begin");
+        Response.Cookies.Append("Cookie", "Fuck you");
+        using (Stream stream = System.IO.File.OpenRead(filePath))
         {
-            while(len > 0 && (bytes = stream.Read(buffer, 0, buffer.Length))> 0 && !token.IsCancellationRequested) {
+            while (len > 0 && (bytes = stream.Read(buffer, 0, buffer.Length)) > 0 && !token.IsCancellationRequested)
+            {
                 await HttpContext.Response.BodyWriter.FlushAsync();
                 await HttpContext.Response.BodyWriter.AsStream(false).WriteAsync(buffer, 0, bytes);
                 len -= bytes;
             }
         }
+
     }
-    
+
+    [HttpGet("StreamVideo")]
+    public async Task<IResult> Stream(Guid id)
+    {
+        Video video = _db.Videos.FirstOrDefault(x => x.Id == id );
+        if (video == null)
+        {
+            return Results.NotFound();
+        }
+        try
+        {
+            var fileName = "sample.mp4";
+            string path = Path.Combine(_uploadFolder, video.VideoPath);  // the video file is in the wwwroot/files folder
+
+            var filestream = System.IO.File.OpenRead(path);
+            return Results.File(filestream, contentType: "video/mp4", fileDownloadName: fileName, enableRangeProcessing: true);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message, $"Something Went Wrong in the {nameof(Stream)}");
+            return Results.BadRequest();
+        }
+    }
     [JwtTokenAuthorization]
-    [HttpPost("Upload")]
-    public async Task<IActionResult> UploadVideo()
+    [HttpGet("GetVideoIssue")]
+    public async Task<IActionResult> GetVideoIssue(Guid issueId)
     {
         try
         {
-            Guid username = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
-            string basefolder = _config["Videos:FolderPath"]!;
-            if (!Directory.Exists(basefolder))
-                Directory.CreateDirectory(basefolder);
+            CarIssue carIssue = _db.CarIssues.FirstOrDefault(c => c.Id == issueId);
 
-            var file = Request.Form.Files[0];
-
-            if (file.Length > 0)
+            if (carIssue == null)
             {
-                // Saves files locally. Eventually saved to a remote file server
-                string fileName = $"{DateTime.Now:yyyyMMddHHmmss}-video.mp4";
-                var filePath = Path.Combine(basefolder, fileName);
-                using (var stream = new FileStream(filePath, FileMode.Create))
-                {
-                    await file.CopyToAsync(stream);
-                }
+                return NotFound("Car issue not found");
+            }
+            var videoIssues = _db.Videos.Where(x => x.Issue == carIssue)
+            .Include(x => x.Issue.Creator)
+            .Include(x => x.Issue.Car)
+            .ToList();
+            return Ok(videoIssues);
+        }
+        catch (System.Exception ex)
+        {
 
+            Console.WriteLine(ex);
+            return StatusCode(500, Json("Something went wrong"));
+        }
+    }
+
+    [JwtTokenAuthorization]
+    [HttpPut("Upload")]
+    public async Task<IActionResult> UploadVideo(Guid issueId)
+    {
+        try
+        {
+            CarIssue carIssue = _db.CarIssues.FirstOrDefault(c => c.Id == issueId);
+
+            if (carIssue == null)
+            {
+                return NotFound("Car issue not found");
+            }
+            var file = Request.Form.Files[0];
+            string fileName = $"{DateTime.Now:yyyyMMddHHmmss}-video.mp4";
+            var filePath = Path.Combine(_uploadFolder, fileName);
+
+            bool isUploadedToServer = await UploadVideoFile(file, filePath);
+            bool isVideoDetailsUploadedToDb = await UploadVideoDetailsToDb(carIssue, file, fileName);
+
+            if (isUploadedToServer && isVideoDetailsUploadedToDb)
+            {
                 return Ok(new { message = "File uploaded", fileData = new { SavedAs = fileName, SavedTo = filePath, Size = file.Length } });
             }
             else
@@ -66,6 +119,52 @@ public class VideoController : Controller{
         catch (Exception ex)
         {
             return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
+    private async Task<bool> UploadVideoDetailsToDb(CarIssue carIssue, IFormFile file, string fileName)
+    {
+        try
+        {
+            float fileSize = file.Length;
+            Video video = new(carIssue, fileName, fileSize);
+            await _db.AddAsync(video);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+        catch (System.Exception ex)
+        {
+            System.Console.WriteLine(ex.Message);
+            return false;
+        }
+    }
+
+    private async Task<bool> UploadVideoFile(IFormFile file, string filePath)
+    {
+        try
+        {
+            if (!Directory.Exists(_uploadFolder))
+                Directory.CreateDirectory(_uploadFolder);
+
+            if (file.Length > 0)
+            {
+                // Saves files locally. Eventually saved to a remote file server
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+                }
+
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        catch (Exception ex)
+        {
+            System.Console.WriteLine(ex.Message);
+            return false;
         }
     }
 }

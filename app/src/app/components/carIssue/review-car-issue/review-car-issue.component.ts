@@ -10,7 +10,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { NewIssue } from '../../../Interfaces/newIssue';
 import { CarDataService } from '../../../services/car-data.service';
-
+import { MatSnackBar } from '@angular/material/snack-bar'
 @Component({
   selector: 'app-review-car-issue',
   standalone: true,
@@ -27,33 +27,39 @@ export class ReviewCarIssueComponent implements OnInit {
   constructor(
     private router: Router,
     public sharedService: SharedService,
-    private carService: CarDataService
+    private carService: CarDataService,
+    private snackbar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
-    this.formData = this.sharedService.getCarIssueData();
-    console.log(this.formData);
-    const file = this.sharedService.getVideo();
+    this.getFormData();
+  }
 
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (event: any) => {
-        this.videoUrl = event.target.result;
-      };
-      reader.readAsDataURL(file);
+  getFormData() {    
+    this.formData = this.sharedService.getFormData();
+    if (!this.formData) {
+      this.router.navigateByUrl("/issue");
     }
   }
+
+  // Navigate to the previous page
   onCancel() {
-    this.router.navigate(['issue']); // Navigate to the home or previous page
+    this.router.navigate(['issue']); 
   }
 
   // Handle the accept action
   onAccept() {
-
     this.loading = true;
-    this.carService.CreateIssue(this.formData?.car.id!, this.formData?.description!, this.formData?.price!)
-    .subscribe(r => {
-      this.loading = false;
+    this.carService.CreateIssue(this.formData?.car.id!, this.formData?.description!, this.formData?.price!).subscribe({
+      next: () => { 
+        this.loading = false;
+        this.sharedService.setFormData(null);
+        this.snackbar.open('Issue created', 'Close', { duration: 4000 });
+        this.router.navigate(['issue']);
+      },
+      error: (err) => { 
+        console.log(err);
+      },
     });
   }
 }

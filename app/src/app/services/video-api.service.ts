@@ -14,8 +14,11 @@ export class VideoApiService {
   
   constructor(private http: HttpClient) { }
   
-  uploadVideo(data: FormData): Observable<any> {
-    return this.http.post(`${this.url}/Upload`, data)
+  uploadVideo(issueId: string, data: FormData): Observable<any> {
+    return this.http.put(`${this.url}/Upload?issueId=${issueId}`, data)
   }
-  
+
+  getVideo(issueId: string): Observable<any> {
+    return this.http.get(`${this.url}/GetVideoIssue?issueId=${issueId}`);
+  }
 }

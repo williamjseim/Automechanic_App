@@ -28,7 +28,7 @@
                     <div style="width: 100%;">
                         <mat-form-field style="width: 100%;" appearance="outline">
                             <mat-label>Creation time</mat-label>
-                            <input readonly [value]="car?.creationTime" #vinInfo matInput>
+                            <input readonly [value]="car?.creationTime | date:'dd/MM/yyyy HH:mm'" #vinInfo matInput>
                         </mat-form-field>
                     </div>
                     <div style="width: 100%; display: flex; justify-content: space-around;">
@@ -66,10 +66,10 @@
             <tbody *ngIf="car?.issues != null">
                 <tr *ngFor="let item of car!.issues!; let row = index;" [class]="(row%2 == 0) ? 'even':'odd'">
                     <td><a>{{item.creator.username}}::: todo needs routing</a></td>
-                    <td>{{item.creationTime}}</td>
+                    <td>{{item.creationTime | date:'dd/MM/yyyy HH:mm'}}</td>
                     <td>{{item.price}}</td>
                     <td>
-                        <button class="openBtn" mat-raised-button (click)="Error()">Open</button>
+                        <button class="openBtn" mat-raised-button [routerLink]="['/issueprofile']" [queryParams]="{issueId: item.id}">Open</button>
                         <button class="deleteBtn" mat-raised-button (click)="Delete.Open(row)">Delete</button>
                     </td>
                 </tr>
