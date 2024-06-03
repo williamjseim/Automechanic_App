@@ -58,6 +58,7 @@ export class CreateCarIssueComponent {
   ngOnInit(): void {
     this.getCars();
     this.getExistingData();
+    this.getQueryParam();
   }
 
   getCars() {
@@ -79,17 +80,40 @@ export class CreateCarIssueComponent {
 
   getExistingData() {
     const savedData = this.sharedService.getFormData();
-    if (savedData) 
+    if (savedData)
       this.carIssueForm.patchValue(savedData);
   }
+  getQueryParam() {
 
+    this.route.queryParams.subscribe({
+      next: (value) => {
+        const carId = value['carId'];
+        if (carId) {
+          this.patchCarSelect(carId);
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
+  }
   compareCars(car1: any, car2: any) {
     return car1 && car2 && car1.id === car2.id;
   }
+  patchCarSelect(carId: string) {
+    this.carService.GetCar(carId).subscribe({
+      next: (res) => {
+        this.carIssueForm.controls.car.patchValue(res);
+        this.carIssueForm.controls.car.disable();
+      },
+      error: () => {
 
+      },
+    });
+  }
   onSubmit() {
     if (this.carIssueForm.valid) {
-      this.sharedService.setFormData(this.carIssueForm.value);
+      this.sharedService.setFormData(this.carIssueForm.getRawValue());
       this.router.navigate(['submit'], { relativeTo: this.route });
     }
   }
