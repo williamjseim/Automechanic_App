@@ -131,7 +131,6 @@ export class CarProfileComponent {
   }
 
   CreateIssue(){
-    this.sharedService.setFormData({car: this.car, description: undefined, price: undefined});
-    this.router.navigate(["issue"]);
+    this.router.navigate(["issue"], { queryParams: {carId : this.car?.id} });
   }
 }
