@@ -37,12 +37,12 @@ namespace Mechanic.Api.Controllers
                         Console.WriteLine(base64);
                         return Ok(base64);
                     }
-                    return StatusCode(500, " Something went wrong");
+                    return NotFound(Json("username or password is wrong"));
                 }
-                return StatusCode(500, " Something went wrong");
+                return NotFound(Json("username or password is wrong"));
             }
             catch {
-                return StatusCode(500, " Something went wrong Error");
+                return StatusCode(500, " Something went really wrong Error"+ username + password);
             }
         }
 

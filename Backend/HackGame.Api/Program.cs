@@ -38,7 +38,7 @@ namespace Mechanic.Api
             app.UseCors(policy => policy
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .WithOrigins("http://localhost:4200", "http://localhost:4200/*"));
+            .AllowAnyOrigin());
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

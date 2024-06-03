@@ -1,10 +1,32 @@
 <mat-toolbar color="primary">
-    <span>Automechanics</span>
+    <div [routerLink]="['']" routerLinkActive="router-link-active"  class="homebtn">
+        <span><mat-icon style="vertical-align: text-bottom;">home</mat-icon>Automechanics</span>
+    </div>
+    <div style="display: flex; flex-direction: row; justify-content: space-evenly; width: 90%;">
+        @if (localStorageService.getFromLocalStorage("token")) {
+            <div [routerLink]="['/cars']" routerLinkActive="router-link-active"  class="homebtn">
+                <span><mat-icon style="vertical-align: text-bottom;">directions_car</mat-icon>Cars</span>
+            </div>
+            <div [routerLink]="['/issue']" routerLinkActive="router-link-active"  class="homebtn">
+                <span><mat-icon style="vertical-align: text-bottom;">report</mat-icon>Issues</span>
+            </div>
+            <div [routerLink]="['/profile']" routerLinkActive="router-link-active"  class="homebtn">
+                <span><mat-icon style="vertical-align: text-bottom;">person</mat-icon>Profile</span>
+            </div>
+            <div [routerLink]="['/profile']" routerLinkActive="router-link-active"  class="homebtn">
+                <span><mat-icon style="vertical-align: text-bottom;">person</mat-icon>Create Car</span>
+            </div>
+            <div [routerLink]="['/profile']" routerLinkActive="router-link-active"  class="homebtn">
+                <span><mat-icon style="vertical-align: text-bottom;">person</mat-icon>Create issue</span>
+            </div>
+        }
+    </div>
+    
     <div class="spacer"></div>
-
-
+    
     @if (localStorageService.getFromLocalStorage("token")) {
-        <a mat-button routerLink="/logout">Log out</a>
-
+        <div [routerLink]="['/logout']" routerLinkActive="router-link-active"  class="homebtn">
+            <span><mat-icon style="vertical-align: text-bottom;">logout</mat-icon>Logout</span>
+        </div>
     }
 </mat-toolbar>
