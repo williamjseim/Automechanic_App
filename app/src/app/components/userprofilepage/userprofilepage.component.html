@@ -47,7 +47,7 @@
             </thead>
             <tbody *ngIf="issues != null">
                 <tr *ngFor="let item of issues!; let row = index;" [class]="(row%2 == 0) ? 'even':'odd'">
-                    <td><a>{{item.creator?.username}}::: todo needs routing</a></td>
+                    <td><a>{{item.creator!.username}}::: todo needs routing</a></td>
                     <td>{{item.creationTime}}</td>
                     <td>{{item.price}}</td>
                     <td>

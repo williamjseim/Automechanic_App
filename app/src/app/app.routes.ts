@@ -11,16 +11,18 @@ import { CarPageComponent } from './components/car-page/car-page.component';
 import { CarProfileComponent } from './components/car-profile/car-profile.component';
 import { UserprofilepageComponent } from './components/userprofilepage/userprofilepage.component';
 import { CarIssueProfileComponent } from './components/car-issue-profile/car-issue-profile.component';
+import { FrontpageComponent } from './components/frontpage/frontpage.component';
 
 
 export const routes: Routes = [
 
- { path: '', component: LoginComponent },
+ { path: '', component: FrontpageComponent },
  { path: 'logout', component: LogoutComponent },
- { path: 'issue', component: CarIssueComponent, 
+ { path: 'login', component: LoginComponent },
+ { path: 'issue', component: CarIssueComponent,
     children: [
       { path: '', component: CreateCarIssueComponent},
-      { path: 'submit', component: ReviewCarIssueComponent}  
+      { path: 'submit', component: ReviewCarIssueComponent}
  ]},
  { path: 'issueprofile', component: CarIssueProfileComponent},
  { path: 'createcar', component: CreateCarFormComponent },
