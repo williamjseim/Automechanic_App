@@ -5,7 +5,7 @@ https://go.microsoft.com/fwlink/?LinkID=208121.
 <Project>
   <PropertyGroup>
     <_PublishTargetUrl>C:\Users\zbcwise\Desktop\DeploymentFolder</_PublishTargetUrl>
-    <History>True|2024-05-29T09:49:51.6377854Z;</History>
+    <History>True|2024-05-30T12:57:51.2456375Z;True|2024-05-30T14:52:44.2580747+02:00;True|2024-05-30T14:01:37.4286811+02:00;True|2024-05-30T13:46:40.8478799+02:00;True|2024-05-30T13:19:19.3369402+02:00;True|2024-05-30T12:39:57.7409222+02:00;True|2024-05-30T12:25:41.6019179+02:00;True|2024-05-30T12:23:15.0127166+02:00;True|2024-05-30T12:10:28.5683172+02:00;True|2024-05-29T11:49:51.6377854+02:00;</History>
     <LastFailureDetails />
   </PropertyGroup>
 </Project>
