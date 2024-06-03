@@ -65,7 +65,7 @@
             </thead>
             <tbody *ngIf="car?.issues != null">
                 <tr *ngFor="let item of car!.issues!; let row = index;" [class]="(row%2 == 0) ? 'even':'odd'">
-                    <td><a>{{item.creator.username}}::: todo needs routing</a></td>
+                    <td><a [routerLink]="['/profile']" [queryParams]="{userid: item.creator.id}" routerLinkActive="router-link-active" >{{item.creator.username}}</a></td>
                     <td>{{item.creationTime | date:'dd/MM/yyyy HH:mm'}}</td>
                     <td>{{item.price}}</td>
                     <td>

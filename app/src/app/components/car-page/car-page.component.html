@@ -2,7 +2,6 @@
 
 <!-- only shows if cars array isnt null -->
 <body (click)="SelectRow(-1, $event);" *ngIf="cars != null; else elseBlock">
-    <button class="CarFormBtn" mat-raised-button [routerLink]="['/createcar']" ><mat-icon>add</mat-icon> Create new car</button>
     <div class="tableDiv">
         <table>
             <thead>
