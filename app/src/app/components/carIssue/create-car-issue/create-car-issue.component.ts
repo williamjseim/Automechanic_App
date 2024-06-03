@@ -84,8 +84,6 @@ export class CreateCarIssueComponent {
   }
 
   compareCars(car1: any, car2: any) {
-    console.log(car1);
-    console.log(car2);
     return car1 && car2 && car1.id === car2.id;
   }
 

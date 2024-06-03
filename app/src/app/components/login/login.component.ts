@@ -33,7 +33,6 @@ export class LoginComponent {
       this.router.navigateByUrl("record");
     }
     if (this.usernameControl.valid || this.passwordControl.valid) {
-      console.log(username, password)
       this.loginService.login(username, password).subscribe(
         response => {
 
