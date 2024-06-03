@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-request-popup.component';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { SharedService } from '../../services/shared.service';
 @Component({
   selector: 'app-car-profile',
   standalone: true,
@@ -21,7 +22,7 @@ import { DatePipe } from '@angular/common';
   styleUrl: './car-profile.component.scss'
 })
 export class CarProfileComponent {
-  constructor(private route: ActivatedRoute, private router: Router, private carHttp:CarDataService){}
+  constructor(private route: ActivatedRoute, private router: Router, private carHttp:CarDataService, private sharedService: SharedService){}
   car?:Car;
   carNotFound:boolean = false;
   imagepath:string = "../../../assets/NoImage.avif";
@@ -130,7 +131,7 @@ export class CarProfileComponent {
   }
 
   CreateIssue(){
-    console.log("not implemented")
-    this.router.navigate(["eror"])
+    this.sharedService.setFormData({car: this.car, description: undefined, price: undefined});
+    this.router.navigate(["issue"]);
   }
 }

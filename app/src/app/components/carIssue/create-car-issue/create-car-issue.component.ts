@@ -79,8 +79,14 @@ export class CreateCarIssueComponent {
 
   getExistingData() {
     const savedData = this.sharedService.getFormData();
-    if (savedData)
+    if (savedData) 
       this.carIssueForm.patchValue(savedData);
+  }
+
+  compareCars(car1: any, car2: any) {
+    console.log(car1);
+    console.log(car2);
+    return car1 && car2 && car1.id === car2.id;
   }
 
   onSubmit() {

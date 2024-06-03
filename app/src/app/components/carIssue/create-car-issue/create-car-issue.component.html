@@ -7,7 +7,7 @@
             <div class="input-form-row">
                 <mat-form-field class="form-input-big" appearance="fill">
                     <mat-label>Bil</mat-label>
-                    <mat-select formControlName="car" required [value]="carIssueForm.controls.car.value">
+                    <mat-select formControlName="car" required [value]="carIssueForm.controls.car.value" [compareWith]="compareCars">
                         @if (loading) {
                         <mat-option disabled *ngIf="loading">Henter biler...</mat-option>
                         }
