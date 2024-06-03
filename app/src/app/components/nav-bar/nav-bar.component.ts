@@ -15,7 +15,5 @@ import { MatIcon } from '@angular/material/icon';
   styleUrl: './nav-bar.component.scss'
 })
 export class NavBarComponent {
-
   constructor(public localStorageService: LocalStorageService) {}
-
 }
