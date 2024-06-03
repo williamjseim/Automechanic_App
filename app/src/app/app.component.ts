@@ -14,9 +14,7 @@ import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 })
 export class AppComponent implements OnInit {
 
-  constructor(
-    private localStorageService: LocalStorageService,
-    private router: Router) { }
+  constructor(private localStorageService: LocalStorageService,private router: Router) { }
 
   title = 'Service app';
 
@@ -27,4 +25,26 @@ export class AppComponent implements OnInit {
   //     this.router.navigateByUrl("record");
   //   }
   }
+  
+  timer?:ReturnType<typeof setTimeout>;
+  ResetTimer(){
+    if(this.timer != undefined){
+      clearTimeout(this.timer);
+      this.timer = setTimeout(this.Timeout, 10000);
+    }
+  }
+  
+  start(){
+    console.log("start")
+    this.timer = setTimeout(this.Timeout, 10000)
+  }
+  
+  Timeout(){
+    localStorage.removeItem("token");
+    clearTimeout(this.timer);
+    this.timer = undefined;
+    this.router.navigateByUrl("/login")
+  }
+
+
 }

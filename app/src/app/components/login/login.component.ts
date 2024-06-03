@@ -38,7 +38,7 @@ export class LoginComponent {
         response => {
 
           this.localStorageService.addToLocalStorage("token", response);
-          this.router.navigateByUrl("record");
+          this.router.navigateByUrl("");
         },
         error => {
           console.error('Login error:', error);
