@@ -1,4 +1,5 @@
 ﻿using Mechanic.Api.Data;
+using Mechanic.Api.Filters;
 using Mechanic.Api.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;

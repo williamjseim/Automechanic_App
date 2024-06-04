@@ -11,11 +11,18 @@ namespace Mechanic.Api.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.AddColumn<bool>(
+                name: "WantsNotification",
+                table: "Us3r_Data",
+                type: "tinyint(1)",
+                nullable: false,
+                defaultValue: false);
+
             migrationBuilder.AddColumn<string>(
                 name: "CarImageBase64",
                 table: "C3r_Data",
                 type: "longtext",
-                nullable: false)
+                nullable: true)
                 .Annotation("MySql:CharSet", "utf8mb4");
 
             migrationBuilder.AddColumn<Guid>(
@@ -50,6 +57,10 @@ namespace Mechanic.Api.Migrations
             migrationBuilder.DropIndex(
                 name: "IX_C3r_Data_CreatorId",
                 table: "C3r_Data");
+
+            migrationBuilder.DropColumn(
+                name: "WantsNotification",
+                table: "Us3r_Data");
 
             migrationBuilder.DropColumn(
                 name: "CarImageBase64",

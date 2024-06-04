@@ -24,7 +24,7 @@ namespace Mechanic.Api.Models
         }
         public Guid Id { get; set; }
         public User Creator { get; set; }
-        public string CarImageBase64 {  get; set; }
+        public string? CarImageBase64 {  get; set; }
         public string VinNumber { get; set; }
         public string Plate { get; set; }
         public DateTime CreationTime { get; set; }

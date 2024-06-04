@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Mechanic.Api.Migrations
 {
     [DbContext(typeof(MechanicDatabase))]
-    [Migration("20240604104629_third")]
+    [Migration("20240604115550_third")]
     partial class third
     {
         /// <inheritdoc />
@@ -29,7 +29,6 @@ namespace Mechanic.Api.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("CarImageBase64")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreationTime")
@@ -115,6 +114,9 @@ namespace Mechanic.Api.Migrations
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<bool>("WantsNotification")
+                        .HasColumnType("tinyint(1)");
 
                     b.HasKey("Id");
 

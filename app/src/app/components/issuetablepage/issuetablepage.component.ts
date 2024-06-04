@@ -56,8 +56,16 @@ export class IssuetablepageComponent {
     let plate = this.searchForm.controls.plate.value;
     this.carhttp.GetIssues(this.currentPage, this.itemprpage, username, plate, make).subscribe({
       next:(value)=>{
-        console.log(value);
-        this.issues = value.body;
+        console.log(value.statusCode);
+        if(value.statusCode == 200){
+          this.issues = value.body;
+        }
+        else{
+          this.issues = [];
+        }
+      },
+      error:(err)=>{
+        
       }
     })
   }

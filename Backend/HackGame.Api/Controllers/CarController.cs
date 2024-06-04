@@ -29,7 +29,18 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                var cars = await _db.Cars.Include(i=>i.Creator).Where(i => i.Make.Contains(make ?? "") && i.Model.Contains(model ?? "") && i.Plate.Contains(plate ?? "") && i.VinNumber.Contains(vin ?? "")).Skip(startingIndex * amount).Take(amount).Distinct().OrderBy(i => i.CreationTime).Reverse().ToArrayAsync();
+                Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
+
+                Car[] cars;
+                if(userRole == Role.Admin)
+                {
+                    cars = await _db.Cars.Include(i=>i.Creator).Where(i => i.Make.Contains(make ?? "") && i.Model.Contains(model ?? "") && i.Plate.Contains(plate ?? "") && i.VinNumber.Contains(vin ?? "")).Skip(startingIndex * amount).Take(amount).Distinct().OrderBy(i => i.CreationTime).Reverse().ToArrayAsync();
+                }
+                else
+                {
+                    Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+                    cars = await _db.Cars.Include(i=>i.Creator).Where(i => i.Creator.Id == userId && i.Make.Contains(make ?? "") && i.Model.Contains(model ?? "") && i.Plate.Contains(plate ?? "") && i.VinNumber.Contains(vin ?? "")).Skip(startingIndex * amount).Take(amount).Distinct().OrderBy(i => i.CreationTime).Reverse().ToArrayAsync();
+                }
                 return Ok(cars);
             }
             catch (Exception ex)
@@ -45,8 +56,18 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                var car = await _db.Cars.FirstOrDefaultAsync(i => i.Id == carId);
-                return Ok(car);
+                Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
+                Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+                var car = await _db.Cars.Include(i=>i.Creator).FirstOrDefaultAsync(i => i.Id == carId);
+                if(car == null)
+                {
+                    return NotFound();
+                }
+                if(car.Creator.Id == userId || userRole == Role.Admin)
+                {
+                    return Ok(car);
+                }
+                return Unauthorized();
             }
             catch (Exception ex)
             {
@@ -62,7 +83,6 @@ namespace Mechanic.Api.Controllers
             try
             {
                 Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
-                Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
                 float pages;
                 if(userRole == Role.Admin)
                 {
@@ -70,6 +90,7 @@ namespace Mechanic.Api.Controllers
                 }
                 else
                 {
+                    Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
                     pages = (float)_db.Cars.Where(i => i.Creator.Id == userId && i.Make.Contains(make) && i.Model.Contains(model.ToLower()) && i.Plate.Contains(plate) && i.VinNumber.Contains(vin)).Count() / (float)amountPrPage;
                 }
                 var amount = (int)MathF.Ceiling(pages);
@@ -109,14 +130,28 @@ namespace Mechanic.Api.Controllers
             }
         }
 
-        [JwtRoleAuthorization(Role.Admin)]
+        [JwtTokenAuthorization]
         [HttpDelete("DeleteIssue")]
         public async Task<IActionResult> DeleteIssue(Guid issueId)
         {
             try
             {
-                var test = await _db.CarIssues.Where(i => i.Id == issueId).ExecuteDeleteAsync();
-                return Ok(Json("Deletion successful"));
+                Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
+                int test;
+                if(userRole == Role.Admin)
+                {
+                    test = await _db.CarIssues.Where(i => i.Id == issueId).ExecuteDeleteAsync();
+                }
+                else
+                {
+                    Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+                    test = await _db.CarIssues.Where(i => i.Id == issueId && i.Creator.Id == userId).ExecuteDeleteAsync();
+                }
+                if(test == 1)
+                {
+                    return Ok(Json("Deletion successful"));
+                }
+                return Unauthorized();
             }
             catch (Exception ex)
             {

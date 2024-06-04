@@ -26,7 +26,6 @@ namespace Mechanic.Api.Migrations
                         .HasColumnType("char(36)");
 
                     b.Property<string>("CarImageBase64")
-                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<DateTime>("CreationTime")
@@ -112,6 +111,9 @@ namespace Mechanic.Api.Migrations
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("longtext");
+
+                    b.Property<bool>("WantsNotification")
+                        .HasColumnType("tinyint(1)");
 
                     b.HasKey("Id");
 

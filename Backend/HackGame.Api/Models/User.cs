@@ -1,14 +1,9 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Mechanic.Api.Filters;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
 namespace Mechanic.Api.Models
 {
-    public enum Role
-    {
-        User = 0,
-        Admin = 1,
-    }
-
     [Table("Us3r_Data")]
     public partial class User
     {
@@ -24,6 +19,7 @@ namespace Mechanic.Api.Models
             this.Username = username;
             this.Password = PasswordHasher.HashPassword(password + config["Password:Seed"]);
             this.Role = role;
+            WantsNotification = role == Role.Admin;
         }
         public Guid Id { get; set; }
         public Role Role { get; set; }
@@ -35,5 +31,6 @@ namespace Mechanic.Api.Models
         public DateTime CreationDate { get; set; }
         [NotMapped]
         public string Rolename { get { return Role.ToString(); } }
+        public bool WantsNotification {  get; set; }
     }
 }

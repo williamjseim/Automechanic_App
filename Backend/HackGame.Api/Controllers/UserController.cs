@@ -45,7 +45,6 @@ namespace Mechanic.Api.Controllers
                 return StatusCode(500, " Something went really wrong Error"+ username + password);
             }
         }
-
         [HttpPut("Register")]
         public async Task<IActionResult> Register(string username, string email, string password, int role = 0)
         {
