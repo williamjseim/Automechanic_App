@@ -12,6 +12,7 @@ import { CarProfileComponent } from './components/car-profile/car-profile.compon
 import { UserprofilepageComponent } from './components/userprofilepage/userprofilepage.component';
 import { CarIssueProfileComponent } from './components/car-issue-profile/car-issue-profile.component';
 import { FrontpageComponent } from './components/frontpage/frontpage.component';
+import { IssuetablepageComponent } from './components/issuetablepage/issuetablepage.component';
 
 
 export const routes: Routes = [
@@ -27,6 +28,7 @@ export const routes: Routes = [
  { path: 'issueprofile', component: CarIssueProfileComponent},
  { path: 'createcar', component: CreateCarFormComponent },
  { path: 'cars', component: CarPageComponent },
+ { path: 'issues', component: IssuetablepageComponent },
  { path: 'carprofile', component: CarProfileComponent},
  { path: 'profile', component: UserprofilepageComponent},
  { path: '**', component: ErrorComponent },

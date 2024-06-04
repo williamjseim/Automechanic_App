@@ -68,7 +68,7 @@ export class CarProfileComponent {
   })
 
   GetIssues(carId:string){
-    this.carHttp.GetIssues(carId, 0, 10).subscribe({
+    this.carHttp.GetCarIssues(carId, 0, 10).subscribe({
       next:(value)=>{
         this.car!.issues = value.body;
       },
