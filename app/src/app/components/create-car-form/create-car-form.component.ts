@@ -34,10 +34,10 @@ export class CreateCarFormComponent {
   }
 
   CreateCar(){
-    let make = this.carform.controls.make.value();
-    let model = this.carform.controls.model.value();
-    let plate = this.carform.controls.plate.value();
-    let vin = this.carform.controls.vinnr.value();
+    let make = this.carform.controls.make.value;
+    let model = this.carform.controls.model.value;
+    let plate = this.carform.controls.plate.value;
+    let vin = this.carform.controls.vinnr.value;
     //add html here
     if(this.carform.valid){
       this.carhttp.CreateCar(make, model, plate, vin).subscribe({

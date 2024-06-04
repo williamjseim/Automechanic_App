@@ -1,3 +1,8 @@
+body {
+    overflow-y: scroll;
+    height: 90vh;
+}
+
 .login-wrapper {
     height: 100%;
     display: flex;
@@ -11,7 +16,7 @@
     top: 0;
     opacity: 1;
     float: left;
-    padding: 60px 50px 40px 50px;
+    padding: 10px 50px 25px 50px;
     width: 100%;
     background: #fff;
     border-radius: 10px;

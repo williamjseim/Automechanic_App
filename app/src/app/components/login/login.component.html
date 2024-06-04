@@ -1,21 +1,23 @@
-<div class="login-wrapper" fxLayout="row" fxLayoutAlign="center center">
-    <!-- TODO: Fix mat-form-field must contain a MatFormFieldControl...  -->
-    <mat-card class="box">
-        <mat-card-header>
-            <mat-card-title>Log in</mat-card-title>
-        </mat-card-header>
-        <form (ngSubmit)="onSubmit(username.value, password.value)">
-            <mat-card-content>
-                <mat-form-field [hideRequiredMarker]="true" class="example-full-width">
-                    <mat-label>Username</mat-label>
-                    <input matInput [formControl]="usernameControl" #username>
-                </mat-form-field>
-                <mat-form-field [hideRequiredMarker]="true" class="example-full-width">
-                    <mat-label>Password</mat-label>
-                    <input matInput [formControl]="passwordControl" #password>
-                </mat-form-field>
-            </mat-card-content>
-            <button type="submit" mat-stroked-button color="accent" class="btn-block">Log in</button>
-        </form>
-    </mat-card>
-</div>
+<body>
+    <div class="login-wrapper" fxLayout="row" fxLayoutAlign="center center">
+        <!-- TODO: Fix mat-form-field must contain a MatFormFieldControl...  -->
+        <mat-card class="box">
+            <mat-card-header>
+                <mat-card-title>Log in</mat-card-title>
+            </mat-card-header>
+            <form (ngSubmit)="onSubmit(username.value, password.value)">
+                <mat-card-content>
+                    <mat-form-field [hideRequiredMarker]="true" class="example-full-width">
+                        <mat-label>Username</mat-label>
+                        <input matInput [formControl]="usernameControl" #username>
+                    </mat-form-field>
+                    <mat-form-field [hideRequiredMarker]="true" class="example-full-width">
+                        <mat-label>Password</mat-label>
+                        <input matInput [formControl]="passwordControl" #password>
+                    </mat-form-field>
+                </mat-card-content>
+                <button type="submit" mat-stroked-button color="accent" class="btn-block">Log in</button>
+            </form>
+        </mat-card>
+    </div>
+</body>
