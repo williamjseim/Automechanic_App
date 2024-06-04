@@ -156,13 +156,35 @@ namespace Mechanic.Api.Controllers
         }
 
         [JwtTokenAuthorization]
+        [HttpGet("GetIssues")]
+        public async Task<IActionResult> GetIssues(int startingIndex = 0, int amount = 0, string creatorName = "", string plate = "", string make = "")
+        {
+            try
+            {
+                var issues = await _db.CarIssues.Where(i=>i.Creator.Username.Contains(creatorName) && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make)).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
+
+                if (issues.Length <= 0)
+                {
+                    return NotFound("no issues found");
+                }
+
+                return Ok(issues);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(500, Json("Something went wrong"));
+            }
+        }
+
+        [JwtTokenAuthorization]
         [HttpGet("CarIssues")]
         public async Task<IActionResult> GetCarIssues(Guid carId, int startingIndex = 0, int amount = 0)
         {
             try
             {
                 CarIssue[] issues;
-                issues = _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(amount).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArray();
+                issues = await _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(amount).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArrayAsync();
                 return Ok(issues);
             }
             catch (Exception ex)

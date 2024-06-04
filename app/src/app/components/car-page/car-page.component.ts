@@ -106,7 +106,7 @@ export class CarPageComponent {
 
   //gets issues for a specific car
   private GetCarIssuesHttp(carId:string):Observable<any>{
-    return this.carHttp.GetIssues(carId, 0, 3);
+    return this.carHttp.GetCarIssues(carId, 0, 3);
   }
 
   //gets how many pages of cars that are in the database
