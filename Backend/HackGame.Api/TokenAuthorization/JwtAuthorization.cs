@@ -88,5 +88,40 @@ namespace Mechanic.Api.TokenAuthorization
             }
             return Guid.Empty;
         }
+
+        public static Role GetUserRole(string encryptedBase64, IConfiguration config)
+        {
+            encryptedBase64 = encryptedBase64.Replace("Bearer ", string.Empty);
+            encryptedBase64 = encryptedBase64.Replace("\"", string.Empty);
+            if (Encrypter.Decrypt(Convert.FromBase64String(encryptedBase64), out byte[] cipher, config))
+            {
+                string token = Encoding.UTF8.GetString(cipher);
+                JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
+                TokenValidationParameters parameters = new TokenValidationParameters
+                {
+                    ValidIssuer = config["JwtSettings:Issuer"],
+                    ValidAudience = config["JwtSettings:Audience"],
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!)),
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+#if DEBUG
+                    ValidateLifetime = false,
+#else
+                    ValidateLifetime = true,
+#endif
+                    ValidateIssuerSigningKey = true,
+                    ValidateActor = false,
+                };
+                var result = handler.ValidateToken(token, parameters, out SecurityToken validatedToken);
+                string roleString = result.Claims.First(i => i.Type == JwtRegisteredClaimNames.Aud).Value;
+                if(Enum.TryParse<Role>(roleString, out Role role))
+                {
+                    return role;
+                }
+                return Role.User;
+                
+            }
+            return Role.User;
+        }
     }
 }

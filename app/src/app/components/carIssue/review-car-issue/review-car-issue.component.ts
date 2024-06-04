@@ -4,7 +4,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProgressBarComponent } from '../../progress-bar/progress-bar.component';
 import { NavBarComponent } from '../../nav-bar/nav-bar.component';
 import { MatIconModule } from '@angular/material/icon';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Route, Router } from '@angular/router';
 import { SharedService } from '../../../services/shared.service';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -26,12 +26,18 @@ export class ReviewCarIssueComponent implements OnInit {
 
   constructor(
     private router: Router,
+    private route:ActivatedRoute,
     public sharedService: SharedService,
     private carService: CarDataService,
     private snackbar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
+    let id = this.route.params.subscribe({
+      next:(value)=>{
+        let id = value["issueId"];
+      }
+    })
     this.getFormData();
   }
 

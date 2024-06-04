@@ -46,7 +46,6 @@ namespace Mechanic.Api.Controllers
             }
         }
 
-        [JwtRoleAuthorization(Role.Admin)]
         [HttpPut("Register")]
         public async Task<IActionResult> Register(string username, string email, string password, int role = 0)
         {

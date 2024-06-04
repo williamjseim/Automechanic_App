@@ -29,7 +29,7 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                var cars = _db.Cars.Where(i => i.Make.Contains(make ?? "") && i.Model.Contains(model ?? "") && i.Plate.Contains(plate ?? "") && i.VinNumber.Contains(vin ?? "")).Skip(startingIndex * amount).Take(amount).Distinct().OrderBy(i => i.CreationTime).ToArray();
+                var cars = await _db.Cars.Include(i=>i.Creator).Where(i => i.Make.Contains(make ?? "") && i.Model.Contains(model ?? "") && i.Plate.Contains(plate ?? "") && i.VinNumber.Contains(vin ?? "")).Skip(startingIndex * amount).Take(amount).Distinct().OrderBy(i => i.CreationTime).Reverse().ToArrayAsync();
                 return Ok(cars);
             }
             catch (Exception ex)
@@ -61,7 +61,17 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                float pages = (float)_db.Cars.Where(i => i.Make.Contains(make) && i.Model.Contains(model.ToLower()) && i.Plate.Contains(plate) && i.VinNumber.Contains(vin)).Count() / (float)amountPrPage;
+                Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
+                Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+                float pages;
+                if(userRole == Role.Admin)
+                {
+                    pages = (float)_db.Cars.Where(i => i.Make.Contains(make) && i.Model.Contains(model.ToLower()) && i.Plate.Contains(plate) && i.VinNumber.Contains(vin)).Count() / (float)amountPrPage;
+                }
+                else
+                {
+                    pages = (float)_db.Cars.Where(i => i.Creator.Id == userId && i.Make.Contains(make) && i.Model.Contains(model.ToLower()) && i.Plate.Contains(plate) && i.VinNumber.Contains(vin)).Count() / (float)amountPrPage;
+                }
                 var amount = (int)MathF.Ceiling(pages);
                 return Ok(amount);
             }
@@ -74,21 +84,21 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpPut("CreateCar")]
-        public async Task<IActionResult> CreateCar(string make, string model, string plate, string vinnr)
+        public async Task<IActionResult> CreateCar(string make, string model, string plate, string vinnr, string base64Image = "")
         {
             try
             {
                 Guid userId = JwtAuthorization.GetUserId(HttpContext.Request.Headers.Authorization, _config);
-                if (_db.Cars.Where(i => i.Plate == plate || i.VinNumber == vinnr).Any()) {
-                    return BadRequest("Car Already exists check vin or plate");
-                }
+                //if (_db.Cars.Where(i => i.Plate == plate || i.VinNumber == vinnr).Any()) {
+                //    return BadRequest("Car Already exists check vin or plate");
+                //}
                 var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == userId);
                 if(user == null)
                 {
                     return NotFound(Json("User not fount"));
                 }
 
-                Car car = new(user, vinnr, plate, make, model);
+                Car car = new(user, vinnr, plate, make, model, base64Image);
                 await _db.AddAsync(car);
                 await _db.SaveChangesAsync();
                 return Ok("Car created");
@@ -106,7 +116,6 @@ namespace Mechanic.Api.Controllers
             try
             {
                 var test = await _db.CarIssues.Where(i => i.Id == issueId).ExecuteDeleteAsync();
-                Console.WriteLine(test);
                 return Ok(Json("Deletion successful"));
             }
             catch (Exception ex)
@@ -115,7 +124,7 @@ namespace Mechanic.Api.Controllers
             }
         }
 
-        [JwtRoleAuthorization(new Role[]{Role.Admin})]
+        [JwtRoleAuthorization(Role.Admin)]
         [HttpDelete("DeleteCar")]
         public async Task<IActionResult> DeleteCar(Guid carId)
         {
@@ -136,17 +145,19 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                var issue = await _db.CarIssues
-                .Include(i => i.Car) // Include related entities in the query result
-                .Include(i => i.Creator)
-                .FirstOrDefaultAsync(i => i.Id == issueId);
-
+                Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
+                Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+                var issue = await _db.CarIssues.Include(i => i.Car).Include(i => i.Creator).FirstOrDefaultAsync(i => i.Id == issueId);
                 if (issue == null)
                 {
                     return NotFound("Issue not found");
                 }
+                if(userRole == Role.Admin || issue.Creator.Id == userId)
+                {
+                    return Ok(issue);
+                }
+                return Unauthorized("");
 
-                return Ok(issue);
             }
             catch (Exception ex)
             {
@@ -161,7 +172,17 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                var issues = await _db.CarIssues.Where(i=>i.Creator.Username.Contains(creatorName) && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make)).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
+                Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
+                CarIssue[] issues;
+                if(userRole == Role.Admin)
+                {
+                    issues = await _db.CarIssues.Where(i=>i.Creator.Username.Contains(creatorName) && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make)).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
+                }
+                else
+                {
+                    Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+                    issues = await _db.CarIssues.Where(i=>i.Creator.Id == userId && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make)).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
+                }
 
                 if (issues.Length <= 0)
                 {
@@ -183,8 +204,17 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
+                Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+                Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
                 CarIssue[] issues;
-                issues = await _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(amount).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArrayAsync();
+                if(userRole == Role.Admin)
+                {
+                    issues = await _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(amount).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArrayAsync();
+                }
+                else
+                {
+                    issues = await _db.CarIssues.Where(i=>i.Car.Id == carId && i.Creator.Id == userId).Skip(startingIndex).Take(amount).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArrayAsync();
+                }
                 return Ok(issues);
             }
             catch (Exception ex)
@@ -200,9 +230,15 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
+                Guid originUserId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+                Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
                 CarIssue[] issues;
-                issues = _db.CarIssues.Include(i => i.Creator).Where(i => i.Creator.Id == userId && i.Car.Make.Contains(make.ToLower()) && i.Car.Model.Contains(model.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Car.VinNumber.Contains(vin.ToLower())).Skip(startingIndex).Take(amount).Distinct().OrderBy(I => I.CreationTime).ToArray();
-                return Ok(issues);
+                if(userRole == Role.Admin || userId == originUserId)
+                {
+                    issues = _db.CarIssues.Include(i => i.Creator).Where(i => i.Creator.Id == userId && i.Car.Make.Contains(make.ToLower()) && i.Car.Model.Contains(model.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Car.VinNumber.Contains(vin.ToLower())).Skip(startingIndex).Take(amount).Distinct().OrderBy(I => I.CreationTime).ToArray();
+                    return Ok(issues);
+                }
+                return Unauthorized();
             }
             catch (Exception ex)
             {
@@ -253,11 +289,14 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
+                Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+                Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
                 var car = await _db.Cars.Where(i => i.Id == carId).FirstOrDefaultAsync();
                 if(car == null)
                 {
                     return NotFound(Json("Car doesnt exist"));
                 }
+
                 car.Make = make;
                 car.Model = model;
                 car.Plate = plate;
@@ -276,10 +315,16 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                CarIssue issue = await _db.CarIssues.FirstOrDefaultAsync(i=>i.Id == IssueId);
+                Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+                Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
+                CarIssue issue = await _db.CarIssues.Include(i=>i.Creator).FirstOrDefaultAsync(i=>i.Id == IssueId);
                 if(issue == null)
                 {
                     return NotFound("Issue not found");
+                }
+                if(userRole != Role.Admin || issue.Creator.Id != userId)
+                {
+                    return Unauthorized();
                 }
                 issue.Price = price;
                 issue.Description = description;

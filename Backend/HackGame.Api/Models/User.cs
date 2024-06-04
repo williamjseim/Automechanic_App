@@ -23,6 +23,7 @@ namespace Mechanic.Api.Models
             this.Email = email;
             this.Username = username;
             this.Password = PasswordHasher.HashPassword(password + config["Password:Seed"]);
+            this.Role = role;
         }
         public Guid Id { get; set; }
         public Role Role { get; set; }
