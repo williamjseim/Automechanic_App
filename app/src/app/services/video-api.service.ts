@@ -21,4 +21,8 @@ export class VideoApiService {
   getVideo(issueId: string): Observable<any> {
     return this.http.get(`${this.url}/GetVideoIssue?issueId=${issueId}`);
   }
+
+  getVideoStream(videoId: string): Observable<any> {
+    return this.http.get(`${this.url}/streamvideo?videoId=${videoId}`, { responseType: 'arraybuffer'});
+  }
 }

@@ -65,7 +65,6 @@ export class VideoCaptureComponent {
 
     this.videoHttp.uploadVideo(this.issueId ,formData).subscribe({
       next: (res) => {
-        this.sharedService.setVideo(this.videoFile);
         this.uploadStatus.emit({success: true, message: res});
       },
       error: (err) => {

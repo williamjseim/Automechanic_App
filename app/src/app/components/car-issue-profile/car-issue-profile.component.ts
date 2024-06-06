@@ -29,6 +29,7 @@ export class CarIssueProfileComponent implements OnInit {
 
   issue?: Issue;
   video?: Video[]; 
+  videos: string[] = [];
   loading: boolean = false;
   loadingVideo: boolean = false;
   videoNotFound: boolean = false;
@@ -70,10 +71,12 @@ export class CarIssueProfileComponent implements OnInit {
 
   getVideo(issueId: string) {
     this.loadingVideo = true;
+    this.videos = [];
     this.videoHttp.getVideo(issueId).subscribe({
       next: (video) => {
         this.video = video;
-        console.log(video);
+        this.createVideoObject();
+
         if (this.video == null || this.video.length <= 0 )
           this.videoNotFound = true;
         else
@@ -85,7 +88,19 @@ export class CarIssueProfileComponent implements OnInit {
         this.videoNotFound = true;
         this.loadingVideo = false;
       }
-    })
+    });
+  }
+
+createVideoObject() {
+  this.video?.forEach(i => {
+    this.videoHttp.getVideoStream(i.id).subscribe({
+      next: (r) => {
+        console.log(r);
+        const blob = new Blob([r]);
+        this.videos.push(URL.createObjectURL(blob));
+      },
+    });
+  });
   }
 
   handleVideoUpload(event: { success: boolean, message: string }) {

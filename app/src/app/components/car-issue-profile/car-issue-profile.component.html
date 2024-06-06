@@ -10,7 +10,7 @@
         <div class="car-detail-section">
             <div class="car-detail">
                 <mat-form-field appearance="outline">
-                    <mat-label>Fabrikant</mat-label>
+                    <mat-label>Make</mat-label>
                     <input matInput readonly="true" [value]="issue?.car?.make">
                 </mat-form-field>
                 <mat-form-field appearance="outline">
@@ -18,11 +18,11 @@
                     <input matInput readonly="true" [value]="issue?.car?.model">
                 </mat-form-field>
                 <mat-form-field appearance="outline">
-                    <mat-label>Nummerplade</mat-label>
+                    <mat-label>License Plate</mat-label>
                     <input matInput readonly="true" [value]="issue?.car?.plate">
                 </mat-form-field>
                 <mat-form-field appearance="outline">
-                    <mat-label>VIN Nummer</mat-label>
+                    <mat-label>VIN Number</mat-label>
                     <input matInput readonly [value]="issue?.car?.vinNumber">
                 </mat-form-field>
             </div>
@@ -31,18 +31,16 @@
         </div>
 
         <div class="video-section">
-            <h2>Videoer</h2>
+            <h2>Video(s)</h2>
             @if (!loadingVideo) {
             @if (videoNotFound) {
-            Ingen videoer fundet.
+            Not Found.
             }
             @else {
             <div class="videos">
-
-                @for (item of video; track $index) {
-
-                <video width="250" controls [src]="environment_API+'/Video/StreamVideo?id='+ item.id "></video>
-                <!-- Network path to a video -->
+                <div *ngIf="videos.length <= 0">Loading...<br><mat-spinner></mat-spinner></div>
+                @for (item of videos; track $index) {
+                <video #videoPlayer [src]="item" width="250" controls></video>
                 }
             </div>
             }
@@ -51,28 +49,28 @@
         </div>
 
         <div class="issue-detail-section">
-            <h2>Detaljer</h2>
+            <h2>Details</h2>
             <div class="issue-detail">
                 <mat-form-field class="small-field" appearance="outline">
-                    <mat-label>Pris</mat-label>
+                    <mat-label>Price</mat-label>
                     <input matInput readonly [value]="issue?.price">
                 </mat-form-field>
                 <mat-form-field appearance="outline">
-                    <mat-label>Dato for oprettelse</mat-label>
+                    <mat-label>Creation Date</mat-label>
                     <input matInput readonly [value]="issue?.creationTime | date:'dd/MM/yyyy HH:mm'">
                 </mat-form-field>
             </div>
             <div class="issue-detail">
                 <mat-form-field appearance="outline">
-                    <mat-label>Beskrivelse</mat-label>
+                    <mat-label>Description</mat-label>
                     <textarea matInput readonly [value]="issue?.description"></textarea>
                 </mat-form-field>
             </div>
         </div>
         <div class="button-section">
             <button [routerLink]="'/cars'" routerLinkActive="router-link-active" class="action-button">Gå
-                Tilbage</button>
-            <button class="action-button">Marker som fuldført</button>
+                Back</button>
+            <button class="action-button">Mark as completed</button>
         </div>
     </div>
     }

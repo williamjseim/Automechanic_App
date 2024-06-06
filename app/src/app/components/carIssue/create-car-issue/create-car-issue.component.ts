@@ -38,6 +38,7 @@ export class CreateCarIssueComponent {
 
   carIssueForm = new FormGroup({
     car: new FormControl('', [Validators.required]),
+    category: new FormControl(''), // TODO: Add required validator when implemented
     price: new FormControl('', [Validators.required]),
     description: new FormControl('', [Validators.required]),
     searchPlate: new FormControl(''),
@@ -47,7 +48,8 @@ export class CreateCarIssueComponent {
   loading = false;
 
   cars: Car[] = [];
-    
+  categories: any = [{tag: 'Not Implemented', id: "Not Implemented"}];
+
   constructor(
     public sharedService: SharedService,
     private router: Router,
@@ -56,26 +58,20 @@ export class CreateCarIssueComponent {
   ) { }
 
   ngOnInit(): void {
-    this.getCars();
+    this.getData();
     this.getExistingData();
     this.getQueryParam();
   }
 
-  getCars() {
+  async getData(): Promise<boolean> {
     this.loading = true;
-    const cars: Car[] = this.sharedService.getCars();
-    if (cars.length > 0) {
-      this.cars = cars;
-      this.loading = false;
-    }
-    else {
-      this.carService.GetCars(0, 5000)
+      this.carService.GetCars(0, 20)
       .subscribe(res => {
         this.cars = res;
-        this.sharedService.setCars(this.cars);
         this.loading = false;
+        return true;
       });
-    }
+      return false;
   }
 
   getExistingData() {
@@ -97,9 +93,11 @@ export class CreateCarIssueComponent {
       }
     });
   }
-  compareCars(car1: any, car2: any) {
-    return car1 && car2 && car1.id === car2.id;
+  compareItem(item1: any, item2: any) {
+    return item1 && item2 && item1.id === item2.id;
   }
+
+  
   patchCarSelect(carId: string) {
     this.carService.GetCar(carId).subscribe({
       next: (res) => {
