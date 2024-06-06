@@ -20,11 +20,11 @@
             </div>
             <div class="car-section">
                 <mat-form-field appearance="outline">
-                    <mat-label>Plate</mat-label>
+                    <mat-label>License Plate</mat-label>
                     <input matInput readonly="true" [value]="formData.car.plate">
                 </mat-form-field>
                 <mat-form-field appearance="outline">
-                    <mat-label>Vin</mat-label>
+                    <mat-label>VIN</mat-label>
                     <input matInput readonly [value]="formData.car.vinNumber">
                 </mat-form-field>
             </div>
@@ -34,9 +34,16 @@
         <div class="car-section">
 
             <mat-form-field appearance="outline" class="flex">
+                <mat-label>Category</mat-label>
+                <input matInput readonly="true" [value]="formData.category.tag">
+            </mat-form-field>
+            
+            <mat-form-field appearance="outline" class="flex">
                 <mat-label>Price</mat-label>
                 <input matInput readonly="true" [value]="formData.price">
             </mat-form-field>
+
+
         </div>
         <div>
             <mat-form-field appearance="outline" class="description-container">

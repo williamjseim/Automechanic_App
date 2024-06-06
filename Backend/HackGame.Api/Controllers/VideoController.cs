@@ -9,13 +9,15 @@ public class VideoController : Controller
 {
 
     private MechanicDatabase _db;
-
+    private IConfiguration _config;
     // Local upload destination
-    private readonly string _uploadFolder = Path.Combine("C:\\xampp\\htdocs", "Uploads");
+    private readonly string _uploadFolder;
 
-    public VideoController(MechanicDatabase db)
+    public VideoController(MechanicDatabase db, IConfiguration config)
     {
         _db = db;
+        _config = config;
+        _uploadFolder = _config["Videos:FolderPath"];
     }
     [HttpGet("Stream")]
     public async Task StreamVideo(CancellationToken token, string filePath)
@@ -40,17 +42,19 @@ public class VideoController : Controller
 
     }
 
+    [JwtTokenAuthorization]
     [HttpGet("StreamVideo")]
-    public async Task<IResult> Stream(Guid id)
+    public async Task<IResult> Stream(Guid videoId)
     {
-        Video video = _db.Videos.FirstOrDefault(x => x.Id == id );
+        Video video = await _db.Videos.FirstOrDefaultAsync(x => x.Id == videoId);
+
         if (video == null)
         {
             return Results.NotFound();
         }
         try
         {
-            var fileName = "sample.mp4";
+            var fileName = "video.mp4";
             string path = Path.Combine(_uploadFolder, video.VideoPath);  // the video file is in the wwwroot/files folder
 
             var filestream = System.IO.File.OpenRead(path);
@@ -68,16 +72,16 @@ public class VideoController : Controller
     {
         try
         {
-            CarIssue carIssue = _db.CarIssues.FirstOrDefault(c => c.Id == issueId);
+            CarIssue carIssue = await _db.CarIssues.FirstOrDefaultAsync(c => c.Id == issueId);
 
             if (carIssue == null)
             {
                 return NotFound("Car issue not found");
             }
-            var videoIssues = _db.Videos.Where(x => x.Issue == carIssue)
+            var videoIssues = await _db.Videos.Where(x => x.Issue == carIssue)
             .Include(x => x.Issue.Creator)
             .Include(x => x.Issue.Car)
-            .ToList();
+            .ToListAsync();
             return Ok(videoIssues);
         }
         catch (System.Exception ex)
@@ -94,7 +98,7 @@ public class VideoController : Controller
     {
         try
         {
-            CarIssue carIssue = _db.CarIssues.FirstOrDefault(c => c.Id == issueId);
+            CarIssue carIssue = await _db.CarIssues.FirstOrDefaultAsync(c => c.Id == issueId);
 
             if (carIssue == null)
             {
@@ -117,6 +121,33 @@ public class VideoController : Controller
             }
         }
         catch (Exception ex)
+        {
+            return StatusCode(500, $"An error occurred: {ex.Message}");
+        }
+    }
+
+    [HttpDelete("Delete")]
+    public async Task<IActionResult> DeleteVideo(Guid videoId) {
+
+        try
+        {
+            Video video = await _db.Videos.FirstOrDefaultAsync(x => x.Id == videoId);
+
+            if (video == null)
+                return NotFound("Video not found");
+            
+            _db.Videos.Remove(video);
+            _db.SaveChangesAsync();
+
+            string fileLocation = Path.Combine(_uploadFolder, video.VideoPath);
+            if (System.IO.File.Exists(fileLocation))
+            {
+                System.IO.File.Delete(fileLocation);
+            }
+
+            return Ok("Video Deleted");
+        }
+        catch (System.Exception ex)
         {
             return StatusCode(500, $"An error occurred: {ex.Message}");
         }

@@ -20,7 +20,7 @@ h2 {
 
     .form-input-small {
         width: 35vw;
-        max-width: 150px;
+        max-width: 100vw;
     }
     .form-input-big {
         width: 65vw;
@@ -40,8 +40,8 @@ form {
 }
 
 mat-form-field {
-    margin-left: 2vh;
-    margin-right: 2vh;
+    margin-left: 1vw;
+    margin-right: 1vw;
 }
 
 mat-error {
@@ -82,4 +82,11 @@ button {
     margin: 0;
     padding: 0;
     width: 100%;
+}
+
+@media screen and (max-width: 450px)  {
+    mat-form-field {
+        margin-right: 2px;
+        margin-left: 2px;
+    }
 }
