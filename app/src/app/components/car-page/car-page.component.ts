@@ -34,12 +34,15 @@ export class CarPageComponent {
   itemsPrPage:number = 10;
 
   ngOnInit(){
-    if(localStorage.getItem("AdminKey") != null){
-      this.isAdmin = true;
-    }
-    this.isAdmin = true;
+    
     this.GetCarPages(this.itemsPrPage);
     this.RemoveFilters();
+    if(localStorage.getItem("isadmin") == null){
+      this.isAdmin = false;
+    }
+    else{
+      this.isAdmin = JSON.parse(localStorage.getItem("isadmin")!);
+    }
   }
 
   searchForm = new FormGroup ({
@@ -62,15 +65,18 @@ export class CarPageComponent {
 
   // stops click event from going to the parent of the element and either opens or closes a car row so some issues are visible
   SelectRow(index:number, event:Event){
+    console.log(this.isAdmin)
     event.stopPropagation();
     if(this.SelectedRow == index){
       this.SelectedRow = -1;
       return;
     }
     else{
-      this.GetCarIssuesHttp(this.cars![index].id).subscribe({next:(value)=>{
-        this.cars![index].issues = value.body;
-      }});
+      if(this.cars![index].issues == null){
+        this.GetCarIssuesHttp(this.cars![index].id).subscribe({next:(value)=>{
+          this.cars![index].issues = value.body;
+        }});
+      }
       this.SelectedRow = index;
     }
   }
@@ -99,9 +105,14 @@ export class CarPageComponent {
 
   //gets 10 from  cars from database
   private GetCarsHttp(make:string='', model:string='', plate:string='', vin:string = ''){
-    this.carHttp.GetCars(this.currentPage, this.itemsPrPage, make, model, plate, vin).subscribe({next:(value)=>{
+    this.carHttp.GetCars(this.currentPage, this.itemsPrPage, make, model, plate, vin).subscribe({
+    next:(value)=>{
       this.cars = value;
-    }});
+    },
+    error:(err)=>{
+      this.cars = [];
+    }
+  });
   }
 
   //gets issues for a specific car

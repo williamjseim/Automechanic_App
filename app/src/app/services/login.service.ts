@@ -22,7 +22,7 @@ export class LoginService {
     this.localStorageService.removeFromLocalStorage('token');
   }
   login(username:string, password:string): Observable<any> {
-    return this.http.post(`${this.url}/Login?username=${username}&password=${password}`,null, { responseType: "text"});
+    return this.http.post(`${this.url}/Login?username=${username}&password=${password}`,null, { responseType: "text", observe: "response"});
   }
 
   verifyToken(token: any): Observable<any> {

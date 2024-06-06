@@ -1,5 +1,8 @@
 
+using Mechanic.Api.Controllers;
 using Mechanic.Api.Data;
+using Mechanic.Api.Middleware;
+using Mechanic.Api.TokenAuthorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -35,10 +38,13 @@ namespace Mechanic.Api
 #endif
             var app = builder.Build();
 
+            app.UseMiddleware<RenewMiddleWare>();
+
             app.UseCors(policy => policy
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowAnyOrigin());
+            .AllowAnyOrigin()
+            .WithExposedHeaders("permission", "refreshtoken", "renewedtoken"));
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

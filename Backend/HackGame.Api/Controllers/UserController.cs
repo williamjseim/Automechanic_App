@@ -26,18 +26,22 @@ namespace Mechanic.Api.Controllers
             {
                 var user = await _db.Users.Where(i => i.Username == username).FirstOrDefaultAsync();
                 if (user != null && user.Password == PasswordHasher.HashPassword(password + _config["Password:Seed"])){
-                    var token = JwtAuthorization.GenerateJsonWebToken(user, _config, _db);
+                    var token = JwtAuthorization.GenerateJsonWebToken(user, _config);
                     if(user.Role == Role.Admin)
                     {
                         Response.Headers.Add("AdminKey", "True");
                     }
                     if(Encrypter.Encrypt(token, out byte[] encryptedText, _config))
                     {
+                        if(Encrypter.Encrypt(JwtAuthorization.GenerateRefreshToken(user, _config), out byte[] encryptedRefresh, _config)){
+
+                            string refreshtokenEncryption = Convert.ToBase64String(encryptedRefresh);
+                            this.Response.Headers.Add("refreshtoken", refreshtokenEncryption);
+                        }
                         var base64 = Convert.ToBase64String(encryptedText);
-                        Console.WriteLine(base64);
+                        this.Response.Headers.Add("permission", (user.Role == Role.Admin).ToString());
                         return Ok(base64);
                     }
-                    return NotFound(Json("username or password is wrong"));
                 }
                 return NotFound(Json("username or password is wrong"));
             }
@@ -45,6 +49,7 @@ namespace Mechanic.Api.Controllers
                 return StatusCode(500, " Something went really wrong Error"+ username + password);
             }
         }
+
         [HttpPut("Register")]
         public async Task<IActionResult> Register(string username, string email, string password, int role = 0)
         {

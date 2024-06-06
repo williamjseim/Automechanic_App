@@ -8,6 +8,7 @@ import { MatButtonModule } from '@angular/material/button'
 import { LoginService } from '../../services/login.service';
 import { LocalStorageService } from '../../services/local-storage.service';
 import { Router } from '@angular/router';
+import { HttpHeaders } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -33,15 +34,13 @@ export class LoginComponent {
       this.router.navigateByUrl("record");
     }
     if (this.usernameControl.valid || this.passwordControl.valid) {
-      this.loginService.login(username, password).subscribe(
-        response => {
-
-          this.localStorageService.addToLocalStorage("token", response);
+      this.loginService.login(username, password).subscribe({
+        next:(value)=>{
+          this.localStorageService.addToLocalStorage("token", value.body);
+          this.localStorageService.addToLocalStorage("isadmin", (value.headers as HttpHeaders).get("permission"));
+          this.localStorageService.addToLocalStorage("refreshtoken", (value.headers as HttpHeaders).get("refreshtoken"));
           this.router.navigateByUrl("");
-        },
-        error => {
-          console.error('Login error:', error);
-        });
-      }
-  }
+        }
+      });
+  }}
 }

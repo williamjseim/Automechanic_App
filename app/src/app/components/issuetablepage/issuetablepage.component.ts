@@ -1,6 +1,4 @@
 import { Component, ElementRef, Input, ViewChild, viewChild } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Car } from '../../Interfaces/car';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { NgIf, NgFor, NgClass} from '@angular/common';
 import { NgStyle } from '@angular/common';
@@ -30,16 +28,11 @@ export class IssuetablepageComponent {
 
   isAdmin:boolean = true;
 
-  issues?:Issue[] = [];
+  issues?:Issue[];
   itemprpage = 10;
 
   ngOnInit(){
-    this.carhttp.GetIssues(0, this.itemprpage, "", "", "").subscribe({
-      next:(value)=>{
-        console.log(value);
-        this.issues = value.body;
-      }
-    })
+    this.RemoveFilters();
   }
 
   searchForm = new FormGroup ({
@@ -56,7 +49,6 @@ export class IssuetablepageComponent {
     let plate = this.searchForm.controls.plate.value;
     this.carhttp.GetIssues(this.currentPage, this.itemprpage, username, plate, make).subscribe({
       next:(value)=>{
-        console.log(value.statusCode);
         if(value.statusCode == 200){
           this.issues = value.body;
         }
@@ -65,7 +57,7 @@ export class IssuetablepageComponent {
         }
       },
       error:(err)=>{
-        
+        this.issues = [];
       }
     })
   }
@@ -84,6 +76,7 @@ export class IssuetablepageComponent {
     this.GetIssuePages(this.itemprpage);
     this.Search();
   }
+
   JumpToPage(index:number){
     if(index < 0){
       index = 0;
@@ -91,6 +84,7 @@ export class IssuetablepageComponent {
     this.currentPage = index;
     this.Search();
   }
+
   GetIssuePages(itemprpage:number){
 
   }

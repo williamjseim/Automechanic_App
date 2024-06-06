@@ -6,12 +6,15 @@ import { HttpHeaders, HttpInterceptorFn, HttpResponse } from '@angular/common/ht
 export const authInterceptor: HttpInterceptorFn = (req, next) => {
   try {
     const Token = localStorage.getItem('token')?.replace(/^"|"$/g, '');
+    const refresh = localStorage.getItem('refreshtoken')?.replace(/^"|"$/g, '');
     if (!Token) {
       return next(req);
     }
+
     const req1 = req.clone({
       setHeaders: {
         Authorization: `Bearer ${Token}`,
+        refreshtoken: refresh ?? ""
         
       },
     });

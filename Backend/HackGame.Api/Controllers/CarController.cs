@@ -4,11 +4,6 @@ using Mechanic.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Mechanic.Api.Models;
 using Mechanic.Api.TokenAuthorization;
-using Pomelo.EntityFrameworkCore.MySql.Query.Internal;
-using Microsoft.Identity.Client;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.EntityFrameworkCore.Internal;
-using Microsoft.Net.Http.Headers;
 
 namespace Mechanic.Api.Controllers
 {
@@ -34,7 +29,7 @@ namespace Mechanic.Api.Controllers
                 Car[] cars;
                 if(userRole == Role.Admin)
                 {
-                    cars = await _db.Cars.Include(i=>i.Creator).Where(i => i.Make.Contains(make ?? "") && i.Model.Contains(model ?? "") && i.Plate.Contains(plate ?? "") && i.VinNumber.Contains(vin ?? "")).Skip(startingIndex * amount).Take(amount).Distinct().OrderBy(i => i.CreationTime).Reverse().ToArrayAsync();
+                    cars = await _db.Cars.Distinct().OrderBy(i => i.CreationTime).Reverse().Include(i=>i.Creator).Where(i => i.Make.Contains(make ?? "") && i.Model.Contains(model ?? "") && i.Plate.Contains(plate ?? "") && i.VinNumber.Contains(vin ?? "")).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
                 }
                 else
                 {
