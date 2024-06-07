@@ -131,6 +131,7 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
+
                 Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
                 int test;
                 if(userRole == Role.Admin)
@@ -154,13 +155,23 @@ namespace Mechanic.Api.Controllers
             }
         }
 
-        [JwtRoleAuthorization(Role.Admin)]
+        [JwtTokenAuthorization]
         [HttpDelete("DeleteCar")]
         public async Task<IActionResult> DeleteCar(Guid carId)
         {
             try
             {
-                int i = await _db.Cars.Where(i=>i.Id == carId).ExecuteDeleteAsync();
+                Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
+                Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+                int i;
+                if(userRole == Role.Admin)
+                {
+                    i = await _db.Cars.Where(i=>i.Id == carId).ExecuteDeleteAsync();
+                }
+                else
+                {
+                    i = await _db.Cars.Where(i=>i.Id == carId && i.Creator.Id == userId).ExecuteDeleteAsync();
+                }
                 return Ok(Json("Deletion successful"));
             }
             catch (Exception ex)

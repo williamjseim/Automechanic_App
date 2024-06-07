@@ -105,23 +105,8 @@ namespace Mechanic.Api.TokenAuthorization
             {
                 string token = Encoding.UTF8.GetString(cipher);
                 JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-                TokenValidationParameters parameters = new TokenValidationParameters
-                {
-                    ValidIssuer = config["JwtSettings:Issuer"],
-                    ValidAudience = config["JwtSettings:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!)),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-#if DEBUG
-                    ValidateLifetime = false,
-#else
-                    ValidateLifetime = true,
-#endif
-                    ValidateIssuerSigningKey = true,
-                    ValidateActor = false,
-                };
-                var result = handler.ValidateToken(token, parameters, out SecurityToken validatedToken);
-                if(Guid.TryParse(result.Claims.First(i => i.Type == JwtRegisteredClaimNames.Jti).Value, out Guid id))
+                var readToken = handler.ReadJwtToken(token);
+                if(Guid.TryParse(readToken.Claims.First(i=>i.Type == JwtRegisteredClaimNames.Jti).Value, out Guid id))
                 {
                     return id;
                 }
@@ -137,22 +122,7 @@ namespace Mechanic.Api.TokenAuthorization
             {
                 string token = Encoding.UTF8.GetString(cipher);
                 JwtSecurityTokenHandler handler = new JwtSecurityTokenHandler();
-                TokenValidationParameters parameters = new TokenValidationParameters
-                {
-                    ValidIssuer = config["JwtSettings:Issuer"],
-                    ValidAudience = config["JwtSettings:Audience"],
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!)),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
-#if DEBUG
-                    ValidateLifetime = false,
-#else
-                    ValidateLifetime = true,
-#endif
-                    ValidateIssuerSigningKey = true,
-                    ValidateActor = false,
-                };
-                var result = handler.ValidateToken(token, parameters, out SecurityToken validatedToken);
+                var result = handler.ReadJwtToken(token);
                 string roleString = result.Claims.First(i => i.Type == JwtRegisteredClaimNames.Aud).Value;
                 if(Enum.TryParse<Role>(roleString, out Role role))
                 {

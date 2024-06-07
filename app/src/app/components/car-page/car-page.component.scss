@@ -119,14 +119,12 @@ td{
 
 .EditButton{
     @include BaseButton;
+    flex: 1 1;
     background-color: Lime;
 }
 
 .EditButton:active{
     background-color: limegreen;
-}
-
-.DeleteButton:active{
 }
 
 .DeletionBtn{
@@ -135,6 +133,7 @@ td{
     border-radius: 10px;
     border: 0;
     box-shadow: -2px 10px 10px darkgray;
+    flex: 1 1;
 }
 
 .DeletionBtn:active{

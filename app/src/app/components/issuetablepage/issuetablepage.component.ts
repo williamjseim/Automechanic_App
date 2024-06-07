@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-request-popup.component';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-issuetablepage',
@@ -26,7 +27,7 @@ export class IssuetablepageComponent {
   pages:number = 1;
   currentPage:number = 0;
 
-  isAdmin:boolean = true;
+  isAdmin:Observable<boolean> = of(true);
 
   issues?:Issue[];
   itemprpage = 10;
@@ -49,7 +50,9 @@ export class IssuetablepageComponent {
     let plate = this.searchForm.controls.plate.value;
     this.carhttp.GetIssues(this.currentPage, this.itemprpage, username, plate, make).subscribe({
       next:(value)=>{
-        if(value.statusCode == 200){
+        let asd = localStorage.getItem("isadmin") ?? "false";
+        this.isAdmin = of(JSON.parse(asd) as boolean);
+        if(value.status == 200){
           this.issues = value.body;
         }
         else{
