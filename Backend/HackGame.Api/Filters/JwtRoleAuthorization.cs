@@ -9,6 +9,11 @@ using System.Text;
 
 namespace Mechanic.Api.Filters
 {
+    public enum Role
+    {
+        User = 0,
+        Admin = 1,
+    }
     public class JwtRoleAuthorization : Attribute, IAuthorizationFilter
     {
         //array of roles that are allowed to acces this api call

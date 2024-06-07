@@ -7,7 +7,9 @@ export const accessDeniedInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
   return next(req).pipe(map((event:HttpEvent<any>)=>{
     if(event instanceof HttpResponse){
-      console.log(event.headers.keys());
+      if(event.headers.get("renewedToken") != null){
+        localStorage["token"] = JSON.stringify(event.headers.get("renewedToken"));
+      }
       if(event.status == 401){
         router.navigate(['']);
       }

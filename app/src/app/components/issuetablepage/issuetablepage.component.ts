@@ -1,6 +1,4 @@
 import { Component, ElementRef, Input, ViewChild, viewChild } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Car } from '../../Interfaces/car';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { NgIf, NgFor, NgClass} from '@angular/common';
 import { NgStyle } from '@angular/common';
@@ -15,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-request-popup.component';
+import { Observable, of } from 'rxjs';
 
 @Component({
   selector: 'app-issuetablepage',
@@ -28,18 +27,13 @@ export class IssuetablepageComponent {
   pages:number = 1;
   currentPage:number = 0;
 
-  isAdmin:boolean = true;
+  isAdmin:Observable<boolean> = of(true);
 
-  issues?:Issue[] = [];
+  issues?:Issue[];
   itemprpage = 10;
 
   ngOnInit(){
-    this.carhttp.GetIssues(0, this.itemprpage, "", "", "").subscribe({
-      next:(value)=>{
-        console.log(value);
-        this.issues = value.body;
-      }
-    })
+    this.RemoveFilters();
   }
 
   searchForm = new FormGroup ({
@@ -56,8 +50,17 @@ export class IssuetablepageComponent {
     let plate = this.searchForm.controls.plate.value;
     this.carhttp.GetIssues(this.currentPage, this.itemprpage, username, plate, make).subscribe({
       next:(value)=>{
-        console.log(value);
-        this.issues = value.body;
+        let asd = localStorage.getItem("isadmin") ?? "false";
+        this.isAdmin = of(JSON.parse(asd) as boolean);
+        if(value.status == 200){
+          this.issues = value.body;
+        }
+        else{
+          this.issues = [];
+        }
+      },
+      error:(err)=>{
+        this.issues = [];
       }
     })
   }
@@ -76,6 +79,7 @@ export class IssuetablepageComponent {
     this.GetIssuePages(this.itemprpage);
     this.Search();
   }
+
   JumpToPage(index:number){
     if(index < 0){
       index = 0;
@@ -83,6 +87,7 @@ export class IssuetablepageComponent {
     this.currentPage = index;
     this.Search();
   }
+
   GetIssuePages(itemprpage:number){
 
   }

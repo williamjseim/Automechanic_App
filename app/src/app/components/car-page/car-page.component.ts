@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, ViewChild, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, Input, ViewChild, viewChild } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Car } from '../../Interfaces/car';
 import { AsyncPipe, DatePipe } from '@angular/common';
@@ -20,28 +20,27 @@ import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-requ
   standalone: true,
   imports: [AsyncPipe, DatePipe, DeleteRequestPopupComponent, RouterLink, ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
   templateUrl: './car-page.component.html',
-  styleUrl: './car-page.component.scss'
+  styleUrl: './car-page.component.scss',
+  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class CarPageComponent {
 
-  constructor(private carHttp:CarDataService){}
+  constructor(private carHttp:CarDataService){
+    
+  }
 
   cars?:Car[];
-  isAdmin:boolean = false;
+  isAdmin?:Observable<boolean>;
   pages:number = 0;
   currentPage:number = 0;
   SelectedRow:number = -1;
   itemsPrPage:number = 10;
 
   ngOnInit(){
-    if(localStorage.getItem("AdminKey") != null){
-      this.isAdmin = true;
-    }
-    this.isAdmin = true;
     this.GetCarPages(this.itemsPrPage);
     this.RemoveFilters();
   }
-
+    
   searchForm = new FormGroup ({
     make: new FormControl(),
     model: new FormControl(),
@@ -68,9 +67,18 @@ export class CarPageComponent {
       return;
     }
     else{
-      this.GetCarIssuesHttp(this.cars![index].id).subscribe({next:(value)=>{
-        this.cars![index].issues = value.body;
-      }});
+      if(this.cars![index].issues == null){
+        this.GetCarIssuesHttp(this.cars![index].id).subscribe({
+          next:(value)=>{
+            if(value.status == 200){
+              this.cars![index].issues = value.body;
+            }
+            else{
+              this.cars![index].issues = [];
+            }
+        }
+      });
+      }
       this.SelectedRow = index;
     }
   }
@@ -99,9 +107,14 @@ export class CarPageComponent {
 
   //gets 10 from  cars from database
   private GetCarsHttp(make:string='', model:string='', plate:string='', vin:string = ''){
-    this.carHttp.GetCars(this.currentPage, this.itemsPrPage, make, model, plate, vin).subscribe({next:(value)=>{
+    this.carHttp.GetCars(this.currentPage, this.itemsPrPage, make, model, plate, vin).subscribe({
+    next:(value)=>{
       this.cars = value;
-    }});
+    },
+    error:(err)=>{
+      this.cars = [];
+    }
+  });
   }
 
   //gets issues for a specific car
@@ -112,6 +125,8 @@ export class CarPageComponent {
   //gets how many pages of cars that are in the database
   private GetCarPages(amountPrPage:number){
     this.carHttp.GetPageAmount(amountPrPage).subscribe({next:(value)=>{
+      let asd = localStorage.getItem("isadmin") ?? "false";
+      this.isAdmin = of(JSON.parse(asd) as boolean);
       this.pages = value;
     }});
   }
