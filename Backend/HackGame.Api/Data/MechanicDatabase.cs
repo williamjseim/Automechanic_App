@@ -13,6 +13,8 @@ namespace Mechanic.Api.Data
         public DbSet<Car> Cars { get; set; }
         public DbSet<CarIssue> CarIssues { get; set; }
         public DbSet<Video> Videos { get; set; }
+        public DbSet<CarCategory> CarCategories { get; set; }
+
 
     }
 }
