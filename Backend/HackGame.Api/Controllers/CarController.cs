@@ -290,7 +290,7 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpPut("CreateCarIssue")]
-        public async Task<IActionResult> CreateCarIssues(Guid carId, string description, decimal price)
+        public async Task<IActionResult> CreateCarIssues(Guid carId, Guid categoryId, string description, decimal price)
         {
             try
             {
@@ -307,12 +307,17 @@ namespace Mechanic.Api.Controllers
                 }
 
                 Car car = await _db.Cars.FirstOrDefaultAsync(i=>i.Id == carId);
+                CarCategory? carCategory = await _db.CarCategories.FirstOrDefaultAsync(i => i.Id == categoryId);
                 if(car == null)
                 {
                     return NotFound("Car not found");
                 }
-              
-                CarIssue issue = new(car, user, description, price);
+                // if (carCategory == null)
+                // {
+                //     return NotFound("Category not found");
+                // }
+
+                CarIssue issue = new(carCategory, car, user, description, price);
                 await _db.AddAsync(issue);
                 await _db.SaveChangesAsync();
                 return Ok();
@@ -380,6 +385,84 @@ namespace Mechanic.Api.Controllers
             }
         }
 
+        [JwtRoleAuthorization(Role.Admin)]
+        [HttpPut("CreateCarIssueCategory")]
+        public async Task<IActionResult> CreateCarIssueCategory(string tag)
+        {
+            try
+            {
+                Guid userId = JwtAuthorization.GetUserId(Request.Headers.Authorization, _config);
+
+                var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == userId);
+                if (userId == null)
+                {
+                    return Unauthorized("User doesnt exist");
+                }
+                else if (user == null)
+                {
+                    return NotFound(Json("User not found"));
+                }
+
+                CarCategory carCategory = new(tag);
+                await _db.AddAsync(carCategory);
+                await _db.SaveChangesAsync();
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(500, Json("Something went wrong"));
+            }
+        }
+
+
+        [HttpGet("CarIssueCategories")]
+        public async Task<IActionResult> GetCarIssueCategories()
+        {
+            try
+            {
+                Guid userId = JwtAuthorization.GetUserId(Request.Headers.Authorization, _config);
+
+                var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == userId);
+                if (userId == null)
+                {
+                    return Unauthorized("User doesnt exist");
+                }
+                else if (user == null)
+                {
+                    return NotFound(Json("User not fount"));
+                }
+                CarCategory[] carCategories = await _db.CarCategories.ToArrayAsync(); 
+                return Ok(carCategories);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(500, Json("Something went wrong"));
+            }
+        }
+
+        [JwtRoleAuthorization(Role.Admin)]
+        [HttpDelete("DeleteCarIssueCategory")]
+        public async Task<IActionResult> DeleteCarIssueCategory(Guid categoryId)
+        {
+            try
+            {
+                var deleteResult = await _db.CarCategories.Where(i => i.Id == categoryId).ExecuteDeleteAsync();
+
+                if (deleteResult == 1)
+                {
+                    return Ok(Json("Deletion Successful"));
+                }
+                else {
+                    return NotFound(Json("Category not found"));
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, Json("Something went wrong"));
+            }
+        }
         [HttpPut("Debug fill database")]
         public async Task<IActionResult> DebugFill()
         {
@@ -399,19 +482,34 @@ namespace Mechanic.Api.Controllers
                 new(user, "vin number", "plate", "volvo", "246"),
             };
             await _db.AddRangeAsync(cars);
+
+            var carCategories = new CarCategory[] {
+                new("backlights"),
+                new("frontlights"),
+                new("breaks"),
+                new("motor"),
+            };
+            await _db.AddRangeAsync(carCategories);
+            int bobby = 0;
+            int lilly = 0;
             foreach (var item in cars)
             {
+                bobby++;
+                System.Console.WriteLine(bobby);
                 for (global::System.Int32 i = 0; i < 3; i++)
                 {
+                    lilly++;
+                    System.Console.WriteLine(lilly);
                     var issues = new CarIssue[]{
-                        new(item, user, "nothing", 500),
-                        new(item, user, "nothing", 500),
-                        new(item, user, "nothing", 500),
-                        new(item, user, "nothing", 500),
+                        new(carCategories[0], item, user, "nothing", 500),
+                        new(carCategories[1], item, user, "nothing", 500),
+                        new(carCategories[2], item, user, "nothing", 500),
+                        new(carCategories[3], item, user, "nothing", 500),
                     };
                     await _db.AddRangeAsync(issues);
                 }
             }
+
             await _db.SaveChangesAsync();
             return Ok();
         }

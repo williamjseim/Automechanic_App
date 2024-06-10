@@ -19,6 +19,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SharedService } from '../../../services/shared.service';
 import { Car } from '../../../Interfaces/car';
 import { CarDataService } from '../../../services/car-data.service';
+import { Category } from '../../../Interfaces/category';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -38,17 +39,17 @@ export class CreateCarIssueComponent {
 
   carIssueForm = new FormGroup({
     car: new FormControl('', [Validators.required]),
-    category: new FormControl(''), // TODO: Add required validator when implemented
+    category: new FormControl(''),
     price: new FormControl('', [Validators.required]),
     description: new FormControl('', [Validators.required]),
     searchPlate: new FormControl(''),
   });
 
   matcher = new MyErrorStateMatcher();
-  loading = false;
-
+  loadingCars = false;
+  loadingCategories = false;
   cars: Car[] = [];
-  categories: any = [{tag: 'Not Implemented', id: "Not Implemented"}];
+  categories: Category[] = [];
 
   constructor(
     public sharedService: SharedService,
@@ -58,20 +59,27 @@ export class CreateCarIssueComponent {
   ) { }
 
   ngOnInit(): void {
-    this.getData();
+    this.getCars();
+    this.getCategories()
     this.getExistingData();
     this.getQueryParam();
   }
 
-  async getData(): Promise<boolean> {
-    this.loading = true;
-      this.carService.GetCars(0, 20)
+  getCars() {
+    this.loadingCars = true;
+    this.carService.GetCars(0, 20)
       .subscribe(res => {
         this.cars = res;
-        this.loading = false;
-        return true;
+        this.loadingCars = false;
       });
-      return false;
+  }
+  getCategories() {
+    this.loadingCategories = true;
+    this.carService.GetCarCategories()
+      .subscribe(res => {
+        this.categories = res;
+        this.loadingCategories = false;
+      });
   }
 
   getExistingData() {
@@ -97,7 +105,7 @@ export class CreateCarIssueComponent {
     return item1 && item2 && item1.id === item2.id;
   }
 
-  
+
   patchCarSelect(carId: string) {
     this.carService.GetCar(carId).subscribe({
       next: (res) => {

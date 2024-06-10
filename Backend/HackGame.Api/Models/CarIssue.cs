@@ -10,7 +10,7 @@ namespace Mechanic.Api.Models
         {
             
         }
-        public CarIssue(Car car, User creator, string description, decimal price)
+        public CarIssue(CarCategory? category, Car car, User creator, string description, decimal price)
         {
             this.Id = Guid.NewGuid();
             this.CreationTime = DateTime.Now;
@@ -18,6 +18,7 @@ namespace Mechanic.Api.Models
             this.Price = price;
             this.Creator = creator;
             this.Car = car;
+            this.Category = category;
         }
         public Guid Id { get; set; }
         public Car Car { get; set; }
@@ -25,6 +26,7 @@ namespace Mechanic.Api.Models
         public string Description { get; set; }
         public decimal Price { get; set; }
         public DateTime CreationTime { get; set; }
+        public CarCategory? Category { get; set; }
 
     }
 }

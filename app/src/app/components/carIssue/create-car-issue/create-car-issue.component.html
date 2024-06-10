@@ -10,8 +10,8 @@
                 <mat-form-field class="form-input-big" appearance="fill">
                     <mat-label>Car</mat-label>
                     <mat-select formControlName="car" [value]="carIssueForm.controls.car.value" [compareWith]="compareItem">
-                        @if (loading) {
-                        <mat-option disabled *ngIf="loading">Retrieving Cars...</mat-option>
+                        @if (loadingCars) {
+                        <mat-option disabled *ngIf="loadingCars">Retrieving Cars...</mat-option>
                         }
                         @else {
 
@@ -28,8 +28,8 @@
                 <mat-form-field class="form-input-small" appearance="fill">
                     <mat-label>Category</mat-label>
                     <mat-select formControlName="category" [value]="carIssueForm.controls.category.value" [compareWith]="compareItem">
-                        @if (loading) {
-                        <mat-option disabled *ngIf="loading">Retrieving Categories...</mat-option>
+                        @if (loadingCategories) {
+                        <mat-option disabled *ngIf="loadingCategories">Retrieving Categories...</mat-option>
                         }
                         @else {
                 
