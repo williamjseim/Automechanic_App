@@ -143,6 +143,12 @@ namespace Mechanic.Api.Controllers
                 return StatusCode(500, " Something went wrong");
             }
         }
+
 #endif
+        [HttpGet("Unauthorized")]
+        public async Task<IActionResult> UnauthorizedTest()
+        {
+            return Unauthorized();
+        }
     }
 }

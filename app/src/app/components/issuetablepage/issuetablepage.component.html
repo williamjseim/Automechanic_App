@@ -36,7 +36,7 @@
                     <td>{{item.price}}</td>
                     <td><mat-icon *ngIf="false">expand_more</mat-icon><mat-icon *ngIf="true">expand_less</mat-icon></td>
                     <td (click)="$event.stopPropagation()" class="actionTd">
-                        <input [routerLink]="['/carprofile']" [queryParams]="{carId: item.id}" routerLinkActive="router-link-active"  type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Open">
+                        <input [routerLink]="['/issueprofile']" [queryParams]="{issueId: item.id}" routerLinkActive="router-link-active"  type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Open">
                         <input type="button" *ngIf="isAdmin" class="DeleteButton" (click)="Delete.Open(row)" value="Delete">
                     </td>
                 </tr>

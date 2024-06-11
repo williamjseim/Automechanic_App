@@ -31,7 +31,7 @@ namespace Mechanic.Api
 
 #if DEBUG
             builder.Services.AddDbContext<MechanicDatabase>(options =>
-            options.UseMySql(builder.Configuration.GetConnectionString("Default"),ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Default"))));
+            options.UseMySql(builder.Configuration.GetConnectionString("Prod"),ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Prod"))));
 #else
             builder.Services.AddDbContext<MechanicDatabase>(options =>
             options.UseMySql(builder.Configuration.GetConnectionString("Prod"),ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Prod"))));

@@ -29,10 +29,12 @@ namespace Mechanic.Api.Middleware
                         }
                     }
                 }
+                await Console.Out.WriteLineAsync("Token renewal successful");
                 await _next(context);
             }
             catch
             {
+                Console.WriteLine("error during renewal of tokens");
                 await _next(context);
             }
         }
