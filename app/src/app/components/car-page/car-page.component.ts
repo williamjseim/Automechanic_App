@@ -136,4 +136,5 @@ export class CarPageComponent {
     this.currentPage = index;
     this.Search();
   }
+
 }

@@ -35,7 +35,6 @@ export class UserprofilepageComponent {
         if(userid == null || userid == ''){
           this.userHttp.GetUser().subscribe({
             next:(value)=>{
-              console.log(value)
               this.user = value;
               this.RemoveFilters();
             },

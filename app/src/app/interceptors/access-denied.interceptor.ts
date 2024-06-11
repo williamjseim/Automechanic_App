@@ -12,10 +12,8 @@ export const accessDeniedInterceptor: HttpInterceptorFn = (req, next) => {
       if(event.headers.get("renewedToken") != null){
         localStorage["token"] = JSON.stringify(event.headers.get("renewedToken"));
       }
-      console.log(event);
       return event;
       }
-    console.log(event+ " event");
     return event;
   }),
     catchError((err:HttpErrorResponse)=>{

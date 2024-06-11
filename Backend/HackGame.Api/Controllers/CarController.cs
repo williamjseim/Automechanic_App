@@ -117,7 +117,7 @@ namespace Mechanic.Api.Controllers
                 Car car = new(user, vinnr, plate, make, model, base64Image);
                 await _db.AddAsync(car);
                 await _db.SaveChangesAsync();
-                return Ok("Car created");
+                return Ok(Json("Car created"));
             }
             catch (Exception ex)
             {
