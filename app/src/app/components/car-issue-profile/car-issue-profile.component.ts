@@ -55,6 +55,7 @@ export class CarIssueProfileComponent implements OnInit {
   getIssue(issueId: string) {
     this.carHttp.GetIssue(issueId).subscribe({
       next: (issue) => {
+        console.log(issue);
         this.issue = issue;
         this.loading = false;
         if (issue == null) {

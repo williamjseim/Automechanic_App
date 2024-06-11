@@ -57,11 +57,11 @@ export class ReviewCarIssueComponent implements OnInit {
   onAccept() {
     this.loading = true;
     this.carService.CreateIssue(this.formData?.car.id!, this.formData?.category.id!, this.formData?.description!, this.formData?.price!).subscribe({
-      next: () => { 
+      next: (res) => { 
         this.loading = false;
         this.sharedService.setFormData(null);
         this.snackbar.open('Issue created', 'Close', { duration: 4000 });
-        this.router.navigate(['issue']);
+        this.router.navigate(['issueprofile'], { queryParams: {issueId: res}});
       },
       error: (err) => { 
         console.log(err);

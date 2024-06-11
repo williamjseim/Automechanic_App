@@ -188,7 +188,7 @@ namespace Mechanic.Api.Controllers
             {
                 Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
                 Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
-                var issue = await _db.CarIssues.Include(i => i.Car).Include(i => i.Creator).FirstOrDefaultAsync(i => i.Id == issueId);
+                var issue = await _db.CarIssues.Include(i => i.Car).Include(i => i.Creator).Include(i => i.Category).FirstOrDefaultAsync(i => i.Id == issueId);
                 if (issue == null)
                 {
                     return NotFound("Issue not found");
@@ -320,7 +320,7 @@ namespace Mechanic.Api.Controllers
                 CarIssue issue = new(carCategory, car, user, description, price);
                 await _db.AddAsync(issue);
                 await _db.SaveChangesAsync();
-                return Ok();
+                return StatusCode(201, issue.Id);
             }
             catch (Exception ex)
             {

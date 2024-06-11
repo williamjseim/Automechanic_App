@@ -52,6 +52,10 @@
             <h2>Details</h2>
             <div class="issue-detail">
                 <mat-form-field class="small-field" appearance="outline">
+                    <mat-label>Category</mat-label>
+                    <input matInput readonly [value]="issue?.category?.tag">
+                </mat-form-field>
+                <mat-form-field class="small-field" appearance="outline">
                     <mat-label>Price</mat-label>
                     <input matInput readonly [value]="issue?.price">
                 </mat-form-field>
