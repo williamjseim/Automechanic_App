@@ -100,6 +100,9 @@ createVideoObject() {
         const blob = new Blob([r]);
         this.videos.push(URL.createObjectURL(blob));
       },
+      error: () => {
+        this.videoNotFound = true;
+      }
     });
   });
   }
