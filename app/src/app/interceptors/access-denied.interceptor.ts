@@ -1,20 +1,30 @@
-import { HttpEvent, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
+import { HttpErrorResponse, HttpEvent, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { map } from 'rxjs';
+import { map, of } from 'rxjs';
+import { catchError } from 'rxjs';
 
 export const accessDeniedInterceptor: HttpInterceptorFn = (req, next) => {
   const router = inject(Router);
-  return next(req).pipe(map((event:HttpEvent<any>)=>{
+  return next(req).pipe(
+    map((event:HttpEvent<any>)=>{
     if(event instanceof HttpResponse){
       if(event.headers.get("renewedToken") != null){
         localStorage["token"] = JSON.stringify(event.headers.get("renewedToken"));
       }
-      if(event.status == 401){
-        router.navigate(['']);
-      }
+      console.log(event);
       return event;
-    }
+      }
+    console.log(event+ " event");
     return event;
-  }));
+  }),
+    catchError((err:HttpErrorResponse)=>{
+      if(err.status == 401){
+        console.log("unathorized")
+        localStorage.clear();
+        router.navigate(['login']);
+      }
+      return of();
+    })
+  );
 };

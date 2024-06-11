@@ -62,7 +62,7 @@ namespace Mechanic.Api.Controllers
                 {
                     return Ok(car);
                 }
-                return Unauthorized();
+                return Forbid();
             }
             catch (Exception ex)
             {
@@ -147,7 +147,7 @@ namespace Mechanic.Api.Controllers
                 {
                     return Ok(Json("Deletion successful"));
                 }
-                return Unauthorized();
+                return Forbid();
             }
             catch (Exception ex)
             {
@@ -197,7 +197,7 @@ namespace Mechanic.Api.Controllers
                 {
                     return Ok(issue);
                 }
-                return Unauthorized("");
+                return Forbid("");
 
             }
             catch (Exception ex)
@@ -279,7 +279,7 @@ namespace Mechanic.Api.Controllers
                     issues = _db.CarIssues.Include(i => i.Creator).Where(i => i.Creator.Id == userId && i.Car.Make.Contains(make.ToLower()) && i.Car.Model.Contains(model.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Car.VinNumber.Contains(vin.ToLower())).Skip(startingIndex).Take(amount).Distinct().OrderBy(I => I.CreationTime).ToArray();
                     return Ok(issues);
                 }
-                return Unauthorized();
+                return Forbid();
             }
             catch (Exception ex)
             {
@@ -299,7 +299,7 @@ namespace Mechanic.Api.Controllers
                 var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == userId);
                 if(userId == null)
                 {
-                    return Unauthorized("User doesnt exist");
+                    return NotFound("User doesnt exist");
                 }
                 else if (user == null)
                 {
@@ -370,7 +370,7 @@ namespace Mechanic.Api.Controllers
                 }
                 if(userRole != Role.Admin || issue.Creator.Id != userId)
                 {
-                    return Unauthorized();
+                    return Forbid();
                 }
                 issue.Price = price;
                 issue.Description = description;
@@ -396,7 +396,7 @@ namespace Mechanic.Api.Controllers
                 var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == userId);
                 if (userId == null)
                 {
-                    return Unauthorized("User doesnt exist");
+                    return NotFound("User doesnt exist");
                 }
                 else if (user == null)
                 {
@@ -426,7 +426,7 @@ namespace Mechanic.Api.Controllers
                 var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == userId);
                 if (userId == null)
                 {
-                    return Unauthorized("User doesnt exist");
+                    return NotFound("User doesnt exist");
                 }
                 else if (user == null)
                 {

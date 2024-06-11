@@ -31,6 +31,6 @@ namespace Mechanic.Api.Models
         public DateTime CreationDate { get; set; }
         [NotMapped]
         public string Rolename { get { return Role.ToString(); } }
-        public bool WantsNotification {  get; set; }
+        public bool WantsNotification { get; set; }
     }
 }

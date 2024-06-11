@@ -4,12 +4,11 @@ import { Car } from '../../Interfaces/car';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { NgIf, NgFor, NgClass} from '@angular/common';
 import { NgStyle } from '@angular/common';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { CarDataService } from '../../services/car-data.service';
-import { Issue } from '../../Interfaces/issue';
-import {MatSelectModule} from '@angular/material/select';
-import {MatInput, MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatSelectModule} from '@angular/material/select';
+import { MatInput, MatInputModule} from '@angular/material/input';
+import { MatFormFieldModule} from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
@@ -25,9 +24,7 @@ import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-requ
 })
 export class CarPageComponent {
 
-  constructor(private carHttp:CarDataService){
-    
-  }
+  constructor(private carHttp:CarDataService){}
 
   cars?:Car[];
   isAdmin?:Observable<boolean>;

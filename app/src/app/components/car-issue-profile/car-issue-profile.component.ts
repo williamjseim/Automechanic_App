@@ -55,7 +55,6 @@ export class CarIssueProfileComponent implements OnInit {
   getIssue(issueId: string) {
     this.carHttp.GetIssue(issueId).subscribe({
       next: (issue) => {
-        console.log(issue);
         this.issue = issue;
         this.loading = false;
         if (issue == null) {
@@ -95,9 +94,8 @@ export class CarIssueProfileComponent implements OnInit {
 createVideoObject() {
   this.video?.forEach(i => {
     this.videoHttp.getVideoStream(i.id).subscribe({
-      next: (r) => {
-        console.log(r);
-        const blob = new Blob([r]);
+      next: (value) => {
+        const blob = new Blob([value]);
         this.videos.push(URL.createObjectURL(blob));
       },
       error: () => {

@@ -9,7 +9,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { User } from '../../Interfaces/user';
 import { Issue } from '../../Interfaces/issue';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CarDataService } from '../../services/car-data.service';
 import { LoginService } from '../../services/login.service';
 import { NotExpr } from '@angular/compiler';
@@ -17,7 +17,7 @@ import { NotExpr } from '@angular/compiler';
 @Component({
   selector: 'app-userprofilepage',
   standalone: true,
-  imports: [NgIf, NgFor, MatSelectModule, MatInputModule, MatFormFieldModule, MatButtonModule, MatIcon, FormsModule, ReactiveFormsModule],
+  imports: [NgIf, NgFor, MatSelectModule, RouterLink, MatInputModule, MatFormFieldModule, MatButtonModule, MatIcon, FormsModule, ReactiveFormsModule],
   templateUrl: './userprofilepage.component.html',
   styleUrl: './userprofilepage.component.scss'
 })

@@ -33,7 +33,6 @@ export class CarProfileComponent {
 
 
   ngOnInit(){
-    console.log("ass");
     this.route.queryParams.subscribe({
       next:(value)=>{
         let carId = value['carId']

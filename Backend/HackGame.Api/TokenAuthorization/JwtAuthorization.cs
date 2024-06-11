@@ -71,7 +71,8 @@ namespace Mechanic.Api.TokenAuthorization
                     TimeSpan timeElapsed = DateTime.UtcNow.Subtract(validatedToken.ValidFrom);
                     TimeSpan timeRemaining = validatedToken.ValidTo.Subtract(DateTime.UtcNow);
                     Console.WriteLine(timeRemaining.ToString()+ " remaining");
-                    if(timeRemaining > timeElapsed)
+                    Console.WriteLine(timeElapsed.ToString()+ " Elapsed");
+                    if(timeRemaining < timeElapsed)
                     {
                         var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtSettings:Key"]!));
                         var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -98,7 +99,6 @@ namespace Mechanic.Api.TokenAuthorization
 
         public static Guid GetUserId(string encryptedBase64, IConfiguration config)
         {
-            Console.WriteLine(encryptedBase64+ " base64 jgijgrigrgeigrirgrggrere");
             encryptedBase64 = encryptedBase64.Replace("Bearer ", string.Empty);
             encryptedBase64 = encryptedBase64.Replace("\"", string.Empty);
             if(Encrypter.Decrypt(Convert.FromBase64String(encryptedBase64), out byte[] cipher, config))

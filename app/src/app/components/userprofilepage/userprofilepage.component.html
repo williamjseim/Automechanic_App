@@ -47,12 +47,12 @@
             </thead>
             <tbody *ngIf="issues != null">
                 <tr *ngFor="let item of issues!; let row = index;" [class]="(row%2 == 0) ? 'even':'odd'">
-                    <td><a>{{item.creator!.username}}::: todo needs routing</a></td>
+                    <td><a>{{item.creator!.username}}</a></td>
                     <td>{{item.creationTime}}</td>
                     <td>{{item.price}}</td>
-                    <td>
-                        <button class="openBtn" mat-raised-button>Open</button>
-                        <button class="deleteBtn" mat-raised-button>Delete</button>
+                    <td class="ActionTd">
+                        <button class="EditButton" [routerLink]="['/issueprofile']" [queryParams]="{issueId: item.id}" routerLinkActive="router-link-active">Open</button>
+                        <button class="DeleteButton">Delete</button>
                     </td>
                 </tr>
             </tbody>
