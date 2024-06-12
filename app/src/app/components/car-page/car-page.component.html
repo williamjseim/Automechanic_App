@@ -50,6 +50,7 @@
                                 <table *ngIf="item.issues !=  null; else elseBlock" style="font-size: large;">
                                     <thead>
                                         <th>Issues</th>
+                                        <th>Category</th>
                                         <th>Creation Date</th>
                                         <th>Price</th>
                                         <th>Actions</th>
@@ -57,6 +58,7 @@
                                     <tbody>
                                         <tr style="border-bottom: 2px solid black;" [class]="[i%2==0 ? 'OddTBody':'EvenTBody']" *ngFor="let item of item.issues; let i = index">
                                             <td>{{item.creator.username}}</td>
+                                            <td>{{item.category?.tag ? item.category.tag : "None"}}</td>
                                             <td>{{item.creationTime | date:'dd/MM/yyyy HH:mm'}}</td>
                                             <td>{{item.price}}</td>
                                             <td><input [routerLink]="['/issueprofile']" [queryParams]="{issueId: item.id}" routerLinkActive="router-link-active"  type="button" style="margin: 0; padding: 0; width: 100%;" class="EditButton" value="Open"></td>

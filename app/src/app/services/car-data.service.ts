@@ -22,8 +22,8 @@ export class CarDataService {
   GetCars(page: number, amount: number, make: string = "", model: string = "", plate: string = "", vin: string = ""): Observable<any> {
     return this.http.get<Car[]>(this.url + `/GetCars?startingIndex=${page}&amount=${amount}&make=${make}&model=${model}&plate=${plate}&vin=${vin}`, { responseType: "json" })};
 
-  GetIssues(startingIndex:number, amount:number, creatorName:string = "", plate:string = "", make:string = ""):Observable<any>{
-    return this.http.get(this.url+`/GetIssues?startingIndex=${startingIndex}&amount=${amount}&creatorName=${creatorName}&plate=${plate}&make=${make}`, {observe: "response"});
+  GetIssues(startingIndex:number, amount:number, creatorName:string = "", plate:string = "", make:string = "", category:string=""):Observable<any>{
+    return this.http.get(this.url+`/GetIssues?startingIndex=${startingIndex}&amount=${amount}&creatorName=${creatorName}&plate=${plate}&make=${make}&category=${category}`, {observe: "response"});
   }
   
   GetCarIssues(carId:string, startingIndex:number, amount:number):Observable<any>{

@@ -14,6 +14,7 @@ import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-request-popup.component';
 import { Observable, of } from 'rxjs';
+import { Category } from '../../Interfaces/category';
 
 @Component({
   selector: 'app-issuetablepage',
@@ -26,13 +27,14 @@ export class IssuetablepageComponent {
   constructor(private carhttp:CarDataService){}
   pages:number = 1;
   currentPage:number = 0;
-
+  categories: Category[] = [];
   isAdmin:Observable<boolean> = of(true);
 
   issues?:Issue[];
   itemprpage = 10;
 
   ngOnInit(){
+    this.getCategories()
     this.RemoveFilters();
   }
 
@@ -40,6 +42,7 @@ export class IssuetablepageComponent {
     username: new FormControl(),
     make: new FormControl(),
     plate: new FormControl(),
+    category: new FormControl(),
   })
 
   SelectRow(index:number, event:Event){}
@@ -48,7 +51,8 @@ export class IssuetablepageComponent {
     let username = this.searchForm.controls.username.value;
     let make = this.searchForm.controls.make.value;
     let plate = this.searchForm.controls.plate.value;
-    this.carhttp.GetIssues(this.currentPage, this.itemprpage, username, plate, make).subscribe({
+    let category = this.searchForm.controls.category.value;
+    this.carhttp.GetIssues(this.currentPage, this.itemprpage, username, plate, make, category).subscribe({
       next:(value)=>{
         let asd = localStorage.getItem("isadmin") ?? "false";
         this.isAdmin = of(JSON.parse(asd) as boolean);
@@ -69,9 +73,18 @@ export class IssuetablepageComponent {
     this.searchForm.controls.make.reset("");
     this.searchForm.controls.plate.reset("");
     this.searchForm.controls.username.reset("");
+    this.searchForm.controls.category.reset("");
     this.Search();
   }
-  RemoveIssue(event:Event){}
+  RemoveIssue(index:number){
+    let issue = this.issues![index];
+    this.carhttp.DeleteIssue(issue.id).subscribe({
+      next: (value) => {
+        this.issues?.splice(index, 1);
+        this.Search();
+      }
+    });
+  }
 
   ChangeNumberPrPage(event:Event){
     this.itemprpage = JSON.parse((event.target as HTMLSelectElement).value)
@@ -90,5 +103,13 @@ export class IssuetablepageComponent {
 
   GetIssuePages(itemprpage:number){
 
+  }
+
+  getCategories() {
+    this.carhttp.GetCarCategories()
+      .subscribe(res => {
+        console.log(res);
+        this.categories = res;
+      });
   }
 }

@@ -7,6 +7,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { CarDataService } from '../../services/car-data.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-create-car-form',
@@ -16,7 +17,11 @@ import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, 
   styleUrl: './create-car-form.component.scss'
 })
 export class CreateCarFormComponent {
-  constructor(private carhttp:CarDataService, private router:Router){}
+  constructor(
+    private carhttp:CarDataService, 
+    private router:Router,
+    private snackbar: MatSnackBar
+  ) {}
 
   errortext:string = "";
   carform = new FormGroup ({
@@ -42,6 +47,7 @@ export class CreateCarFormComponent {
     if(this.carform.valid){
       this.carhttp.CreateCar(make, model, plate, vin).subscribe({
         next:(value)=>{
+          this.snackbar.open(value.value, 'Close', { duration: 4000 });
           this.router.navigate(['cars']);
         },
         error:(err)=>{
