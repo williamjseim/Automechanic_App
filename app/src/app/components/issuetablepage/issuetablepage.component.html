@@ -1,7 +1,7 @@
 <app-delete-request-popup #Delete [hidden]="Delete.IsHidden" (Complete)="RemoveIssue($event)"></app-delete-request-popup>
 
 <!-- only shows if cars array isnt null -->
-<body (click)="SelectRow(-1, $event);" *ngIf="issues != null; else elseBlock">
+<body *ngIf="issues != null; else elseBlock">
     <div class="tableDiv">
         <table>
             <thead>
@@ -16,6 +16,15 @@
                                 <option value="25">25 items</option>
                                 <option value="50">50 items</option>
                             </select>
+                            <select formControlName="category" [value]="searchForm.controls.category.value" placeholder="Select Category">
+                            @if (categories.length <= 0) { <option disabled>No categories was found</option>
+                                }
+                            @else {
+                                    <option value="" disabled hidden>Category</option>
+                                @for (category of categories; track $index) {
+                                    <option [value]="category.tag"> {{ category.tag }}</option>                                }
+                            }
+                            </select>
                             <button mat-raised-button (click)="Search()"><mat-icon>search</mat-icon></button>
                             <button mat-raised-button (click)="RemoveFilters()"><mat-icon>filter_alt_off</mat-icon></button>
                         </form>
@@ -23,46 +32,25 @@
                 </tr>
             </thead>
             <thead>
+                <th>Creator</th>
                 <th>Make</th>
                 <th>Model</th>
-                <th>Licens Plate</th>
-                <th></th>
+                <th>Category</th>
+                <th>Price</th>
                 <th>Actions</th>
             </thead>
-            <tbody (click)="SelectRow(row, $event)" [class]="[row%2==0 ? 'EvenTBody':'OddTBody']" *ngFor="let item of issues; let row = index">
+            <tbody [class]="[row%2==0 ? 'EvenTBody':'OddTBody']" *ngFor="let item of issues; let row = index">
                 <tr style="border-bottom: 2px solid black;">
-                    <td>{{item.creationTime}}</td>
-                    <td>{{item.creator}}</td>
+                    <td>{{item.creator.username}}</td>
+                    <td>{{item.car.make}}</td>
+                    <td>{{item.car.model}}</td>
+                    <td>{{item.category?.tag ? item.category.tag : "None"}} </td>
                     <td>{{item.price}}</td>
-                    <td><mat-icon *ngIf="false">expand_more</mat-icon><mat-icon *ngIf="true">expand_less</mat-icon></td>
                     <td (click)="$event.stopPropagation()" class="actionTd">
                         <input [routerLink]="['/issueprofile']" [queryParams]="{issueId: item.id}" routerLinkActive="router-link-active"  type="button" [ngStyle]="{ 'width' : isAdmin ? '50%' : '100%' }" class="EditButton" value="Open">
                         <input type="button" *ngIf="isAdmin" class="DeleteButton" (click)="Delete.Open(row)" value="Delete">
                     </td>
                 </tr>
-                <tr>
-                    <tr (click)="$event.stopPropagation()">
-                        <td style="padding: 0; margin: 0;" colspan="6">
-                            <div *ngIf="false" style="width: 100%; background-color: transparent;">
-                                <table *ngIf="item !=  null; else elseBlock" style="font-size: large;">
-                                    <thead>
-                                        <th>Issues</th>
-                                        <th>Creation Date</th>
-                                        <th>Price</th>
-                                        <th>Actions</th>
-                                    </thead>
-                                    <tbody>
-                                        <tr style="border-bottom: 2px solid black;" [class]="[i%2==0 ? 'OddTBody':'EvenTBody']" *ngFor="let item of issues; let i = index">
-                                            <td>{{item.creator.username}}</td>
-                                            <td>{{item.creationTime | date:'dd/MM/yyyy HH:mm'}}</td>
-                                            <td>{{item.price}}</td>
-                                            <td><input [routerLink]="['/issueprofile']" [queryParams]="{issueId: item.id}" routerLinkActive="router-link-active"  type="button" style="margin: 0; padding: 0; width: 100%;" class="EditButton" value="Open"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </td>
-                    </tr>
             </tbody>
         </table>
         <div ></div>

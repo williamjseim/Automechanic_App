@@ -1,7 +1,7 @@
 <body>
     <app-progress-bar [progress]="32"></app-progress-bar>
 
-    <h2>Create Issue</h2>
+    <!-- <h2>Create Issue</h2> -->
     <div class="container flex-center-col">
         <form class="flex-center-col" [formGroup]="carIssueForm" (ngSubmit)="onSubmit()" #form>
             <div class="input-form-row">
@@ -11,10 +11,12 @@
                     <mat-label>Car</mat-label>
                     <mat-select formControlName="car" [value]="carIssueForm.controls.car.value" [compareWith]="compareItem">
                         @if (loadingCars) {
-                        <mat-option disabled *ngIf="loadingCars">Retrieving Cars...</mat-option>
+                        <mat-option disabled>Retrieving Cars...</mat-option>
                         }
                         @else {
-
+                        @if (cars.length <= 0) {
+                            <mat-option disabled>No cars was found</mat-option>
+                        }
                         @for (car of cars; track $index) {
                         <mat-option [value]="car">{{ car.make}} {{car.model}}<br><strong>({{
                                 car.plate}})</strong>
@@ -32,7 +34,9 @@
                         <mat-option disabled *ngIf="loadingCategories">Retrieving Categories...</mat-option>
                         }
                         @else {
-                
+                        @if (categories.length <= 0) {
+                            <mat-option disabled>No categories was found</mat-option>
+                        }
                         @for (category of categories; track $index) {
                         <mat-option [value]="category"> {{ category.tag }}
                         </mat-option>

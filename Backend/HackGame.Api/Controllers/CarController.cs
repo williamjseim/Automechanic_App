@@ -209,7 +209,7 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpGet("GetIssues")]
-        public async Task<IActionResult> GetIssues(int startingIndex = 0, int amount = 0, string creatorName = "", string plate = "", string make = "")
+        public async Task<IActionResult> GetIssues(int startingIndex = 0, int amount = 0, string creatorName = "", string plate = "", string make = "", string category = "")
         {
             try
             {
@@ -217,19 +217,13 @@ namespace Mechanic.Api.Controllers
                 CarIssue[] issues;
                 if(userRole == Role.Admin)
                 {
-                    issues = await _db.CarIssues.Where(i=>i.Creator.Username.Contains(creatorName) && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make)).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
+                    issues = await _db.CarIssues.Where(i=>i.Creator.Username.Contains(creatorName) && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make) && i.Category.tag.Contains(category)).Skip(startingIndex * amount).Take(amount).Include(x=>x.Car).Include(x=>x.Category).Include(x=>x.Creator).ToArrayAsync();
                 }
                 else
                 {
                     Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
-                    issues = await _db.CarIssues.Where(i=>i.Creator.Id == userId && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make)).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
+                    issues = await _db.CarIssues.Where(i=>i.Creator.Id == userId && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make) && i.Category.tag.Contains(category)).Skip(startingIndex * amount).Take(amount).Include(x => x.Car).Include(x => x.Category).Include(x=>x.Creator).ToArrayAsync();
                 }
-
-                if (issues.Length <= 0)
-                {
-                    return NotFound("no issues found");
-                }
-
                 return Ok(issues);
             }
             catch (Exception ex)
@@ -250,11 +244,11 @@ namespace Mechanic.Api.Controllers
                 CarIssue[] issues;
                 if(userRole == Role.Admin)
                 {
-                    issues = await _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(amount).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArrayAsync();
+                    issues = await _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(amount).Include(x=> x.Category).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArrayAsync();
                 }
                 else
                 {
-                    issues = await _db.CarIssues.Where(i=>i.Car.Id == carId && i.Creator.Id == userId).Skip(startingIndex).Take(amount).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArrayAsync();
+                    issues = await _db.CarIssues.Where(i=>i.Car.Id == carId && i.Creator.Id == userId).Skip(startingIndex).Take(amount).Include(x=>x.Category).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArrayAsync();
                 }
                 return Ok(issues);
             }
