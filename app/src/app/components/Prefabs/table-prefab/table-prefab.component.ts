@@ -1,22 +1,16 @@
 import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
 import { CarDataService } from '../../../services/car-data.service';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AsyncPipe, DatePipe, NgIf, NgFor, NgStyle, NgClass, KeyValuePipe, NgTemplateOutlet } from '@angular/common';
-import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
+import { NgIf, NgFor, NgStyle, NgClass, KeyValuePipe, NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSelectModule } from '@angular/material/select';
 import { RouterLink } from '@angular/router';
 import { DeleteRequestPopupComponent } from '../../delete-request-popup/delete-request-popup.component';
-import { Observable } from 'rxjs';
-import { ColumnDefDirective } from '../../../Directives/column-def.directive';
 
 @Component({
   selector: 'app-table-prefab',
   standalone: true,
-  imports: [AsyncPipe, DatePipe, ColumnDefDirective, NgTemplateOutlet, KeyValuePipe, DeleteRequestPopupComponent, RouterLink, ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [NgTemplateOutlet, KeyValuePipe, DeleteRequestPopupComponent, RouterLink, ReactiveFormsModule, FormsModule, MatIconModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule],
   templateUrl: './table-prefab.component.html',
   styleUrl: './table-prefab.component.scss'
 })
@@ -32,18 +26,28 @@ export class TablePrefabComponent {
   @Input({required:true, alias:"columns"}) templates?:TemplateRef<any>[];
   //this is the expandable field under each row
   @Input({alias:"drawer"}) drawer?:TemplateRef<any>;
+  @Input({alias:"openButton"}) openButton?:TemplateRef<any>;
   //table headers
   @Input({required:true}) headers?:string[];
   
+  //emits a number when the page index is changed
   @Output() PageChange = new EventEmitter<number>();
+  //changes how many items pr page
   @Output() AmountPrPage = new EventEmitter<number>();
+  //emits signal to search
   @Output() Search = new EventEmitter();
+  //emits signal to remove filters from search
   @Output() RemoveFilter = new EventEmitter();
+  //emits signal to delete item at index
+  @Output() DeleteItem = new EventEmitter<number>();
+  //emits signal that drawer was opened so data can be listed
   @Output() DrawerOpened = new EventEmitter<number>();
 
-  isAdmin?:Observable<boolean>;
+  //page index
   currentPage:number = 0;
+  //what row in table to expand if needed
   SelectedRow:number = -1;
+  //items pr page in table
   itemsPrPage:number = 10;
 
   expandSearch = false;
@@ -55,6 +59,7 @@ export class TablePrefabComponent {
   }
   // stops click event from going to the parent of the element and either opens or closes a car row so some issues are visible
   //emits -1 if no drawer is open
+  //-2 opens the mobiles search drawer
   SelectRow(index:number, event:Event){
     event.stopPropagation();
     if(this.drawer != null){
@@ -64,7 +69,9 @@ export class TablePrefabComponent {
       }
       else{
         this.SelectedRow = index;
-        this.DrawerOpened.emit(index);
+        if(index >= 0){
+          this.DrawerOpened.emit(index);
+        }
       }
     }
   }
@@ -88,8 +95,8 @@ export class TablePrefabComponent {
     this.Search.emit();
   }
 
-  RemoveCar(event:Event){
-
+  RemoveCar(event:number){
+    this.DeleteItem.emit(event);
   }
   
 }

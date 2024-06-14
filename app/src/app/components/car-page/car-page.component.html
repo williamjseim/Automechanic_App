@@ -5,10 +5,13 @@
     (RemoveFilter)="RemoveFilters()"
     [pages]="pages" [columns]="[rowtemplate1, rowtemplate2, rowtemplate3, rowtemplate4]"
     [headers]="['Make', 'Model', 'Plate', 'Vinnr']"
-    [FilterForm]="searchForm" 
+    [FilterForm]="searchForm"
     [items]="cars"
     [drawer]="Drawer"
-    (DrawerOpened)="DrawerOpened($event)">
+    (DrawerOpened)="DrawerOpened($event)"
+    (DeleteItem)="RemoveCar($event)"
+    [openButton]="openbtn"
+>
 </app-table-prefab>
 <ng-template #rowtemplate1 let-data="data">
     <td>{{data.make}}</td>
@@ -21,6 +24,9 @@
 </ng-template>
 <ng-template #rowtemplate4 let-data="data">
     <td>{{data.vinNumber}}</td>
+</ng-template>
+<ng-template #openbtn let-data="data">
+    <input type="button" [routerLink]="['/carprofile']" [queryParams]="{carId: data.id}" routerLinkActive="router-link-active"value="Open">
 </ng-template>
 <ng-template #Drawer let-data="data" let-row="row">
         <td class="drawer" style="padding: 0; margin: 0;" colspan="6">

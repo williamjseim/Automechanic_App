@@ -1,24 +1,18 @@
-import { Component, ElementRef, Input, ViewChild, viewChild } from '@angular/core';
-import { AsyncPipe, DatePipe } from '@angular/common';
-import { NgIf, NgFor, NgClass} from '@angular/common';
+import { Component } from '@angular/core';
+import { NgIf, NgFor, NgClass, DatePipe} from '@angular/common';
 import { NgStyle } from '@angular/common';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CarDataService } from '../../services/car-data.service';
 import { Issue } from '../../Interfaces/issue';
-import {MatSelectModule} from '@angular/material/select';
-import {MatInput, MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-request-popup.component';
-import { Observable, of } from 'rxjs';
+import { TablePrefabComponent } from '../Prefabs/table-prefab/table-prefab.component';
 
 @Component({
   selector: 'app-issuetablepage',
   standalone: true,
-  imports: [AsyncPipe, DatePipe, DeleteRequestPopupComponent, RouterLink, ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [RouterLink, DatePipe, ReactiveFormsModule, FormsModule, MatIconModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, TablePrefabComponent],
   templateUrl: './issuetablepage.component.html',
   styleUrl: './issuetablepage.component.scss'
 })
@@ -27,13 +21,16 @@ export class IssuetablepageComponent {
   pages:number = 1;
   currentPage:number = 0;
 
-  isAdmin:Observable<boolean> = of(true);
 
   issues?:Issue[];
   itemprpage = 10;
 
   ngOnInit(){
     this.RemoveFilters();
+  }
+
+  test(item:any):string{
+    return JSON.stringify(item)
   }
 
   searchForm = new FormGroup ({
@@ -50,10 +47,9 @@ export class IssuetablepageComponent {
     let plate = this.searchForm.controls.plate.value;
     this.carhttp.GetIssues(this.currentPage, this.itemprpage, username, plate, make).subscribe({
       next:(value)=>{
-        let asd = localStorage.getItem("isadmin") ?? "false";
-        this.isAdmin = of(JSON.parse(asd) as boolean);
         if(value.status == 200){
           this.issues = value.body;
+          console.log(value.body);
         }
         else{
           this.issues = [];
@@ -71,10 +67,10 @@ export class IssuetablepageComponent {
     this.searchForm.controls.username.reset("");
     this.Search();
   }
-  RemoveIssue(event:Event){}
+  RemoveIssue(event:number){}
 
-  ChangeNumberPrPage(event:Event){
-    this.itemprpage = JSON.parse((event.target as HTMLSelectElement).value)
+  ChangeNumberPrPage(event:number){
+    this.itemprpage = event;
     this.currentPage = 0;
     this.GetIssuePages(this.itemprpage);
     this.Search();
