@@ -1,3 +1,3 @@
 export const environment = {
-    API_URL: "https://172.18.150.151:5001"
+    API_URL: "http://172.18.150.155:5000"
 };
