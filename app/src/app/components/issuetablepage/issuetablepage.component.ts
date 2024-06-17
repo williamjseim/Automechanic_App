@@ -1,13 +1,13 @@
-import { Component, ElementRef, Input, ViewChild, viewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { AsyncPipe, DatePipe } from '@angular/common';
 import { NgIf, NgFor, NgClass} from '@angular/common';
 import { NgStyle } from '@angular/common';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { CarDataService } from '../../services/car-data.service';
 import { Issue } from '../../Interfaces/issue';
-import {MatSelectModule} from '@angular/material/select';
-import {MatInput, MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
@@ -25,7 +25,7 @@ import { Category } from '../../Interfaces/category';
 })
 export class IssuetablepageComponent {
   constructor(private carhttp:CarDataService){}
-  pages:number = 1;
+  pages:number = 0;
   currentPage:number = 0;
   categories: Category[] = [];
   isAdmin:Observable<boolean> = of(true);
@@ -34,7 +34,8 @@ export class IssuetablepageComponent {
   itemprpage = 10;
 
   ngOnInit(){
-    this.getCategories()
+    this.getIssuePages(this.itemprpage);
+    this.getCategories();
     this.RemoveFilters();
   }
 
@@ -52,6 +53,7 @@ export class IssuetablepageComponent {
     let make = this.searchForm.controls.make.value;
     let plate = this.searchForm.controls.plate.value;
     let category = this.searchForm.controls.category.value;
+    this.getIssuePages(this.itemprpage, username, make, plate, category)
     this.carhttp.GetIssues(this.currentPage, this.itemprpage, username, plate, make, category).subscribe({
       next:(value)=>{
         let asd = localStorage.getItem("isadmin") ?? "false";
@@ -89,7 +91,7 @@ export class IssuetablepageComponent {
   ChangeNumberPrPage(event:Event){
     this.itemprpage = JSON.parse((event.target as HTMLSelectElement).value)
     this.currentPage = 0;
-    this.GetIssuePages(this.itemprpage);
+    this.getIssuePages(this.itemprpage);
     this.Search();
   }
 
@@ -101,14 +103,21 @@ export class IssuetablepageComponent {
     this.Search();
   }
 
-  GetIssuePages(itemprpage:number){
-
+  getIssuePages(itemprpage:number, username: string = '', make: string = '', plate: string = '', category: string = ''){
+    this.carhttp.GetIssuePageAmount(itemprpage, username, make, plate, category).subscribe({
+      next: (value) => {
+        let asd = localStorage.getItem("isadmin") ?? "false";
+        this.isAdmin = of(JSON.parse(asd) as boolean);
+        this.pages = value;
+        if (this.currentPage > this.pages)
+          this.JumpToPage(0);
+      }
+    });
   }
 
   getCategories() {
     this.carhttp.GetCarCategories()
       .subscribe(res => {
-        console.log(res);
         this.categories = res;
       });
   }

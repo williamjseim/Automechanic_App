@@ -29,7 +29,12 @@ export class LoginService {
     return this.http.put(`${this.url}/Verify?token=${token}`, null)
   }
 
-  GetUser():Observable<any>{
-    return this.http.get(this.url+"/GetUser");
+  GetUser(userId: string = ""):Observable<any>{
+    return this.http.get(`${this.url}/getuser?userid=${userId}`);
   }
+
+  deleteUser(userId: string): Observable<any> {
+    return this.http.delete(`${this.url}/delete?userid=${userId}`);
+  }
+
 }

@@ -99,6 +99,33 @@ namespace Mechanic.Api.Controllers
         }
 
         [JwtTokenAuthorization]
+        [HttpGet("IssuePages")]
+        public async Task<IActionResult> IssuePages(int amountPrPage, string username = "", string make = "", string plate = "", string category = "")
+        {
+            try
+            {
+                Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
+                float pages;
+                if (userRole == Role.Admin)
+                {
+                    pages = (float)_db.CarIssues.Where(i => i.Creator.Username.Contains(username) && i.Car.Make.Contains(make.ToLower()) && i.Car.Plate.Contains(plate) && i.Category.tag.Contains(category)).Count() / (float)amountPrPage;
+                }
+                else
+                {
+                    Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+                    pages = (float)_db.CarIssues.Where(i => i.Creator.Id == userId && i.Creator.Username.Contains(username) && i.Car.Make.Contains(make.ToLower()) && i.Car.Plate.Contains(plate) && i.Category.tag.Contains(category)).Count() / (float)amountPrPage;
+                }
+                var amount = (int)MathF.Ceiling(pages);
+                return Ok(amount);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(500, Json("Something went wrong"));
+            }
+        }
+
+        [JwtTokenAuthorization]
         [HttpPut("CreateCar")]
         public async Task<IActionResult> CreateCar(string make, string model, string plate, string vinnr, string base64Image = "")
         {
