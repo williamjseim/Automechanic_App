@@ -62,6 +62,7 @@ export class CarPageComponent {
       if(this.cars![index].issues == null){
         this.GetCarIssuesHttp(this.cars![index].id).subscribe({
           next:(value)=>{
+            console.log(value);
             if(value.status == 200){
               this.cars![index].issues = value.body;
             }
@@ -81,7 +82,6 @@ export class CarPageComponent {
           next:(value)=>{
             if(value.status == 200){
               this.cars![index].issues = value.body;
-              console.log(value.body)
             }
           else{
             this.cars![index].issues = [];

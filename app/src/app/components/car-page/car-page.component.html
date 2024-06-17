@@ -11,6 +11,7 @@
     (DrawerOpened)="DrawerOpened($event)"
     (DeleteItem)="RemoveCar($event)"
     [openButton]="openbtn"
+    [DrawerTitle]="'Issues'"
 >
 </app-table-prefab>
 <ng-template #rowtemplate1 let-data="data">
@@ -29,24 +30,30 @@
     <input type="button" [routerLink]="['/carprofile']" [queryParams]="{carId: data.id}" routerLinkActive="router-link-active"value="Open">
 </ng-template>
 <ng-template #Drawer let-data="data" let-row="row">
-        <td class="drawer" style="padding: 0; margin: 0;" colspan="6">
-            <div style="width: 100%; background-color: transparent;">
-                <table *ngIf="data.issues !=  null" style="font-size: large;">
-                    <thead>
-                        <th>Issues</th>
-                        <th>Creation Date</th>
-                        <th>Price</th>
-                        <th>Actions</th>
-                    </thead>
-                    <tbody>
-                        <tr class="drawerRow" [class]="[i%2==0 ? 'OddTBody':'EvenTBody']" *ngFor="let item of data.issues; let i = index">
-                            <td>{{data.creator.username}}</td>
-                            <td>{{data.creationTime | date:'dd/MM/yyyy HH:mm'}}</td>
-                            <td>{{data.price}}</td>
-                            <td><input [routerLink]="['/issueprofile']" [queryParams]="{issueId: item.id}" routerLinkActive="router-link-active"  type="button" style="margin: 0; padding: 0; width: 100%;" class="EditButton" value="Open"></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </td>
+    <td style="padding: 0;" [colSpan]="6" >
+        <app-table-prefab
+        [columns]="[issueTemplate1, issueTemplate2, issueTemplate3]"
+        [headers]="['Creator', 'Price', 'Creation date']"
+        [openButton]="openbtn"
+        [items]="data?.issues">
+        </app-table-prefab>
+    </td>
+</ng-template>
+<ng-template #issueTemplate1 let-data="data">
+    <td>{{data.creator?.username ?? 'unknown'}}</td>
+</ng-template>
+<ng-template #issueTemplate2 let-data="data">
+    <td>{{data.price}}</td>
+</ng-template>
+<ng-template #issueTemplate3 let-data="data">
+    <td>{{data.creationTime | date:'dd/MM/yyyy HH:mm'}}</td>
+</ng-template>
+<ng-template #openbtn let-data="data">
+    <input type="button" [routerLink]="['/issueprofile']" [queryParams]="{issueId: data.id}" routerLinkActive="router-link-active"value="Open">
+</ng-template>
+<ng-template #description let-data="data">
+    <td [colSpan]="6">
+        <span>Description</span>
+        <textarea (click)="$event.stopPropagation()" style="width: 99%; height: auto; font-size: xx-large;" readonly [value]="data.description"></textarea>
+    </td>
 </ng-template>

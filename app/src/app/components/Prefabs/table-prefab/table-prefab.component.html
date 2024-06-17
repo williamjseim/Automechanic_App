@@ -2,19 +2,19 @@
 
 <!-- only shows if cars array isnt null -->
 <body #page (click)="SelectRow(-1, $event);">
-    @if(page.clientWidth < 600){
+    @if(orientation.type != "landscape-primary"){
         <div class="mobileDiv">
             <div class="mobileSearch" *ngIf="FilterForm">
                 <div class="title" (click)="SelectRow(-2, $event)">
-                    <p>Advanced Search<mat-icon class="icon">search</mat-icon></p>
+                    <p>Advanced Search <mat-icon class="icon">search</mat-icon></p>
                 </div>
-                <form [formGroup]="FilterForm" *ngIf="SelectedRow == -2">
+                <form (click)="$event.stopPropagation()" id="form" [formGroup]="FilterForm" *ngIf="SelectedRow == -2">
                     <input *ngFor="let item of FilterForm.controls | keyvalue" [formControlName]="item.key" placeholder="{{item.key}}" #MakeFilter value="" (keyup.enter)="Search.emit()">
                     <button class="searchBtn" mat-raised-button (click)="Search.emit()"><mat-icon>search</mat-icon></button>
                     <button class="resetFilterBtn" mat-raised-button (click)="RemoveFilters()"><mat-icon>filter_alt_off</mat-icon></button>
                 </form>
             </div>
-            <div class="mobileTable" *ngFor="let item of items; let row = index">
+            <div (click)="SelectRow(row, $event)" class="mobileTable" *ngFor="let item of items; let row = index">
                 <div class="title"></div>
                 @for (template of templates; track $index) {
                     <div class="tablediv">
@@ -28,16 +28,19 @@
                     </div>
                     <input type="button" class="deleteBtn" (click)="Delete.Open(row)" value="Delete">
                 </td>
+                <div class="mobileDrawer" *ngIf="drawer && SelectedRow == row">
+                    <div class="drawerTitle"><span>{{drawerTitle}}</span></div>
+                    <ng-container [ngTemplateOutlet]="drawer" [ngTemplateOutletContext]="{data:item}"></ng-container>
+                </div>
             </div>
             <ng-container [ngTemplateOutlet]="pagesTemplate"></ng-container>
         </div>
     }
     @else{
     <div class="tableDiv">
-        <table *ngIf="FilterForm != null">
-            <thead>
-                <tr>
-                    <td [colSpan]="6">
+        <table>
+            <thead *ngIf="FilterForm != null">
+                    <td style="margin: 0; padding: 0;" [colSpan]="6">
                         <form [formGroup]="FilterForm" class="searchForm">
                             <input *ngFor="let item of FilterForm.controls | keyvalue" [formControlName]="item.key" placeholder="{{item.key}}" #MakeFilter matInput value="" (keyup.enter)="Search.emit()">
                             <select #select placeholder="Select Option" (change)="ChangeNumberPrPage($event)">
@@ -49,12 +52,11 @@
                             <button mat-raised-button (click)="RemoveFilters()"><mat-icon>filter_alt_off</mat-icon></button>
                         </form>
                     </td>
-                </tr>
             </thead>
-            <thead>
-                <th *ngFor="let item of headers">{{item}}</th>
-                <th *ngIf="drawer"></th>
-                <th>Actions</th>
+            <thead style="padding: 0; margin: 0;">
+                <th class="header" *ngFor="let item of headers">{{item}}</th>
+                <th class="header" *ngIf="drawer"></th>
+                <th class="header">Actions</th>
             </thead>
             <tbody (click)="SelectRow(row, $event)" [class]="[row%2==0 ? 'EvenTBody':'OddTBody']" *ngFor="let item of items; let row = index">
                 <tr  style="border-bottom: 1px solid black;" *ngIf="templates">
@@ -69,7 +71,7 @@
                         <input type="button" class="DeleteButton" (click)="Delete.Open(row)" value="Delete">
                     </td>
                 </tr>
-                <tr class="pageBtn" *ngIf="drawer && SelectedRow == row">
+                <tr class="drawerRow" *ngIf="drawer && SelectedRow == row">
                     <ng-container [ngTemplateOutlet]="drawer" [ngTemplateOutletContext]="{data:item, row:row}"></ng-container>
                 </tr>
             </tbody>

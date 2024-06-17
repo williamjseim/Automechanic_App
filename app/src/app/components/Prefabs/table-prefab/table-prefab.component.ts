@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output, TemplateRef } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, Output, TemplateRef } from '@angular/core';
 import { CarDataService } from '../../../services/car-data.service';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgIf, NgFor, NgStyle, NgClass, KeyValuePipe, NgTemplateOutlet } from '@angular/common';
@@ -18,6 +18,7 @@ export class TablePrefabComponent {
 
   //table data array
   @Input("items") items?:any[];
+  @Input("DrawerTitle") drawerTitle?:string;
   //page index
   @Input("pages") pages:number = 0;
   //search filter for filtering table items
@@ -43,6 +44,11 @@ export class TablePrefabComponent {
   //emits signal that drawer was opened so data can be listed
   @Output() DrawerOpened = new EventEmitter<number>();
 
+  @HostListener('window:orientationchange', ['$event'])
+  onOrientationChange() {
+    this.ChangeDetection.detectChanges();
+  }
+
   //page index
   currentPage:number = 0;
   //what row in table to expand if needed
@@ -51,11 +57,16 @@ export class TablePrefabComponent {
   itemsPrPage:number = 10;
 
   expandSearch = false;
+
+  orientation!:ScreenOrientation
+
+
   
-  constructor(private carHttp:CarDataService){}
+  constructor(private ChangeDetection:ChangeDetectorRef){}
   
   ngOnInit(){
     this.RemoveFilters();
+    this.orientation = window.screen.orientation;
   }
   // stops click event from going to the parent of the element and either opens or closes a car row so some issues are visible
   //emits -1 if no drawer is open

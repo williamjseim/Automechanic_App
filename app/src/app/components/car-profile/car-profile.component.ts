@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Car } from '../../Interfaces/car';
 import { CarDataService } from '../../services/car-data.service';
-import { NgIf, NgFor } from '@angular/common';
+import { NgIf, NgFor, NgTemplateOutlet } from '@angular/common';
 import {MatSelectModule} from '@angular/material/select';
 import {MatInput, MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -14,10 +14,11 @@ import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-requ
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { SharedService } from '../../services/shared.service';
+import { TablePrefabComponent } from '../Prefabs/table-prefab/table-prefab.component';
 @Component({
   selector: 'app-car-profile',
   standalone: true,
-  imports: [DatePipe, NgIf, NgFor, FormsModule, DeleteRequestPopupComponent, ReactiveFormsModule, MatSelectModule, MatIconModule, MatButtonModule, MatInput, MatInputModule, MatFormFieldModule, RouterLink],
+  imports: [DatePipe, NgIf, NgFor, TablePrefabComponent, NgTemplateOutlet, FormsModule, DeleteRequestPopupComponent, ReactiveFormsModule, MatSelectModule, MatIconModule, MatButtonModule, MatInput, MatInputModule, MatFormFieldModule, RouterLink],
   templateUrl: './car-profile.component.html',
   styleUrl: './car-profile.component.scss'
 })

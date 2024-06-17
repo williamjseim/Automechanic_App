@@ -49,7 +49,6 @@ export class IssuetablepageComponent {
       next:(value)=>{
         if(value.status == 200){
           this.issues = value.body;
-          console.log(value.body);
         }
         else{
           this.issues = [];

@@ -18,7 +18,6 @@ export const accessDeniedInterceptor: HttpInterceptorFn = (req, next) => {
   }),
     catchError((err:HttpErrorResponse)=>{
       if(err.status == 401){
-        console.log("unathorized")
         localStorage.clear();
         router.navigate(['login']);
       }
