@@ -56,7 +56,7 @@ export class ReviewCarIssueComponent implements OnInit {
   // Handle the accept action
   onAccept() {
     this.loading = true;
-    this.carService.CreateIssue(this.formData?.car.id!, this.formData?.category.id!, this.formData?.description!, this.formData?.price!).subscribe({
+    this.carService.CreateIssue(this.formData?.car.id!, this.formData?.category?.id, this.formData?.description!, this.formData?.price!).subscribe({
       next: (res) => { 
         this.loading = false;
         this.sharedService.setFormData(null);

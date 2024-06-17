@@ -50,7 +50,7 @@ export class CarDataService {
     return this.http.get(this.url+`/GetIssue?issueId=${issueId}`);
   } 
 
-  CreateIssue(carId:string, categoryId:string, description:string, price:number){
+  CreateIssue(carId:string, categoryId:string | undefined | null, description:string, price:number){
     return this.http.put(this.url+`/CreateCarIssue?carId=${carId}&categoryId=${categoryId}&description=${description}&price=${price}`,"");
   }
 

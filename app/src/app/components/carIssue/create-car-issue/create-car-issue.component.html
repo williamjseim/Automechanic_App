@@ -9,39 +9,42 @@
                 <!-- Select Car -->
                 <mat-form-field class="form-input-big" appearance="fill">
                     <mat-label>Car</mat-label>
-                    <mat-select formControlName="car" [value]="carIssueForm.controls.car.value" [compareWith]="compareItem">
+                    <mat-select formControlName="car" [value]="carIssueForm.controls.car.value"
+                        [compareWith]="compareItem">
                         @if (loadingCars) {
                         <mat-option disabled>Retrieving Cars...</mat-option>
                         }
                         @else {
-                        @if (cars.length <= 0) {
-                            <mat-option disabled>No cars was found</mat-option>
-                        }
-                        @for (car of cars; track $index) {
-                        <mat-option [value]="car">{{ car.make}} {{car.model}}<br><strong>({{
-                                car.plate}})</strong>
-                        </mat-option>
-                        <hr>
-                        }}
+                        @if (cars.length <= 0) { <mat-option disabled>No cars was found</mat-option>
+                            }
+                            @for (car of cars; track $index) {
+                            <mat-option [value]="car">{{ car.make}} {{car.model}}<br><strong>({{
+                                    car.plate}})</strong>
+                            </mat-option>
+                            <hr>
+                            }}
                     </mat-select>
                 </mat-form-field>
 
                 <!-- Select Category -->
                 <mat-form-field class="form-input-small" appearance="fill">
                     <mat-label>Category</mat-label>
-                    <mat-select formControlName="category" [value]="carIssueForm.controls.category.value" [compareWith]="compareItem">
+                    <mat-select formControlName="category" [value]="carIssueForm.controls.category.value"
+                        [compareWith]="compareItem">
                         @if (loadingCategories) {
                         <mat-option disabled *ngIf="loadingCategories">Retrieving Categories...</mat-option>
                         }
                         @else {
-                        @if (categories.length <= 0) {
-                            <mat-option disabled>No categories was found</mat-option>
-                        }
-                        @for (category of categories; track $index) {
-                        <mat-option [value]="category"> {{ category.tag }}
-                        </mat-option>
-                        <hr>
-                        }}
+                        @if (categories.length <= 0) { <mat-option disabled>No categories was found</mat-option>
+                            }
+                            <mat-option [value]="null" >None
+                            </mat-option>
+                            <hr>
+                            @for (category of categories; track $index) {
+                            <mat-option [value]="category"> {{ category.tag }}
+                            </mat-option>
+                            <hr>
+                            }}
                     </mat-select>
                 </mat-form-field>
 

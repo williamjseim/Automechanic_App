@@ -390,7 +390,7 @@ namespace Mechanic.Api.Controllers
                 var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == userId);
                 if (userId == null)
                 {
-                    return NotFound("User doesnt exist");
+                    return NotFound(Json("User doesnt exist"));
                 }
                 else if (user == null)
                 {
@@ -409,7 +409,7 @@ namespace Mechanic.Api.Controllers
             }
         }
 
-
+    
         [HttpGet("CarIssueCategories")]
         public async Task<IActionResult> GetCarIssueCategories()
         {
@@ -484,16 +484,11 @@ namespace Mechanic.Api.Controllers
                 new("motor"),
             };
             await _db.AddRangeAsync(carCategories);
-            int bobby = 0;
-            int lilly = 0;
+
             foreach (var item in cars)
             {
-                bobby++;
-                System.Console.WriteLine(bobby);
                 for (global::System.Int32 i = 0; i < 3; i++)
                 {
-                    lilly++;
-                    System.Console.WriteLine(lilly);
                     var issues = new CarIssue[]{
                         new(carCategories[0], item, user, "nothing", 500),
                         new(carCategories[1], item, user, "nothing", 500),
