@@ -1,29 +1,33 @@
 import { Component } from '@angular/core';
-import { NgIf, NgFor } from '@angular/common';
-import {MatSelectModule, matSelectAnimations} from '@angular/material/select';
-import {MatInput, MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import { MatIcon, MatIconModule } from '@angular/material/icon';
+import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { User } from '../../Interfaces/user';
 import { Issue } from '../../Interfaces/issue';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CarDataService } from '../../services/car-data.service';
 import { LoginService } from '../../services/login.service';
-import { NotExpr } from '@angular/compiler';
 import { CarPageComponent } from '../car-page/car-page.component';
 import { IssuetablepageComponent } from '../issuetablepage/issuetablepage.component';
+import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-request-popup.component';
 @Component({
   selector: 'app-userprofilepage',
   standalone: true,
-  imports: [CarPageComponent, IssuetablepageComponent, NgIf, NgFor, MatSelectModule, RouterLink, MatInputModule, MatFormFieldModule, MatButtonModule, MatIcon, FormsModule, ReactiveFormsModule],
+  imports: [DatePipe, DeleteRequestPopupComponent, CarPageComponent, IssuetablepageComponent, NgIf, NgFor, MatSelectModule, RouterLink, MatInputModule, MatFormFieldModule, MatButtonModule, MatIcon, FormsModule, ReactiveFormsModule],
   templateUrl: './userprofilepage.component.html',
   styleUrl: './userprofilepage.component.scss'
 })
 export class UserprofilepageComponent {
-  constructor(private route: ActivatedRoute, private router: Router, private carHttp:CarDataService, private userHttp:LoginService){}
+  constructor(
+    private route: ActivatedRoute,
+    private carHttp:CarDataService, 
+    private userHttp:LoginService,
+    ){}
   user?:User;
   issues:Array<Issue> = [];
   isAdmin:boolean = false;
@@ -36,17 +40,23 @@ export class UserprofilepageComponent {
         if(userid == null || userid == ''){
           this.userHttp.GetUser().subscribe({
             next:(value)=>{
-              console.log(value)
               this.user = value;
               this.RemoveFilters();
             },
             error:(err)=>{
-
             }
           })
         }
         else{
-
+          this.userHttp.GetUser(userid).subscribe({
+            next: (value) => {
+              this.user = value;
+              this.RemoveFilters();
+            },
+            error:(err) => {
+              
+            }
+          })
         }
       },
       error:(error)=>{
@@ -80,6 +90,16 @@ export class UserprofilepageComponent {
       },
       error:(err)=>{
         console.error(err);
+      }
+    })
+  }
+
+  deleteUser(result: number) {
+    this.userHttp.deleteUser(this.user!.id).subscribe({
+      next: (res) => {
+      },
+      error: (err) => {
+        console.log(err);
       }
     })
   }

@@ -14,8 +14,12 @@ export class CarDataService {
   
   constructor(private http: HttpClient) { }
 
-  GetPageAmount(amountPrPage:number):Observable<any>{
-    return this.http.get(this.url+`/CarPages?amountPrPage=${amountPrPage}`);
+  GetPageAmount(amountPrPage: number, make: string = "", model: string = "", plate: string = "", vin: string = ""):Observable<any>{
+    return this.http.get(this.url + `/CarPages?amountPrPage=${amountPrPage}&make=${make}&model=${model}&plate=${plate}&vin=${vin}`);
+  }
+
+  GetIssuePageAmount(amountPrPage: number, username: string = "", make: string = "", plate: string = "", category: string = ""): Observable<any> {
+    return this.http.get(this.url + `/IssuePages?amountPrPage=${amountPrPage}&username=${username}&make=${make}&plate=${plate}&category=${category}`);
   }
 
   //Amount is the amount of car rows pr page
