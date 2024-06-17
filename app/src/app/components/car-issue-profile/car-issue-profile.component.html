@@ -53,7 +53,7 @@
             <div class="issue-detail">
                 <mat-form-field class="small-field" appearance="outline">
                     <mat-label>Category</mat-label>
-                    <input matInput readonly [value]="issue?.category?.tag">
+                    <input matInput readonly [value]="issue?.category?.tag ? issue?.category?.tag : 'None'">
                 </mat-form-field>
                 <mat-form-field class="small-field" appearance="outline">
                     <mat-label>Price</mat-label>

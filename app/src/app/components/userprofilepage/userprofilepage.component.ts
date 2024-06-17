@@ -13,11 +13,12 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { CarDataService } from '../../services/car-data.service';
 import { LoginService } from '../../services/login.service';
 import { NotExpr } from '@angular/compiler';
-
+import { CarPageComponent } from '../car-page/car-page.component';
+import { IssuetablepageComponent } from '../issuetablepage/issuetablepage.component';
 @Component({
   selector: 'app-userprofilepage',
   standalone: true,
-  imports: [NgIf, NgFor, MatSelectModule, RouterLink, MatInputModule, MatFormFieldModule, MatButtonModule, MatIcon, FormsModule, ReactiveFormsModule],
+  imports: [CarPageComponent, IssuetablepageComponent, NgIf, NgFor, MatSelectModule, RouterLink, MatInputModule, MatFormFieldModule, MatButtonModule, MatIcon, FormsModule, ReactiveFormsModule],
   templateUrl: './userprofilepage.component.html',
   styleUrl: './userprofilepage.component.scss'
 })

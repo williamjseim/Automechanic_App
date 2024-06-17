@@ -35,7 +35,7 @@
 
             <mat-form-field appearance="outline" class="flex">
                 <mat-label>Category</mat-label>
-                <input matInput readonly="true" [value]="formData.category.tag">
+                <input matInput readonly="true" [value]="formData.category ? formData.category.tag : 'None'">
             </mat-form-field>
             
             <mat-form-field appearance="outline" class="flex">
