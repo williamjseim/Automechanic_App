@@ -249,7 +249,7 @@ namespace Mechanic.Api.Controllers
                 else
                 {
                     Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
-                    issues = await _db.CarIssues.Where(i=>i.Creator.Id == userId && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make) && i.Category.tag.Contains(category)).Skip(startingIndex * amount).Take(amount).Include(x => x.Car).Include(x => x.Category).Include(x=>x.Creator).ToArrayAsync();
+                    issues = await _db.CarIssues.Where(i=>(i.Creator.Id == userId || i.CoAuthors.Where(j => j.Id == userId).Any()) &&  i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make) && i.Category.tag.Contains(category)).Skip(startingIndex * amount).Take(amount).Include(x => x.Car).Include(x => x.Category).Include(x=>x.Creator).ToArrayAsync();
                 }
                 return Ok(issues);
             }

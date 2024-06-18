@@ -27,6 +27,6 @@ namespace Mechanic.Api.Models
         public decimal Price { get; set; }
         public DateTime CreationTime { get; set; }
         public CarCategory? Category { get; set; }
-
+        public ICollection<User> CoAuthors { get; set; }
     }
 }
