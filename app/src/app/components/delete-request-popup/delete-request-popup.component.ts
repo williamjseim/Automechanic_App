@@ -17,7 +17,7 @@ export class DeleteRequestPopupComponent {
 
   @ViewChild('delete') deleteInput!: ElementRef;
   //Outputs a event with a string then correct input text
-  @Output("Complete") Complete:EventEmitter<any> = new EventEmitter();
+  @Output("Complete") Complete:EventEmitter<number> = new EventEmitter();
   
   @Output("Error") Error:EventEmitter<any> = new EventEmitter();
 

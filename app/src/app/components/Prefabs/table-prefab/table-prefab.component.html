@@ -1,0 +1,98 @@
+<app-delete-request-popup #Delete [hidden]="Delete.IsHidden" (Complete)="RemoveCar($event)"></app-delete-request-popup>
+
+<!-- only shows if cars array isnt null -->
+<body #page (click)="SelectRow(-1, $event);">
+    @if(orientation.type != "landscape-primary"){
+        <div class="mobileDiv">
+            <div class="mobileSearch" *ngIf="FilterForm">
+                <div class="title" (click)="SelectRow(-2, $event)">
+                    <p>Advanced Search <mat-icon class="icon">search</mat-icon></p>
+                </div>
+                <form (click)="$event.stopPropagation()" id="form" [formGroup]="FilterForm" *ngIf="SelectedRow == -2">
+                    <input *ngFor="let item of FilterForm.controls | keyvalue" [formControlName]="item.key" placeholder="{{item.key}}" #MakeFilter value="" (keyup.enter)="Search.emit()">
+                    <button class="searchBtn" mat-raised-button (click)="Search.emit()"><mat-icon>search</mat-icon></button>
+                    <button class="resetFilterBtn" mat-raised-button (click)="RemoveFilters()"><mat-icon>filter_alt_off</mat-icon></button>
+                </form>
+            </div>
+            <div (click)="SelectRow(row, $event)" class="mobileTable" *ngFor="let item of items; let row = index">
+                <div class="title"></div>
+                @for (template of templates; track $index) {
+                    <div class="tablediv">
+                        <p>{{headers![$index]}}</p>
+                        <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{data:item}"></ng-container>
+                        </div>
+                        }
+                <td (click)="$event.stopPropagation()" class="actionTd">
+                    <div class="openBtn" *ngIf="openButton">
+                        <ng-container [ngTemplateOutlet]="openButton" [ngTemplateOutletContext]="{data:item}"></ng-container>
+                    </div>
+                    <input type="button" class="deleteBtn" (click)="Delete.Open(row)" value="Delete">
+                </td>
+                <div class="mobileDrawer" *ngIf="drawer && SelectedRow == row">
+                    <div class="drawerTitle"><span>{{drawerTitle}}</span></div>
+                    <ng-container [ngTemplateOutlet]="drawer" [ngTemplateOutletContext]="{data:item}"></ng-container>
+                </div>
+            </div>
+            <ng-container [ngTemplateOutlet]="pagesTemplate"></ng-container>
+        </div>
+    }
+    @else{
+    <div class="tableDiv">
+        <table>
+            <thead *ngIf="FilterForm != null">
+                    <td style="margin: 0; padding: 0;" [colSpan]="6">
+                        <form [formGroup]="FilterForm" class="searchForm">
+                            <input *ngFor="let item of FilterForm.controls | keyvalue" [formControlName]="item.key" placeholder="{{item.key}}" #MakeFilter matInput value="" (keyup.enter)="Search.emit()">
+                            <select #select placeholder="Select Option" (change)="ChangeNumberPrPage($event)">
+                                <option value="10">10 items</option>
+                                <option value="25">25 items</option>
+                                <option value="50">50 items</option>
+                            </select>
+                            <button mat-raised-button (click)="Search.emit()"><mat-icon>search</mat-icon></button>
+                            <button mat-raised-button (click)="RemoveFilters()"><mat-icon>filter_alt_off</mat-icon></button>
+                        </form>
+                    </td>
+            </thead>
+            <thead style="padding: 0; margin: 0;">
+                <th class="header" *ngFor="let item of headers">{{item}}</th>
+                <th class="header" *ngIf="drawer"></th>
+                <th class="header">Actions</th>
+            </thead>
+            <tbody (click)="SelectRow(row, $event)" [class]="[row%2==0 ? 'EvenTBody':'OddTBody']" *ngFor="let item of items; let row = index">
+                <tr  style="border-bottom: 1px solid black;" *ngIf="templates">
+                    @for (template of templates; track $index) {
+                        <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{data:item}"></ng-container>
+                    }
+                    <td *ngIf="drawer"><mat-icon *ngIf="row != SelectedRow">expand_more</mat-icon><mat-icon *ngIf="row == SelectedRow">expand_less</mat-icon></td>
+                    <td (click)="$event.stopPropagation()" class="actionTd">
+                        <div class="openBtn" *ngIf="openButton">
+                            <ng-container [ngTemplateOutlet]="openButton" [ngTemplateOutletContext]="{data:item}"></ng-container>
+                        </div>
+                        <input type="button" class="DeleteButton" (click)="Delete.Open(row)" value="Delete">
+                    </td>
+                </tr>
+                <tr class="drawerRow" *ngIf="drawer && SelectedRow == row">
+                    <ng-container [ngTemplateOutlet]="drawer" [ngTemplateOutletContext]="{data:item, row:row}"></ng-container>
+                </tr>
+            </tbody>
+        </table>
+        <ng-container [ngTemplateOutlet]="pagesTemplate"></ng-container>
+        </div>
+}
+</body>
+<ng-template #elseBlock>
+    <div style="width: 100%; height: 100%; display: flex; justify-content: center; align-items: center;">
+        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
+    </div>
+</ng-template>
+<ng-template #pagesTemplate>
+    <div *ngIf="pages > 1" class="ButtonDiv">
+        <button (click)="JumpToPage(currentPage-1)" [disabled]="!(currentPage >= 1)" class="PageSwapBtn">Prev</button>
+        <button (click)="JumpToPage(currentPage-2)" *ngIf="currentPage-2 >= 0" class="PageBtn">{{currentPage-1}}</button>
+        <button (click)="JumpToPage(currentPage-1)" *ngIf="currentPage-1 >= 0" class="PageBtn">{{currentPage}}</button>
+        <button class="SelectedPageBtn">{{currentPage+1}}</button>
+        <button (click)="JumpToPage(currentPage+1)" *ngIf="currentPage + 1 <= pages-1" class="PageBtn">{{currentPage+2}}</button>
+        <button (click)="JumpToPage(currentPage+2)" *ngIf="currentPage + 2 <= pages-1" class="PageBtn">{{currentPage+3}}</button>
+        <button (click)="JumpToPage(currentPage+1)" [disabled]="!(currentPage < pages-1)" class="PageSwapBtn">Next</button>
+    </div>
+</ng-template>

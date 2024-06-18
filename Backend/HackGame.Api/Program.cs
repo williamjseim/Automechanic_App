@@ -31,7 +31,7 @@ namespace Mechanic.Api
 
 #if DEBUG
             builder.Services.AddDbContext<MechanicDatabase>(options =>
-            options.UseMySql(builder.Configuration.GetConnectionString("Prod"),ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Prod"))));
+            options.UseMySql(builder.Configuration.GetConnectionString("Default"),ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Default"))));
 #else
             builder.Services.AddDbContext<MechanicDatabase>(options =>
             options.UseMySql(builder.Configuration.GetConnectionString("Prod"),ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("Prod"))));
@@ -52,9 +52,6 @@ namespace Mechanic.Api
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
-            app.UseHttpsRedirection();
-
 
             app.MapControllers();
 

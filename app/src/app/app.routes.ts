@@ -13,6 +13,7 @@ import { UserprofilepageComponent } from './components/userprofilepage/userprofi
 import { CarIssueProfileComponent } from './components/car-issue-profile/car-issue-profile.component';
 import { FrontpageComponent } from './components/frontpage/frontpage.component';
 import { IssuetablepageComponent } from './components/issuetablepage/issuetablepage.component';
+import { TablePrefabComponent } from './components/Prefabs/table-prefab/table-prefab.component';
 
 
 export const routes: Routes = [
@@ -31,5 +32,6 @@ export const routes: Routes = [
  { path: 'issues', component: IssuetablepageComponent },
  { path: 'carprofile', component: CarProfileComponent},
  { path: 'profile', component: UserprofilepageComponent},
+ { path: 'test', component: TablePrefabComponent},
  { path: '**', component: ErrorComponent },
 ];

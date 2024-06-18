@@ -99,33 +99,6 @@ namespace Mechanic.Api.Controllers
         }
 
         [JwtTokenAuthorization]
-        [HttpGet("IssuePages")]
-        public async Task<IActionResult> IssuePages(int amountPrPage, string username = "", string make = "", string plate = "", string category = "")
-        {
-            try
-            {
-                Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
-                float pages;
-                if (userRole == Role.Admin)
-                {
-                    pages = (float)_db.CarIssues.Where(i => i.Creator.Username.Contains(username) && i.Car.Make.Contains(make.ToLower()) && i.Car.Plate.Contains(plate) && i.Category.tag.Contains(category)).Count() / (float)amountPrPage;
-                }
-                else
-                {
-                    Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
-                    pages = (float)_db.CarIssues.Where(i => i.Creator.Id == userId && i.Creator.Username.Contains(username) && i.Car.Make.Contains(make.ToLower()) && i.Car.Plate.Contains(plate) && i.Category.tag.Contains(category)).Count() / (float)amountPrPage;
-                }
-                var amount = (int)MathF.Ceiling(pages);
-                return Ok(amount);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex);
-                return StatusCode(500, Json("Something went wrong"));
-            }
-        }
-
-        [JwtTokenAuthorization]
         [HttpPut("CreateCar")]
         public async Task<IActionResult> CreateCar(string make, string model, string plate, string vinnr, string base64Image = "")
         {
@@ -144,7 +117,7 @@ namespace Mechanic.Api.Controllers
                 Car car = new(user, vinnr, plate, make, model, base64Image);
                 await _db.AddAsync(car);
                 await _db.SaveChangesAsync();
-                return Ok("Car created");
+                return Ok(Json("Car created"));
             }
             catch (Exception ex)
             {
@@ -236,7 +209,7 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpGet("GetIssues")]
-        public async Task<IActionResult> GetIssues(int startingIndex = 0, int amount = 0, string creatorName = "", string plate = "", string make = "", string category = "")
+        public async Task<IActionResult> GetIssues(int startingIndex = 0, int amount = 0, string creatorName = "", string plate = "", string make = "")
         {
             try
             {
@@ -244,13 +217,19 @@ namespace Mechanic.Api.Controllers
                 CarIssue[] issues;
                 if(userRole == Role.Admin)
                 {
-                    issues = await _db.CarIssues.Where(i=>i.Creator.Username.Contains(creatorName) && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make) && i.Category.tag.Contains(category)).Skip(startingIndex * amount).Take(amount).Include(x=>x.Car).Include(x=>x.Category).Include(x=>x.Creator).ToArrayAsync();
+                    issues = await _db.CarIssues.Include(i=>i.Creator).Where(i=>i.Creator.Username.Contains(creatorName) && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make)).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
                 }
                 else
                 {
                     Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
-                    issues = await _db.CarIssues.Where(i=>i.Creator.Id == userId && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make) && i.Category.tag.Contains(category)).Skip(startingIndex * amount).Take(amount).Include(x => x.Car).Include(x => x.Category).Include(x=>x.Creator).ToArrayAsync();
+                    issues = await _db.CarIssues.Include(i => i.Creator).Where(i=>i.Creator.Id == userId && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make)).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
                 }
+
+                if (issues.Length <= 0)
+                {
+                    return NotFound("no issues found");
+                }
+
                 return Ok(issues);
             }
             catch (Exception ex)
@@ -271,11 +250,11 @@ namespace Mechanic.Api.Controllers
                 CarIssue[] issues;
                 if(userRole == Role.Admin)
                 {
-                    issues = await _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(amount).Include(x=> x.Category).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArrayAsync();
+                    issues = await _db.CarIssues.Where(i=>i.Car.Id == carId).Skip(startingIndex).Take(amount).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArrayAsync();
                 }
                 else
                 {
-                    issues = await _db.CarIssues.Where(i=>i.Car.Id == carId && i.Creator.Id == userId).Skip(startingIndex).Take(amount).Include(x=>x.Category).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArrayAsync();
+                    issues = await _db.CarIssues.Where(i=>i.Car.Id == carId && i.Creator.Id == userId).Skip(startingIndex).Take(amount).Include(x=>x.Creator).Distinct().OrderBy(I=>I.CreationTime).ToArrayAsync();
                 }
                 return Ok(issues);
             }
@@ -417,7 +396,7 @@ namespace Mechanic.Api.Controllers
                 var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == userId);
                 if (userId == null)
                 {
-                    return NotFound(Json("User doesnt exist"));
+                    return NotFound("User doesnt exist");
                 }
                 else if (user == null)
                 {
@@ -436,7 +415,7 @@ namespace Mechanic.Api.Controllers
             }
         }
 
-    
+
         [HttpGet("CarIssueCategories")]
         public async Task<IActionResult> GetCarIssueCategories()
         {
@@ -511,11 +490,16 @@ namespace Mechanic.Api.Controllers
                 new("motor"),
             };
             await _db.AddRangeAsync(carCategories);
-
+            int bobby = 0;
+            int lilly = 0;
             foreach (var item in cars)
             {
+                bobby++;
+                System.Console.WriteLine(bobby);
                 for (global::System.Int32 i = 0; i < 3; i++)
                 {
+                    lilly++;
+                    System.Console.WriteLine(lilly);
                     var issues = new CarIssue[]{
                         new(carCategories[0], item, user, "nothing", 500),
                         new(carCategories[1], item, user, "nothing", 500),
