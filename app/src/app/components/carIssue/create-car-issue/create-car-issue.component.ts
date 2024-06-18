@@ -20,6 +20,7 @@ import { SharedService } from '../../../services/shared.service';
 import { Car } from '../../../Interfaces/car';
 import { CarDataService } from '../../../services/car-data.service';
 import { Category } from '../../../Interfaces/category';
+import { User } from '../../../Interfaces/user';
 
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
@@ -43,6 +44,7 @@ export class CreateCarIssueComponent {
     price: new FormControl('', [Validators.required]),
     description: new FormControl('', [Validators.required]),
     searchPlate: new FormControl(''),
+    coAuthors: new FormControl<string[]>([]),
   });
 
   matcher = new MyErrorStateMatcher();
@@ -50,6 +52,7 @@ export class CreateCarIssueComponent {
   loadingCategories = false;
   cars: Car[] = [];
   categories: Category[] = [];
+  coAuthors:string[] = [];
 
   constructor(
     public sharedService: SharedService,
@@ -119,8 +122,17 @@ export class CreateCarIssueComponent {
   }
   onSubmit() {
     if (this.carIssueForm.valid) {
+      this.carIssueForm.controls.coAuthors.reset(this.coAuthors)
       this.sharedService.setFormData(this.carIssueForm.getRawValue());
       this.router.navigate(['submit'], { relativeTo: this.route });
     }
+  }
+
+  AddUser(username:string){
+    this.coAuthors.push(username);
+  }
+
+  RemoveUser(index:number){
+    this.coAuthors = this.coAuthors.slice(index, 0);
   }
 }

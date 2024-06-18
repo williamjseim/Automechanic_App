@@ -54,8 +54,8 @@ export class CarDataService {
     return this.http.get(this.url+`/GetIssue?issueId=${issueId}`);
   } 
 
-  CreateIssue(carId:string, categoryId:string | undefined | null, description:string, price:number){
-    return this.http.put(this.url+`/CreateCarIssue?carId=${carId}&categoryId=${categoryId}&description=${description}&price=${price}`,"");
+  CreateIssue(carId:string, categoryId:string | undefined | null, description:string, price:number, coAuthorNames:string[] = []){
+    return this.http.put(this.url+`/CreateCarIssue?carId=${carId}&categoryId=${categoryId}&description=${description}&price=${price}&coAuthorNames=${coAuthorNames}`,"");
   }
 
   GetUserIssues(startingIndex:number, amount:number, userId:string = "", make:string = "", model:string = "", plate:string = "", vin = "",) :Observable<any>{
