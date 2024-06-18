@@ -5,7 +5,6 @@ import { ProgressBarComponent } from '../progress-bar/progress-bar.component';
 import { NavBarComponent } from '../nav-bar/nav-bar.component';
 import { MatIconModule } from '@angular/material/icon';
 import { VideoApiService } from '../../services/video-api.service';
-import { SharedService } from '../../services/shared.service';
 
 @Component({
   selector: 'app-video-capture',
@@ -21,8 +20,7 @@ export class VideoCaptureComponent {
   videoFile!: File;
 
   constructor(
-    private videoHttp: VideoApiService,
-    private sharedService: SharedService,
+    private videoHttp: VideoApiService
   ) { }
   openCamera() {
     const input = document.createElement('input');
