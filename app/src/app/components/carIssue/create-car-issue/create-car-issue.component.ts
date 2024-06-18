@@ -16,7 +16,6 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatSelectModule } from '@angular/material/select'
 import { ActivatedRoute, Router } from '@angular/router';
-import { SharedService } from '../../../services/shared.service';
 import { Car } from '../../../Interfaces/car';
 import { CarDataService } from '../../../services/car-data.service';
 import { Category } from '../../../Interfaces/category';
@@ -35,6 +34,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: './create-car-issue.component.html',
   styleUrl: './create-car-issue.component.scss'
 })
+
 export class CreateCarIssueComponent {
 
   carIssueForm = new FormGroup({
@@ -52,7 +52,6 @@ export class CreateCarIssueComponent {
   categories: Category[] = [];
 
   constructor(
-    public sharedService: SharedService,
     private router: Router,
     private route: ActivatedRoute,
     private carService: CarDataService
@@ -61,7 +60,6 @@ export class CreateCarIssueComponent {
   ngOnInit(): void {
     this.getCars();
     this.getCategories()
-    this.getExistingData();
     this.getQueryParam();
   }
 
@@ -82,24 +80,34 @@ export class CreateCarIssueComponent {
       });
   }
 
-  getExistingData() {
-    const savedData = this.sharedService.getFormData();
-    if (savedData)
-      this.carIssueForm.patchValue(savedData);
-  }
   getQueryParam() {
 
     this.route.queryParams.subscribe({
       next: (value) => {
         const carId = value['carId'];
+        const car = value['car'];
+        const category = value['category'];
+        const price = value['price'];
+        const description = value['description'];
+
         if (carId) {
           this.patchCarSelect(carId);
         }
+        if (car) 
+          this.carIssueForm.controls.car.patchValue(JSON.parse(atob(car)));
+        if (category) 
+          this.carIssueForm.controls.category.patchValue(JSON.parse(atob(category)));
+        if (price) 
+          this.carIssueForm.controls.price.setValue(atob(price));
+        if (description) 
+          this.carIssueForm.controls.description.setValue(atob(description));
+
       },
       error: (error) => {
         console.error(error);
       }
     });
+
   }
   compareItem(item1: any, item2: any) {
     return item1 && item2 && item1.id === item2.id;
@@ -119,8 +127,18 @@ export class CreateCarIssueComponent {
   }
   onSubmit() {
     if (this.carIssueForm.valid) {
-      this.sharedService.setFormData(this.carIssueForm.getRawValue());
-      this.router.navigate(['submit'], { relativeTo: this.route });
+      
+      let car = JSON.stringify(this.carIssueForm.controls.car.getRawValue());
+      let category = JSON.stringify(this.carIssueForm.controls.category.getRawValue());
+      let price = this.carIssueForm.controls.price.getRawValue();
+      let description = this.carIssueForm.controls.description.getRawValue();
+
+      this.router.navigate(['submit'], { relativeTo: this.route, queryParams: { 
+        car: btoa(car),
+        category: btoa(category),
+        price: btoa(price!),
+        description: btoa(description!)
+      } });
     }
   }
 }

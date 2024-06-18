@@ -1,16 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
-
 import { ProgressBarComponent } from '../../progress-bar/progress-bar.component';
 import { NavBarComponent } from '../../nav-bar/nav-bar.component';
 import { MatIconModule } from '@angular/material/icon';
-import { ActivatedRoute, Route, Router } from '@angular/router';
-import { SharedService } from '../../../services/shared.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NewIssue } from '../../../Interfaces/newIssue';
 import { CarDataService } from '../../../services/car-data.service';
 import { MatSnackBar } from '@angular/material/snack-bar'
+import { Car } from '../../../Interfaces/car';
+import { Category } from '../../../Interfaces/category';
 @Component({
   selector: 'app-review-car-issue',
   standalone: true,
@@ -20,46 +19,54 @@ import { MatSnackBar } from '@angular/material/snack-bar'
 })
 export class ReviewCarIssueComponent implements OnInit {
 
-  formData: NewIssue | null = null;
-  videoUrl: string | ArrayBuffer | null = null;
+  car!: Car;
+  category: Category | undefined;
+  price: number | undefined;
+  description: string | undefined
   loading = false;
 
   constructor(
     private router: Router,
     private route:ActivatedRoute,
-    public sharedService: SharedService,
     private carService: CarDataService,
     private snackbar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
-    let id = this.route.params.subscribe({
-      next:(value)=>{
-        let id = value["issueId"];
-      }
-    })
-    this.getFormData();
+    this.getQueryParam();
   }
 
-  getFormData() {    
-    this.formData = this.sharedService.getFormData();
-    if (!this.formData) {
-      this.router.navigateByUrl("/issue");
-    }
+  getQueryParam() {
+    this.route.queryParams.subscribe({
+      next: (value) => {
+        this.car = JSON.parse(atob(value['car'])) as Car;
+        this.category = JSON.parse(atob(value['category'])) as Category;
+        this.price = parseInt(atob(value['price'])) as number
+        this.description = atob(value['description']) as string
+      console.log(this.description);
+      }
+    })
   }
 
   // Navigate to the previous page
   onCancel() {
-    this.router.navigate(['issue']); 
+    let car = JSON.stringify(this.car);
+    let category = JSON.stringify(this.category);
+
+    this.router.navigate(['issue'], { queryParams: {
+      car: btoa(car),
+      category: btoa(category),
+      price: btoa(this.price!.toString()),
+      description: btoa(this.description!)
+    }}); 
   }
 
   // Handle the accept action
   onAccept() {
     this.loading = true;
-    this.carService.CreateIssue(this.formData?.car.id!, this.formData?.category?.id, this.formData?.description!, this.formData?.price!).subscribe({
+    this.carService.CreateIssue(this.car.id, this.category?.id, this.description!, this.price!).subscribe({
       next: (res) => { 
         this.loading = false;
-        this.sharedService.setFormData(null);
         this.snackbar.open('Issue created', 'Close', { duration: 4000 });
         this.router.navigate(['issueprofile'], { queryParams: {issueId: res}});
       },
