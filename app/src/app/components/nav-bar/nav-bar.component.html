@@ -34,7 +34,8 @@
     
     @if (localStorageService.getFromLocalStorage("token")) {
         <div [routerLink]="['/logout']" routerLinkActive="router-link-active"  class="homebtn">
-            <span><mat-icon style="vertical-align: text-bottom;">logout</mat-icon>Logout</span>
+            <mat-icon style="vertical-align: text-bottom;">logout</mat-icon>
+            <span>Logout</span>
         </div>
     }
 </mat-toolbar>

@@ -290,10 +290,15 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpPut("CreateCarIssue")]
-        public async Task<IActionResult> CreateCarIssues(Guid carId, Guid categoryId, string description, decimal price)
+        public async Task<IActionResult> CreateCarIssues(Guid carId, Guid categoryId, decimal price)
         {
             try
             {
+
+                // Read request body. Body should include a description of the car issue
+                var rawRequestBody = await new StreamReader(Request.Body).ReadToEndAsync();
+
+
                 Guid userId = JwtAuthorization.GetUserId(Request.Headers.Authorization, _config);
 
                 var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == userId);
@@ -317,7 +322,7 @@ namespace Mechanic.Api.Controllers
                 //     return NotFound("Category not found");
                 // }
 
-                CarIssue issue = new(carCategory, car, user, description, price);
+                CarIssue issue = new(carCategory, car, user, rawRequestBody, price);
                 await _db.AddAsync(issue);
                 await _db.SaveChangesAsync();
                 return StatusCode(201, issue.Id);
