@@ -41,7 +41,7 @@
             <div class="videos">
                 <div *ngIf="videos.length <= 0">Loading...<br><mat-spinner></mat-spinner></div>
                 @for (item of videos; track $index) {
-                <video #videoPlayer [src]="item" width="250" controls></video>
+                <video #videoPlayer [src]="item" width="250" controls [volume]="0.2"></video>
                 }
             </div>
             }

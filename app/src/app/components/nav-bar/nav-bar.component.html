@@ -1,23 +1,31 @@
 <mat-toolbar color="primary">
     <div [routerLink]="['']" routerLinkActive="router-link-active"  class="homebtn">
-        <span><mat-icon style="vertical-align: text-bottom;">home</mat-icon>Automechanics</span>
+        <mat-icon style="vertical-align: text-bottom;">home</mat-icon>
+        <span>Automechanics</span>
     </div>
     <div style="display: flex; flex-direction: row; justify-content: space-evenly; width: 90%;">
         @if (localStorageService.getFromLocalStorage("token")) {
             <div [routerLink]="['/cars']" routerLinkActive="router-link-active"  class="homebtn">
-                <span><mat-icon style="vertical-align: text-bottom;">directions_car</mat-icon>Cars</span>
+                <mat-icon style="vertical-align: text-bottom;">directions_car</mat-icon>
+                <span>Cars</span>
             </div>
             <div [routerLink]="['/issues']" routerLinkActive="router-link-active"  class="homebtn">
-                <span><mat-icon style="vertical-align: text-bottom;">report</mat-icon>Issues</span>
+                <mat-icon style="vertical-align: text-bottom;">car_repair</mat-icon>
+                <span>Issues</span>
             </div>
             <div [routerLink]="['/createcar']" routerLinkActive="router-link-active"  class="homebtn">
-                <span><mat-icon style="vertical-align: text-bottom;">person</mat-icon>Create Car</span>
+                <mat-icon style="vertical-align: text-bottom;">add_circle</mat-icon>
+                <mat-icon style="vertical-align: text-bottom;">directions_car</mat-icon>
+                <span>Create Car</span>
             </div>
             <div [routerLink]="['/issue']" routerLinkActive="router-link-active"  class="homebtn">
-                <span><mat-icon style="vertical-align: text-bottom;">person</mat-icon>Create issue</span>
+                <mat-icon style="vertical-align: text-bottom;">add_circle</mat-icon>
+                <mat-icon style="vertical-align: text-bottom;">car_repair</mat-icon>
+                <span>Create issue</span>
             </div>
             <div [routerLink]="['/profile']" routerLinkActive="router-link-active"  class="homebtn">
-                <span><mat-icon style="vertical-align: text-bottom;">person</mat-icon>Profile</span>
+                <mat-icon style="vertical-align: text-bottom;">person</mat-icon>
+                <span>Profile</span>
             </div>
         }
     </div>

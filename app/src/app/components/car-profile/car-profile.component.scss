@@ -128,3 +128,14 @@ body{
         }
     }
 }
+
+.mobileprofileDiv{
+    .mobileImg{
+        min-width: 80%;
+        max-width: 100%;
+        background-repeat: no-repeat;
+        img{
+            max-width: 100%;
+        }
+    }
+}

@@ -46,7 +46,7 @@ namespace Mechanic.Api.Controllers
                 return NotFound(Json("username or password is wrong"));
             }
             catch {
-                return StatusCode(500, " Something went really wrong Error"+ username + password);
+                return StatusCode(501, " Something went really wrong Error"+ username + password);
             }
         }
 

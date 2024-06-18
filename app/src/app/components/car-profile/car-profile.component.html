@@ -1,79 +1,118 @@
 
 <app-delete-request-popup #Delete [hidden]="Delete.IsHidden" (Complete)="RemoveCar($event)"></app-delete-request-popup>
-<body>
-    <div #profileDiv class="profileDiv">
-        <div #imgDiv class="imgDiv" style="background-image: url({{imagepath}});"></div>
-            <div #infoDiv class="infoDiv">
-                <form [formGroup]="carForm" #form>
-                    <div>
-                        <mat-form-field appearance="outline">
-                            <mat-label>Make</mat-label>
-                            <input [formControl]="carForm.controls.make" [value]="car?.make" #makeInfo matInput>
-                        </mat-form-field>
-                        <mat-form-field appearance="outline">
-                            <mat-label>Model</mat-label>
-                            <input [formControl]="carForm.controls.model" [value]="car?.model" #modelInfo matInput>
-                        </mat-form-field>
-                    </div>
-                    <div>
-                        <mat-form-field appearance="outline">
-                            <mat-label>Plate</mat-label>
-                            <input [formControl]="carForm.controls.plate" [value]="car?.plate" #plateInfo matInput>
-                        </mat-form-field>
-                        <mat-form-field appearance="outline">
-                            <mat-label>Vin number</mat-label>
-                            <input [formControl]="carForm.controls.vinnr" [value]="car?.vinNumber" #vinInfo matInput>
-                        </mat-form-field>
-                    </div>
-                    <div style="width: 100%;">
-                        <mat-form-field style="width: 100%;" appearance="outline">
-                            <mat-label>Creation time</mat-label>
-                            <input readonly [value]="car?.creationTime | date:'dd/MM/yyyy HH:mm'" #vinInfo matInput>
-                        </mat-form-field>
-                    </div>
-                    <div style="width: 100%; display: flex; justify-content: space-around;">
-                        <button [disabled]="!carForm.dirty" class="btn" mat-raised-button>Save</button>
-                        <button class="btn" *ngIf="!isAdmin" (click)="Delete.Open(-2)" mat-raised-button>Delete car</button>
-                    </div>
-                    <div style="width: 100%; padding-top: 1%; display: flex; justify-content: space-around;">
-                        <button class="btn" mat-raised-button (click)="CreateIssue()" >Create Issue</button>
-                    </div>
-                </form>
-            </div>
-        </div>
+<body #page>
+    <ng-container [ngTemplateOutlet]="page.clientWidth > 600 ? desktop : mobile"></ng-container>
     <div #issueTable class="issueDiv">
-        <table style="font-size: large; width: 100%;" class="issueTable">
-            <thead>
-                <tr>
-                    <td [colSpan]="5">
-                        <form [formGroup]="searchForm" class="searchForm">
-                            <input [formControl]="searchForm.controls.make" placeholder="Make" #MakeFilter matInput value="" (keyup.enter)="Search()">
-                            <input [formControl]="searchForm.controls.model" placeholder="Model" #ModelFilter matInput value="" (keyup.enter)="Search()">
-                            <input [formControl]="searchForm.controls.plate" placeholder="Plate" #PlateFilter matInput value="" (keyup.enter)="Search()">
-                            <input [formControl]="searchForm.controls.vinnr" placeholder="Vin nr" #VinFilter matInput value="" (keyup.enter)="Search()">
-                            <button mat-raised-button (click)="Search()"><mat-icon>search</mat-icon></button>
-                            <button mat-raised-button (click)="RemoveFilters()"><mat-icon>filter_alt_off</mat-icon></button>
-                        </form>
-                    </td>
-                </tr>
-            </thead>
-            <thead>
-                <th>Creator</th>
-                <th>CreationTime</th>
-                <th>Price</th>
-                <th>Actions</th>
-            </thead>
-            <tbody *ngIf="car?.issues != null">
-                <tr *ngFor="let item of car!.issues!; let row = index;" [class]="(row%2 == 0) ? 'even':'odd'">
-                    <td><a [routerLink]="['/profile']" [queryParams]="{userId: item.creator.id}" routerLinkActive="router-link-active" >{{item.creator.username}}</a></td>
-                    <td>{{item.creationTime | date:'dd/MM/yyyy HH:mm'}}</td>
-                    <td>{{item.price}}</td>
-                    <td>
-                        <button class="openBtn" mat-raised-button [routerLink]="['/issueprofile']" [queryParams]="{issueId: item.id}">Open</button>
-                        <button class="deleteBtn" mat-raised-button (click)="Delete.Open(row)">Delete</button>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+    <app-table-prefab
+        [FilterForm]="searchForm"
+        [items]="car?.issues"
+        [columns]="[rowtemplate1, rowtemplate2, rowtemplate3]"
+        [headers]="['Creator', 'Price', 'Creation date']"
+        [openButton]="openbtn"
+        [drawer]="description"
+        [DrawerTitle]="'Description'"
+        >
+        </app-table-prefab>
+        <ng-template #rowtemplate1 let-data="data">
+            <td>{{data.creator?.username ?? 'unknown'}}</td>
+        </ng-template>
+        <ng-template #rowtemplate2 let-data="data">
+            <td>{{data.price}}</td>
+        </ng-template>
+        <ng-template #rowtemplate3 let-data="data">
+            <td>{{data.creationTime | date:'dd/MM/yyyy HH:mm'}}</td>
+        </ng-template>
+        <ng-template #openbtn let-data="data">
+            <input type="button" [routerLink]="['/issueprofile']" [queryParams]="{issueId: data.id}" routerLinkActive="router-link-active"value="Open">
+        </ng-template>
+        <ng-template #description let-data="data">
+            <td [colSpan]="6">
+                <textarea (click)="$event.stopPropagation()" style="width: 100%; height: 200px; font-size: xx-large;" readonly [value]="data.description"></textarea>
+            </td>
+        </ng-template>
     </div>
 </body>
+
+<ng-template #desktop>
+    <div #profileDiv class="profileDiv">
+        <div #imgDiv class="imgDiv" style="background-image: url({{imagepath}});"></div>
+        <div #infoDiv class="infoDiv">
+            <form [formGroup]="carForm" #form>
+                <div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Make</mat-label>
+                        <input [formControl]="carForm.controls.make" [value]="car?.make" #makeInfo matInput>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Model</mat-label>
+                        <input [formControl]="carForm.controls.model" [value]="car?.model" #modelInfo matInput>
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Plate</mat-label>
+                        <input [formControl]="carForm.controls.plate" [value]="car?.plate" #plateInfo matInput>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
+                        <mat-label>Vin number</mat-label>
+                        <input [formControl]="carForm.controls.vinnr" [value]="car?.vinNumber" #vinInfo matInput>
+                    </mat-form-field>
+                </div>
+                <div style="width: 100%;">
+                    <mat-form-field style="width: 100%;" appearance="outline">
+                        <mat-label>Creation time</mat-label>
+                        <input readonly [value]="car?.creationTime | date:'dd/MM/yyyy HH:mm'" #vinInfo matInput>
+                    </mat-form-field>
+                </div>
+                <div style="width: 100%; display: flex; justify-content: space-around;">
+                    <button [disabled]="!carForm.dirty" class="btn" mat-raised-button>Save</button>
+                    <button class="btn" *ngIf="!isAdmin" (click)="Delete.Open(-2)" mat-raised-button>Delete car</button>
+                </div>
+                <div style="width: 100%; padding-top: 1%; display: flex; justify-content: space-around;">
+                    <button class="btn" mat-raised-button (click)="CreateIssue()" >Create Issue</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</ng-template>
+
+<ng-template #mobile>
+    <div class="mobileprofileDiv">
+        <div class="mobileImg">
+            <img [src]="imagepath">
+        </div>
+    </div>
+    <div style="margin-top: 5px;">
+        <mat-form-field appearance="outline">
+            <mat-label>Make</mat-label>
+            <input [formControl]="carForm.controls.make" [value]="car?.make" #makeInfo matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Model</mat-label>
+            <input [formControl]="carForm.controls.model" [value]="car?.model" #modelInfo matInput>
+        </mat-form-field>
+    </div>
+    <div>
+        <mat-form-field appearance="outline">
+            <mat-label>Plate</mat-label>
+            <input [formControl]="carForm.controls.plate" [value]="car?.plate" #plateInfo matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+            <mat-label>Vin number</mat-label>
+            <input [formControl]="carForm.controls.vinnr" [value]="car?.vinNumber" #vinInfo matInput>
+        </mat-form-field>
+    </div>
+    <div style="width: 100%;">
+        <mat-form-field style="width: 100%;" appearance="outline">
+            <mat-label>Creation time</mat-label>
+            <input readonly [value]="car?.creationTime | date:'dd/MM/yyyy HH:mm'" #vinInfo matInput>
+        </mat-form-field>
+    </div>
+    <div style="width: 100%; display: flex; justify-content: space-around;">
+        <button [disabled]="!carForm.dirty" class="btn" mat-raised-button>Save</button>
+        <button class="btn" *ngIf="!isAdmin" (click)="Delete.Open(-2)" mat-raised-button>Delete car</button>
+    </div>
+    <div style="width: 100%; padding-top: 1%; display: flex; justify-content: space-around; margin-bottom: 5px;">
+        <button class="btn" mat-raised-button (click)="CreateIssue()" >Create Issue</button>
+    </div>
+</ng-template>

@@ -1,26 +1,21 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { Car } from '../../Interfaces/car';
-import { AsyncPipe, DatePipe } from '@angular/common';
+import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { NgIf, NgFor, NgClass} from '@angular/common';
 import { NgStyle } from '@angular/common';
-import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { CarDataService } from '../../services/car-data.service';
-import { MatSelectModule} from '@angular/material/select';
-import { MatInputModule} from '@angular/material/input';
-import { MatFormFieldModule} from '@angular/material/form-field';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-request-popup.component';
+import { TablePrefabComponent } from '../Prefabs/table-prefab/table-prefab.component';
+import { ColumnDefDirective } from '../../Directives/column-def.directive';
 @Component({
   selector: 'app-car-page',
   standalone: true,
-  imports: [AsyncPipe, DatePipe, DeleteRequestPopupComponent, RouterLink, ReactiveFormsModule, FormsModule, MatIconModule, MatButtonModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, MatFormFieldModule, MatInputModule, MatSelectModule],
+  imports: [TablePrefabComponent, NgClass, ColumnDefDirective, NgTemplateOutlet, DatePipe, DeleteRequestPopupComponent, RouterLink, ReactiveFormsModule, FormsModule, NgIf, NgFor, NgStyle, NgClass],
   templateUrl: './car-page.component.html',
   styleUrl: './car-page.component.scss',
-  changeDetection: ChangeDetectionStrategy.Default,
 })
 export class CarPageComponent {
 
@@ -51,9 +46,8 @@ export class CarPageComponent {
     let model = this.searchForm.controls.model.value;
     let plate = this.searchForm.controls.plate.value;
     let vin = this.searchForm.controls.vinnr.value;
-    // console.log(make, model, plate, vin);
-    this.GetCarsHttp(make, model, plate, vin);
-    this.GetCarPages(this.itemsPrPage, make, model, plate, vin);
+    console.log(make, model, plate, vin);
+    this.GetCarsHttp(make, model, plate, vin)
     this.SelectedRow = -1;
   }
 
@@ -68,6 +62,7 @@ export class CarPageComponent {
       if(this.cars![index].issues == null){
         this.GetCarIssuesHttp(this.cars![index].id).subscribe({
           next:(value)=>{
+            console.log(value);
             if(value.status == 200){
               this.cars![index].issues = value.body;
             }
@@ -81,11 +76,26 @@ export class CarPageComponent {
     }
   }
 
+  DrawerOpened(index:number){
+    if(this.cars![index].issues == null){
+      this.GetCarIssuesHttp(this.cars![index].id).subscribe({
+          next:(value)=>{
+            if(value.status == 200){
+              this.cars![index].issues = value.body;
+            }
+          else{
+            this.cars![index].issues = [];
+          }
+        }
+      });
+    }
+  }
+
   RemoveCar(index:number){
-      let car = this.cars![index];
-      this.carHttp.DeleteCar(car.id).subscribe({next:(value)=>{
-        this.cars?.splice(index, 1);
-      }});
+    let car = this.cars![index];
+    this.carHttp.DeleteCar(car.id).subscribe({next:(value)=>{
+      this.cars?.splice(index, 1);
+    }});
   }
 
   RemoveFilters(){
@@ -96,8 +106,8 @@ export class CarPageComponent {
     this.Search();
   }
 
-  ChangeNumberPrPage(number:Event){
-    this.itemsPrPage = JSON.parse((number.target as HTMLSelectElement).value)
+  ChangeNumberPrPage(number:number){
+    this.itemsPrPage = number;
     this.currentPage = 0;
     this.GetCarPages(this.itemsPrPage);
     this.Search();
@@ -121,14 +131,11 @@ export class CarPageComponent {
   }
 
   //gets how many pages of cars that are in the database
-  private GetCarPages(amountPrPage: number, make: string = '', model: string = '', plate: string = '', vin: string = ''){
-    this.carHttp.GetPageAmount(amountPrPage, make, model, plate, vin
-    ).subscribe({next:(value)=>{
+  private GetCarPages(amountPrPage:number){
+    this.carHttp.GetPageAmount(amountPrPage).subscribe({next:(value)=>{
       let asd = localStorage.getItem("isadmin") ?? "false";
       this.isAdmin = of(JSON.parse(asd) as boolean);
       this.pages = value;
-      if(this.currentPage > this.pages)
-        this.JumpToPage(0);
     }});
   }
 
@@ -139,4 +146,5 @@ export class CarPageComponent {
     this.currentPage = index;
     this.Search();
   }
+
 }

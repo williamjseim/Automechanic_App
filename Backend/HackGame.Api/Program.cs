@@ -53,9 +53,6 @@ namespace Mechanic.Api
                 app.UseSwaggerUI();
             }
 
-            app.UseHttpsRedirection();
-
-
             app.MapControllers();
 
 
