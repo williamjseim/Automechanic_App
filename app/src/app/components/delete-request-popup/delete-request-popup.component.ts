@@ -1,5 +1,5 @@
 import { NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-delete-request-popup',
@@ -15,6 +15,7 @@ export class DeleteRequestPopupComponent {
   wrong = false;
   IsHidden = true;
 
+  @ViewChild('delete') deleteInput!: ElementRef;
   //Outputs a event with a string then correct input text
   @Output("Complete") Complete:EventEmitter<number> = new EventEmitter();
   
@@ -29,11 +30,13 @@ export class DeleteRequestPopupComponent {
     }
     else{
       this.wrong = true;
+      this.deleteInput.nativeElement.value = '';
       this.Error.emit();
     }
   }
 
   Open(index:number){
+    this.deleteInput.nativeElement.value = '';
     this.IsHidden = false;
     this.tableIndex = index;
   }

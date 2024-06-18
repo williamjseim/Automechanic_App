@@ -5,6 +5,6 @@ export interface NewIssue {
     car: Car;
     description: string;
     price: number;
-    category: Category
+    category: Category | null 
 
 }

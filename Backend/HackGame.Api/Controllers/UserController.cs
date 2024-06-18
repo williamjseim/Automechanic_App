@@ -72,10 +72,15 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpGet("GetUser")]
-        public async Task<IActionResult> GetUser()
+        public async Task<IActionResult> GetUser(Guid? userId)
         {
             try
             {
+                if (userId != null)
+                {
+                    var viewUser = await _db.Users.FirstOrDefaultAsync(i => i.Id == userId);
+                    return Ok(viewUser);
+                }
                 var token = this.HttpContext.Request.Headers.Authorization.ToString();
                 Guid id = JwtAuthorization.GetUserId(token, _config);
                 var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == id);
@@ -98,7 +103,7 @@ namespace Mechanic.Api.Controllers
         }
 
         [JwtRoleAuthorization(Role.Admin)]
-        [HttpPut("Delete")]
+        [HttpDelete("Delete")]
         public async Task<IActionResult> Delete(Guid userId)
         {
             try
