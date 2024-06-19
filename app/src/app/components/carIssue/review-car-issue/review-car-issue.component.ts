@@ -44,8 +44,7 @@ export class ReviewCarIssueComponent implements OnInit {
         this.category = JSON.parse(atob(value['category'])) as Category;
         this.price = parseInt(atob(value['price'])) as number;
         this.description = atob(value['description']) as string;
-        this.coAuthors = JSON.parse(atob(value['description'])) as string[];
-      console.log(this.description);
+        this.coAuthors = JSON.parse(atob(value['coAuthors'])) as string[];
       }
     })
   }
