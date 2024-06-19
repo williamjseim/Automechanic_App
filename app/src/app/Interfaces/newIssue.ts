@@ -6,5 +6,6 @@ export interface NewIssue {
     description: string;
     price: number;
     category: Category | null 
-
+    coAuthors: string[];
+    
 }

@@ -95,11 +95,11 @@ namespace Mechanic.Api.Controllers
             }
         }
 
-        [JwtRoleAuthorization(Role.Admin)]
+        [JwtTokenAuthorization]
         [HttpGet("GetAllUsers")]
         public async Task<IActionResult> GetAllUsers()
         {
-            throw new NotImplementedException();
+            return Forbid();
         }
 
         [JwtRoleAuthorization(Role.Admin)]

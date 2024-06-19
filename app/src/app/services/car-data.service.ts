@@ -57,8 +57,8 @@ export class CarDataService {
   // Creates a car issue
   // Parameters - carId, categoryId, price
   // body - description (description is appended to the body because it contains new lines, "\n")
-  CreateIssue(carId:string, categoryId:string | undefined | null, description:string, price:number){
-    return this.http.put(this.url+`/CreateCarIssue?carId=${carId}&categoryId=${categoryId}&price=${price}`, description);
+  CreateIssue(carId:string, categoryId:string | undefined | null, description:string, price:number, coAuthorNames:string[] = []){
+    return this.http.put(this.url+`/CreateCarIssue?carId=${carId}&categoryId=${categoryId}&description=${description}&price=${price}&coAuthorNames=${coAuthorNames}`,"");
   }
 
   GetUserIssues(startingIndex:number, amount:number, userId:string = "", make:string = "", model:string = "", plate:string = "", vin = "",) :Observable<any>{

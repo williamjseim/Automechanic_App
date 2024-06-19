@@ -61,13 +61,16 @@
                         placeholder=""></textarea>
                 </mat-form-field>
             </div>
+            <div *ngIf="coAuthors.length > 0" class="coAuthorsDiv">
+                <span *ngFor="let item of coAuthors; let i = index" (click)="RemoveUser(i)">{{item}}<mat-icon>close</mat-icon></span>
+            </div>
+            <input #UserAdder type="text" placeholder="CoAuthor">
+            <button (click)="AddUser(UserAdder.value)">Submit</button>
             <div class="navigation-button">
-
                 <button class="rounded-btn" type="submit">
                     <mat-icon aria-hidden="false" aria-label="Video Icon" fontIcon="arrow_forward">
                     </mat-icon>
                 </button>
-
             </div>
         </form>
     </div>

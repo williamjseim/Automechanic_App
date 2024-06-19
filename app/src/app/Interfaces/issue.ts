@@ -10,4 +10,5 @@ export interface Issue {
     price:number;
     creationTime:Date;
     category: Category
+    coAuthors?: User[];
 }

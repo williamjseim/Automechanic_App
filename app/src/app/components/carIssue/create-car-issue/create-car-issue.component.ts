@@ -43,6 +43,7 @@ export class CreateCarIssueComponent {
     price: new FormControl('', [Validators.required]),
     description: new FormControl('', [Validators.required]),
     searchPlate: new FormControl(''),
+    coAuthors: new FormControl<string[]>([]),
   });
 
   matcher = new MyErrorStateMatcher();
@@ -50,6 +51,7 @@ export class CreateCarIssueComponent {
   loadingCategories = false;
   cars: Car[] = [];
   categories: Category[] = [];
+  coAuthors:string[] = []
 
   constructor(
     private router: Router,
@@ -132,13 +134,25 @@ export class CreateCarIssueComponent {
       let category = JSON.stringify(this.carIssueForm.controls.category.getRawValue());
       let price = this.carIssueForm.controls.price.getRawValue();
       let description = this.carIssueForm.controls.description.getRawValue();
+      let coAuthors = JSON.stringify(this.carIssueForm.controls.coAuthors.getRawValue());
 
       this.router.navigate(['submit'], { relativeTo: this.route, queryParams: { 
         car: btoa(car),
         category: btoa(category),
         price: btoa(price!),
-        description: btoa(description!)
+        description: btoa(description!),
+        coAuthors: btoa(coAuthors),
       } });
     }
+  }
+
+  AddUser(username:string){
+    this.coAuthors.push(username);
+    this.carIssueForm.controls.coAuthors.reset(this.coAuthors)
+  }
+  
+  RemoveUser(index:number){
+    this.coAuthors = this.coAuthors.slice(index, 1)
+    this.carIssueForm.controls.coAuthors.reset(this.coAuthors)
   }
 }

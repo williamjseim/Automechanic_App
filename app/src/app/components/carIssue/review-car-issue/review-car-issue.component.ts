@@ -22,7 +22,8 @@ export class ReviewCarIssueComponent implements OnInit {
   car!: Car;
   category: Category | undefined;
   price: number | undefined;
-  description: string | undefined
+  description: string | undefined;
+  coAuthors: string[] | undefined;
   loading = false;
 
   constructor(
@@ -41,8 +42,9 @@ export class ReviewCarIssueComponent implements OnInit {
       next: (value) => {
         this.car = JSON.parse(atob(value['car'])) as Car;
         this.category = JSON.parse(atob(value['category'])) as Category;
-        this.price = parseInt(atob(value['price'])) as number
-        this.description = atob(value['description']) as string
+        this.price = parseInt(atob(value['price'])) as number;
+        this.description = atob(value['description']) as string;
+        this.coAuthors = JSON.parse(atob(value['description'])) as string[];
       console.log(this.description);
       }
     })
@@ -57,14 +59,15 @@ export class ReviewCarIssueComponent implements OnInit {
       car: btoa(car),
       category: btoa(category),
       price: btoa(this.price!.toString()),
-      description: btoa(this.description!)
+      description: btoa(this.description!),
+      coAuthors: btoa(JSON.stringify(this.coAuthors))
     }}); 
   }
 
   // Handle the accept action
   onAccept() {
     this.loading = true;
-    this.carService.CreateIssue(this.car.id, this.category?.id, this.description!, this.price!).subscribe({
+    this.carService.CreateIssue(this.car.id, this.category?.id, this.description!, this.price!, this.coAuthors).subscribe({
       next: (res) => { 
         this.loading = false;
         this.snackbar.open('Issue created', 'Close', { duration: 4000 });

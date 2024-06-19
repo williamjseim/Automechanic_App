@@ -3,6 +3,7 @@ using System;
 using Mechanic.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,29 +11,16 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Mechanic.Api.Migrations
 {
     [DbContext(typeof(MechanicDatabase))]
-    partial class MechanicDatabaseModelSnapshot : ModelSnapshot
+    [Migration("20240618063718_group")]
+    partial class group
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
-
-            modelBuilder.Entity("CarIssueUser", b =>
-                {
-                    b.Property<Guid>("CarIssueId")
-                        .HasColumnType("char(36)");
-
-                    b.Property<Guid>("CoAuthorsId")
-                        .HasColumnType("char(36)");
-
-                    b.HasKey("CarIssueId", "CoAuthorsId");
-
-                    b.HasIndex("CoAuthorsId");
-
-                    b.ToTable("CarIssueUser");
-                });
 
             modelBuilder.Entity("Mechanic.Api.Models.Car", b =>
                 {
@@ -129,6 +117,9 @@ namespace Mechanic.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<Guid?>("CarIssueId")
+                        .HasColumnType("char(36)");
+
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime(6)");
 
@@ -151,6 +142,8 @@ namespace Mechanic.Api.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CarIssueId");
 
                     b.ToTable("Us3r_Data");
                 });
@@ -179,21 +172,6 @@ namespace Mechanic.Api.Migrations
                     b.HasIndex("IssueId");
 
                     b.ToTable("Video_data");
-                });
-
-            modelBuilder.Entity("CarIssueUser", b =>
-                {
-                    b.HasOne("Mechanic.Api.Models.CarIssue", null)
-                        .WithMany()
-                        .HasForeignKey("CarIssueId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Mechanic.Api.Models.User", null)
-                        .WithMany()
-                        .HasForeignKey("CoAuthorsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
                 });
 
             modelBuilder.Entity("Mechanic.Api.Models.Car", b =>
@@ -232,6 +210,13 @@ namespace Mechanic.Api.Migrations
                     b.Navigation("Creator");
                 });
 
+            modelBuilder.Entity("Mechanic.Api.Models.User", b =>
+                {
+                    b.HasOne("Mechanic.Api.Models.CarIssue", null)
+                        .WithMany("CoAuthors")
+                        .HasForeignKey("CarIssueId");
+                });
+
             modelBuilder.Entity("Mechanic.Api.Models.Video", b =>
                 {
                     b.HasOne("Mechanic.Api.Models.CarIssue", "Issue")
@@ -241,6 +226,11 @@ namespace Mechanic.Api.Migrations
                         .IsRequired();
 
                     b.Navigation("Issue");
+                });
+
+            modelBuilder.Entity("Mechanic.Api.Models.CarIssue", b =>
+                {
+                    b.Navigation("CoAuthors");
                 });
 #pragma warning restore 612, 618
         }
