@@ -54,6 +54,9 @@ export class CarDataService {
     return this.http.get(this.url+`/GetIssue?issueId=${issueId}`);
   } 
 
+  // Creates a car issue
+  // Parameters - carId, categoryId, price
+  // body - description (description is appended to the body because it contains new lines, "\n")
   CreateIssue(carId:string, categoryId:string | undefined | null, description:string, price:number, coAuthorNames:string[] = []){
     return this.http.put(this.url+`/CreateCarIssue?carId=${carId}&categoryId=${categoryId}&description=${description}&price=${price}&coAuthorNames=${coAuthorNames}`,"");
   }

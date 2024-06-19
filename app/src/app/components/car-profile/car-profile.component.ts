@@ -13,7 +13,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-request-popup.component';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { SharedService } from '../../services/shared.service';
 import { TablePrefabComponent } from '../Prefabs/table-prefab/table-prefab.component';
 @Component({
   selector: 'app-car-profile',
@@ -23,7 +22,13 @@ import { TablePrefabComponent } from '../Prefabs/table-prefab/table-prefab.compo
   styleUrl: './car-profile.component.scss'
 })
 export class CarProfileComponent {
-  constructor(private route: ActivatedRoute, private router: Router, private carHttp:CarDataService, private sharedService: SharedService){}
+
+  constructor(
+    private route: ActivatedRoute, 
+    private router: Router, 
+    private carHttp:CarDataService
+  ){}
+  
   car?:Car;
   carNotFound:boolean = false;
   imagepath:string = "../../../assets/NoImage.avif";
