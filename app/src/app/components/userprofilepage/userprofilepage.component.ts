@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { NgIf, NgFor, DatePipe, JsonPipe } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -34,6 +34,9 @@ export class UserprofilepageComponent {
   usersIssues?:Array<Issue>;
 
   ngOnInit(){
+    let adminKey = localStorage.getItem('isadmin')
+    this.isAdmin = adminKey ? (JSON.parse(adminKey.toLowerCase()) === 'true') : false
+
     this.route.queryParams.subscribe({
       next:(value)=>{
         let userid = value['userId'];

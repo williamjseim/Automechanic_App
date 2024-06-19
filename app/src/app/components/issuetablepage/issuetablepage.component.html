@@ -1,8 +1,8 @@
 <app-table-prefab
 [FilterForm]="searchForm"
 [items]="issues"
-[headers]="['Creator', 'Price', 'Category']"
-[columns]="[rowtemplate1, rowtemplate2, rowtemplate3]"
+[headers]="['Creator', 'Price', 'Model', 'Category']"
+[columns]="[rowtemplate1, rowtemplate2, rowtemplate3, rowtemplate4]"
 [pages]="pages"
 [openButton]="openbtn"
 (Search)="Search()"
@@ -21,6 +21,12 @@
     <td>{{data.price}}</td>
 </ng-template>
 <ng-template #rowtemplate3 let-data="data">
+    <td>{{data.car?.make}}</td>
+</ng-template>
+<ng-template #rowtemplate4 let-data="data">
+    <td>{{data.category?.tag}}</td>
+</ng-template>
+<ng-template #rowtemplate5 let-data="data">
     <td>{{data.creationTime | date:'dd/MM/yyyy HH:mm'}}</td>
 </ng-template>
 <ng-template #openbtn let-data="data">

@@ -31,6 +31,7 @@ export class TablePrefabComponent {
   //table headers
   @Input({required:true}) headers?:string[];
   
+  @Input() hideDelete: boolean = false; 
   //emits a number when the page index is changed
   @Output() PageChange = new EventEmitter<number>();
   //changes how many items pr page
@@ -43,6 +44,8 @@ export class TablePrefabComponent {
   @Output() DeleteItem = new EventEmitter<number>();
   //emits signal that drawer was opened so data can be listed
   @Output() DrawerOpened = new EventEmitter<number>();
+  //emits signal that stops propagation
+  @Output() StopPropagation = new EventEmitter<Event>();
 
   @HostListener('window:orientationchange', ['$event'])
   onOrientationChange() {
@@ -72,6 +75,8 @@ export class TablePrefabComponent {
   //emits -1 if no drawer is open
   //-2 opens the mobiles search drawer
   SelectRow(index:number, event:Event){
+    this.StopPropagation.emit(event);
+    console.log(index);
     event.stopPropagation();
     if(this.drawer != null){
       if(this.SelectedRow == index || index == -1){
@@ -98,12 +103,12 @@ export class TablePrefabComponent {
   }
 
   JumpToPage(index:number){
-    console.log(index);
     if(index < 0){
       index = 0;
     }
     this.currentPage = index;
-    this.Search.emit();
+    // this.Search.emit();
+    this.PageChange.emit(index);
   }
 
   RemoveCar(event:number){

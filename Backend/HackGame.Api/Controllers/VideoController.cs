@@ -94,6 +94,7 @@ public class VideoController : Controller
 
     [JwtTokenAuthorization]
     [HttpPut("Upload")]
+    [RequestSizeLimit(524288000)] // 500 MB
     public async Task<IActionResult> UploadVideo(Guid issueId)
     {
         try

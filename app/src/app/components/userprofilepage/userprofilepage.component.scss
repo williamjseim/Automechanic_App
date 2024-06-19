@@ -6,13 +6,7 @@ body{
     width: 100vw;
     height: 50vh;
     display: flex;
-}
-
-.imgDiv{
-    height: 100%;
-    aspect-ratio: 1;
-    background-size: 100%;
-    background-repeat: round;
+    justify-content: space-evenly;
 }
 
 .infoDiv{

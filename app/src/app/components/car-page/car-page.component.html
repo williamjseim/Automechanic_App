@@ -34,8 +34,9 @@
         <app-table-prefab
         [columns]="[issueTemplate1, issueTemplate2, issueTemplate3]"
         [headers]="['Creator', 'Price', 'Creation date']"
-        [openButton]="openbtn"
-        [items]="data?.issues">
+        [openButton]="openIssueBtn"
+        [items]="data?.issues"
+        [hideDelete]="true">
         </app-table-prefab>
     </td>
 </ng-template>
@@ -48,7 +49,7 @@
 <ng-template #issueTemplate3 let-data="data">
     <td>{{data.creationTime | date:'dd/MM/yyyy HH:mm'}}</td>
 </ng-template>
-<ng-template #openbtn let-data="data">
+<ng-template #openIssueBtn let-data="data">
     <input type="button" [routerLink]="['/issueprofile']" [queryParams]="{issueId: data.id}" routerLinkActive="router-link-active"value="Open">
 </ng-template>
 <ng-template #description let-data="data">

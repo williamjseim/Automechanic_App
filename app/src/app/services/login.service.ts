@@ -20,6 +20,9 @@ export class LoginService {
   
   logout() {
     this.localStorageService.removeFromLocalStorage('token');
+    this.localStorageService.removeFromLocalStorage('isadmin');
+    this.localStorageService.removeFromLocalStorage('refreshtoken');
+
   }
   login(username:string, password:string): Observable<any> {
     return this.http.post(`${this.url}/Login?username=${username}&password=${password}`,null, { responseType: "text", observe: "response"});
