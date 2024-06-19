@@ -97,7 +97,32 @@ namespace Mechanic.Api.Controllers
                 return StatusCode(500, Json("Something went wrong"));
             }
         }
-
+        [JwtTokenAuthorization]
+        [HttpGet("IssuePages")]
+        public async Task<IActionResult> IssuePages(int amountPrPage, string make = "", string plate = "", string username = "", string category = "")
+        {
+            try
+            {
+                Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
+                float pages;
+                if (userRole == Role.Admin)
+                {
+                    pages = (float)_db.CarIssues.Where(i => i.Car.Make.Contains(make.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Creator.Username.Contains(username.ToLower()) && i.Category.tag.Contains(category.ToLower())).Count() / (float)amountPrPage;
+                }
+                else
+                {
+                    Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+                    pages = (float)_db.CarIssues.Where(i => i.Creator.Id == userId && i.Car.Make.Contains(make.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Creator.Username.Contains(username.ToLower()) && i.Category.tag.Contains(category.ToLower())).Count() / (float)amountPrPage;
+                }
+                var amount = (int)MathF.Ceiling(pages);
+                return Ok(amount);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(500, Json("Something went wrong"));
+            }
+        }
         [JwtTokenAuthorization]
         [HttpPut("CreateCar")]
         public async Task<IActionResult> CreateCar(string make, string model, string plate, string vinnr, string base64Image = "")
@@ -209,7 +234,7 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpGet("GetIssues")]
-        public async Task<IActionResult> GetIssues(int startingIndex = 0, int amount = 0, string creatorName = "", string plate = "", string make = "")
+        public async Task<IActionResult> GetIssues(int startingIndex = 0, int amount = 0, string creatorName = "", string plate = "", string make = "", string category = "")
         {
             try
             {
@@ -217,17 +242,12 @@ namespace Mechanic.Api.Controllers
                 CarIssue[] issues;
                 if(userRole == Role.Admin)
                 {
-                    issues = await _db.CarIssues.Include(i=>i.Creator).Where(i=>i.Creator.Username.Contains(creatorName) && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make)).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
+                    issues = await _db.CarIssues.Include(i=>i.Creator).Include(i => i.Car).Include(i => i.Category).Where(i=>i.Creator.Username.Contains(creatorName.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Car.Make.Contains(make.ToLower()) && i.Category!.tag.Contains(category.ToLower())).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
                 }
                 else
                 {
                     Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
-                    issues = await _db.CarIssues.Include(i => i.Creator).Where(i=>i.Creator.Id == userId && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make)).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
-                }
-
-                if (issues.Length <= 0)
-                {
-                    return NotFound("no issues found");
+                    issues = await _db.CarIssues.Include(i => i.Creator).Include(i => i.Car).Include(i => i.Category).Where(i=>i.Creator.Id == userId && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make)).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
                 }
 
                 return Ok(issues);
@@ -492,19 +512,13 @@ namespace Mechanic.Api.Controllers
                 new("backlights"),
                 new("frontlights"),
                 new("breaks"),
-                new("motor"),
+                new("engine"),
             };
             await _db.AddRangeAsync(carCategories);
-            int bobby = 0;
-            int lilly = 0;
             foreach (var item in cars)
             {
-                bobby++;
-                System.Console.WriteLine(bobby);
                 for (global::System.Int32 i = 0; i < 3; i++)
                 {
-                    lilly++;
-                    System.Console.WriteLine(lilly);
                     var issues = new CarIssue[]{
                         new(carCategories[0], item, user, "nothing", 500),
                         new(carCategories[1], item, user, "nothing", 500),

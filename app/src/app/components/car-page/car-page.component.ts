@@ -41,39 +41,21 @@ export class CarPageComponent {
   })
 
   //gets filtered cars from server
-  Search(){
+  Search(skipGetPages: boolean = false){
     let make = this.searchForm.controls.make.value;
     let model = this.searchForm.controls.model.value;
     let plate = this.searchForm.controls.plate.value;
     let vin = this.searchForm.controls.vinnr.value;
-    console.log(make, model, plate, vin);
+
     this.GetCarsHttp(make, model, plate, vin)
+    if (!skipGetPages)
+        this.GetCarPages(this.itemsPrPage, make, model, plate, vin);
     this.SelectedRow = -1;
   }
 
-  // stops click event from going to the parent of the element and either opens or closes a car row so some issues are visible
-  SelectRow(index:number, event:Event){
+  StopPropagation(event: Event) {
+    console.log("Stopped propagation");
     event.stopPropagation();
-    if(this.SelectedRow == index){
-      this.SelectedRow = -1;
-      return;
-    }
-    else{
-      if(this.cars![index].issues == null){
-        this.GetCarIssuesHttp(this.cars![index].id).subscribe({
-          next:(value)=>{
-            console.log(value);
-            if(value.status == 200){
-              this.cars![index].issues = value.body;
-            }
-            else{
-              this.cars![index].issues = [];
-            }
-        }
-      });
-      }
-      this.SelectedRow = index;
-    }
   }
 
   DrawerOpened(index:number){
@@ -131,11 +113,15 @@ export class CarPageComponent {
   }
 
   //gets how many pages of cars that are in the database
-  private GetCarPages(amountPrPage:number){
-    this.carHttp.GetPageAmount(amountPrPage).subscribe({next:(value)=>{
+  private GetCarPages(amountPrPage: number, make: string = "", model: string = "", plate: string = "", vin: string = ""){
+    this.carHttp.GetPageAmount(amountPrPage, make, model, plate, vin).subscribe({next:(value)=>{
       let asd = localStorage.getItem("isadmin") ?? "false";
       this.isAdmin = of(JSON.parse(asd) as boolean);
       this.pages = value;
+      if (this.currentPage >= this.pages) {
+        this.currentPage = 0;
+        this.Search(true);
+      }
     }});
   }
 

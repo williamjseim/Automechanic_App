@@ -1,42 +1,40 @@
 <app-delete-request-popup #Delete [hidden]="Delete.IsHidden" (Complete)="deleteUser($event)"></app-delete-request-popup>
 
-<div *ngIf="false" class="DeletionDiv">
-    <span>Write Delete to confirm deletion</span>
-    <!--<span *ngIf="deleteError != ''">{{deleteError}}</span>-->
-    <input #delete class="DeleteSpan" type="text" value="">
-    <span class="DeleteSpan">This action is permanent <br> and cannot be reversed</span>
-    <div>
-        <input class="DeletionBtn DeletionConfirmBtn" type="button" value="Confirm">
-        <input class="DeletionBtn DeletionCancelBtn" type="button" value="Cancel">
-    </div>
-</div>
 <body>
     <div #profileDiv class="profileDiv">
-        <div #imgDiv class="imgDiv" style="background-image: url('../../../assets/NoImage.avif');"></div>
-            <div #infoDiv class="infoDiv">
-                <mat-form-field appearance="outline">
-                    <mat-label>Username</mat-label>
-                    <input readonly [value]="user?.username" #makeInfo matInput>
-                </mat-form-field>
-                <mat-form-field appearance="outline">
-                    <mat-label>Role</mat-label>
-                    <input readonly [value]="user?.rolename" #makeInfo matInput>
-                </mat-form-field>
-                <button style="width: 100%; background-color: red;" class="btn" *ngIf="!isAdmin" (click)="Delete.Open(0)" mat-raised-button>Delete user</button>
+        <div #infoDiv class="infoDiv">
+            <mat-form-field appearance="outline">
+                <mat-label>Username</mat-label>
+                <input readonly [value]="user?.username" #makeInfo matInput>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+                <mat-label>Role</mat-label>
+                <input readonly [value]="user?.rolename" #makeInfo matInput>
+            </mat-form-field>
+
             </div>
+            <div *ngIf="isAdmin" class="infoDiv">
+            <button style="width: 100%; background-color: red;" class="btn" *ngIf="isAdmin" (click)="Delete.Open(0)"
+                mat-raised-button>Delete user</button>
         </div>
+    </div>
     <div #issueTable class="issueDiv">
         <table style="font-size: large; width: 100%;" class="issueTable">
             <thead>
                 <tr>
                     <td [colSpan]="5">
                         <form [formGroup]="searchForm" class="searchForm">
-                            <input [formControl]="searchForm.controls.make" placeholder="Make" #MakeFilter matInput value="" (keyup.enter)="Search()">
-                            <input [formControl]="searchForm.controls.model" placeholder="Model" #ModelFilter matInput value="" (keyup.enter)="Search()">
-                            <input [formControl]="searchForm.controls.plate" placeholder="Plate" #PlateFilter matInput value="" (keyup.enter)="Search()">
-                            <input [formControl]="searchForm.controls.vinnr" placeholder="Vin nr" #VinFilter matInput value="" (keyup.enter)="Search()">
+                            <input [formControl]="searchForm.controls.make" placeholder="Make" #MakeFilter matInput
+                                value="" (keyup.enter)="Search()">
+                            <input [formControl]="searchForm.controls.model" placeholder="Model" #ModelFilter matInput
+                                value="" (keyup.enter)="Search()">
+                            <input [formControl]="searchForm.controls.plate" placeholder="Plate" #PlateFilter matInput
+                                value="" (keyup.enter)="Search()">
+                            <input [formControl]="searchForm.controls.vinnr" placeholder="Vin nr" #VinFilter matInput
+                                value="" (keyup.enter)="Search()">
                             <button mat-raised-button (click)="Search()"><mat-icon>search</mat-icon></button>
-                            <button mat-raised-button (click)="RemoveFilters()"><mat-icon>filter_alt_off</mat-icon></button>
+                            <button mat-raised-button
+                                (click)="RemoveFilters()"><mat-icon>filter_alt_off</mat-icon></button>
                         </form>
                     </td>
                 </tr>
@@ -53,7 +51,8 @@
                     <td>{{item.creationTime | date:'dd/MM/yyyy HH:mm'}}</td>
                     <td>{{item.price}}</td>
                     <td class="ActionTd">
-                        <button class="EditButton" [routerLink]="['/issueprofile']" [queryParams]="{issueId: item.id}" routerLinkActive="router-link-active">Open</button>
+                        <button class="EditButton" [routerLink]="['/issueprofile']" [queryParams]="{issueId: item.id}"
+                            routerLinkActive="router-link-active">Open</button>
                         <button class="DeleteButton">Delete</button>
                     </td>
                 </tr>
