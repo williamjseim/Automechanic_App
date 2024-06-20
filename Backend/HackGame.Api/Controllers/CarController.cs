@@ -4,6 +4,7 @@ using Mechanic.Api.Data;
 using Microsoft.EntityFrameworkCore;
 using Mechanic.Api.Models;
 using Mechanic.Api.TokenAuthorization;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Mechanic.Api.Controllers
 {
@@ -218,7 +219,7 @@ namespace Mechanic.Api.Controllers
                 {
                     return NotFound("Issue not found");
                 }
-                if (userRole == Role.Admin || issue.Creator.Id == userId)
+                if (userRole == Role.Admin || issue.Creator.Id == userId || issue.CoAuthors.Any(i => i.Id == userId))
                 {
                     return Ok(issue);
                 }
@@ -247,7 +248,17 @@ namespace Mechanic.Api.Controllers
                 else
                 {
                     Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
-                    issues = await _db.CarIssues.Include(i => i.Creator).Include(i => i.Car).Include(i => i.Category).Where(i => i.Creator.Id == userId && i.Car.Plate.Contains(plate) && i.Car.Make.Contains(make)).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
+                    issues = await _db.CarIssues
+                    .Include(i => i.Creator)
+                    .Include(i => i.Car)
+                    .Include(i => i.Category)
+                    .Include(i => i.CoAuthors)
+                    .Where(i => (i.Creator.Id == userId || i.CoAuthors.Any(i => i.Id == userId)) && 
+                                i.Car.Plate.Contains(plate) && 
+                                i.Car.Make.Contains(make))
+                    .Skip(startingIndex * amount)
+                    .Take(amount)
+                    .ToArrayAsync();
                 }
 
                 return Ok(issues);
@@ -342,12 +353,15 @@ namespace Mechanic.Api.Controllers
                 //     return NotFound("Category not found");
                 // }
                 var users = new List<User>();
-                foreach (var name in coAuthorNames.Split(","))
+                if (!coAuthorNames.IsNullOrEmpty())
                 {
-                    var coAuthor = await _db.Users.FirstOrDefaultAsync(u => u.Username == name);
-                    if (coAuthor != null)
+                    foreach (var name in coAuthorNames.Split(","))
                     {
-                        users.Add(coAuthor);
+                        var coAuthor = await _db.Users.FirstOrDefaultAsync(u => u.Username == name);
+                        if (coAuthor != null)
+                        {
+                            users.Add(coAuthor);
+                        }
                     }
                 }
 

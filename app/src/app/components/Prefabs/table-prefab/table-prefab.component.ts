@@ -76,7 +76,6 @@ export class TablePrefabComponent {
   //-2 opens the mobiles search drawer
   SelectRow(index:number, event:Event){
     this.StopPropagation.emit(event);
-    console.log(index);
     event.stopPropagation();
     if(this.drawer != null){
       if(this.SelectedRow == index || index == -1){
