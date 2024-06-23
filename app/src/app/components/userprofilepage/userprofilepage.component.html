@@ -12,10 +12,12 @@
                 <input readonly [value]="user?.rolename" #makeInfo matInput>
             </mat-form-field>
 
-            </div>
-            <div *ngIf="isAdmin" class="infoDiv">
-            <button style="width: 100%; background-color: red;" class="btn" *ngIf="isAdmin" (click)="Delete.Open(0)"
-                mat-raised-button>Delete user</button>
+        </div>
+        <div *ngIf="isAdmin" class="infoDiv">
+            <button style="width: 100%; background-color: greenyellow;" class="btn" (click)="CreateUser()"
+                mat-raised-button>Create user</button>      
+            <button style="width: 100%; background-color: red;" class="btn" (click)="DeleteUser()"
+                mat-raised-button>Manage users</button>
         </div>
     </div>
     <div #issueTable class="issueDiv">

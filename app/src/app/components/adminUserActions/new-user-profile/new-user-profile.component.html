@@ -1,0 +1,32 @@
+<body>
+    @if (loading) {
+        <div class="overlay">
+            <mat-spinner></mat-spinner>
+        </div>
+    }
+    <span>{{errortext}}</span>
+    <form [formGroup]="userForm">
+        <mat-checkbox [formControl]="userForm.controls.isAdminRole">
+            Admin Role
+        </mat-checkbox>
+        <mat-form-field appearance="outline" class="matField">
+            <mat-label>Username</mat-label>
+            <input [formControl]="userForm.controls.username" #make required matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="matField">
+            <mat-label>Email</mat-label>
+            <input [formControl]="userForm.controls.email" #model required matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="matField">
+            <mat-label>Password</mat-label>
+            <input [formControl]="userForm.controls.password" #plate required matInput>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="matField">
+            <mat-label>Repeat Password</mat-label>
+            <input [formControl]="userForm.controls.repeatedPassword" equired matInput>
+        </mat-form-field>
+        <button class="btn" mat-raised-button color="success" (click)="CreateUser()" [disabled]="loading">
+            Submit
+        </button>
+    </form>
+</body>

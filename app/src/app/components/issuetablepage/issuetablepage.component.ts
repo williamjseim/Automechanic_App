@@ -60,7 +60,12 @@ export class IssuetablepageComponent {
     this.searchForm.controls.category.reset("");
     this.Search();
   }
-  RemoveIssue(event:number){}
+  RemoveIssue(event:number){
+    let issue = this.issues![event];
+    this.carhttp.DeleteIssue(issue.id).subscribe({
+      next: (res) => { this.issues?.splice(event, 1) }
+    })
+  }
 
   ChangeNumberPrPage(event:number){
     this.itemprpage = event;

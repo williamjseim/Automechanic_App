@@ -1,0 +1,19 @@
+<app-table-prefab
+    [items]="users"
+    [pages]="pages"
+    [columns]="[rowtemplate1]"
+    [headers]="['Username']"
+    [openButton]="openbtn"
+    (PageChange)="JumpToPage($event)"
+    (DeleteItem)="deleteUser($event)"
+    >
+</app-table-prefab>
+
+<ng-template #rowtemplate1 let-data="data">
+    <td>{{data.username}}</td>
+</ng-template>
+
+<ng-template #openbtn let-data="data">
+    <input type="button" [routerLink]="['/profile']" [queryParams]="{userId: data.id}"
+        routerLinkActive="router-link-active" value="Open">
+</ng-template>

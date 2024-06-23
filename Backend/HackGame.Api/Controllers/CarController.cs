@@ -243,7 +243,17 @@ namespace Mechanic.Api.Controllers
                 CarIssue[] issues;
                 if (userRole == Role.Admin)
                 {
-                    issues = await _db.CarIssues.Include(i => i.Creator).Include(i => i.Car).Include(i => i.Category).Where(i => i.Creator.Username.Contains(creatorName.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Car.Make.Contains(make.ToLower()) && i.Category!.tag.Contains(category.ToLower())).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
+                    issues = await _db.CarIssues
+                    .Include(i => i.Creator)
+                    .Include(i => i.Car)
+                    .Include(i => i.Category)
+                    .Where(i => i.Creator.Username.Contains(creatorName.ToLower()) &&
+                            i.Car.Plate.Contains(plate.ToLower()) &&
+                            i.Car.Make.Contains(make.ToLower()) && 
+                            i.Category!.tag.Contains(category.ToLower()))
+                    .Skip(startingIndex * amount)
+                    .Take(amount)
+                    .ToArrayAsync();
                 }
                 else
                 {
@@ -254,8 +264,10 @@ namespace Mechanic.Api.Controllers
                     .Include(i => i.Category)
                     .Include(i => i.CoAuthors)
                     .Where(i => (i.Creator.Id == userId || i.CoAuthors.Any(i => i.Id == userId)) && 
-                                i.Car.Plate.Contains(plate) && 
-                                i.Car.Make.Contains(make))
+                            i.Creator.Username.Contains(creatorName.ToLower()) &&
+                            i.Car.Plate.Contains(plate) && 
+                            i.Car.Make.Contains(make) &&
+                            i.Category!.tag.Contains(category.ToLower()))
                     .Skip(startingIndex * amount)
                     .Take(amount)
                     .ToArrayAsync();
