@@ -1,7 +1,7 @@
 import { HttpErrorResponse, HttpEvent, HttpInterceptorFn, HttpResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { map, of } from 'rxjs';
+import { map, of, throwError } from 'rxjs';
 import { catchError } from 'rxjs';
 
 export const accessDeniedInterceptor: HttpInterceptorFn = (req, next) => {
@@ -21,7 +21,7 @@ export const accessDeniedInterceptor: HttpInterceptorFn = (req, next) => {
         localStorage.clear();
         router.navigate(['login']);
       }
-      return of();
+      return throwError(() => err);
     })
   );
 };

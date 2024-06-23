@@ -1,0 +1,34 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-top: 5%;
+
+    span {
+        font-size: xx-large;
+        color: red;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        padding: 2vw;
+    }
+}
+
+.btn {
+    min-width: 300px;
+    width: 20vw;
+}
+
+.mat-success {
+    background-color: limegreen;
+    color: #fff;
+}
+
+.matField {
+    text-align: center;
+    min-width: 300px;
+    width: 20vw;
+}
