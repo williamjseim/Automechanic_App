@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NgIf, NgFor, DatePipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { NgIf, NgFor, DatePipe, JsonPipe } from '@angular/common';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -15,6 +15,9 @@ import { LoginService } from '../../services/login.service';
 import { CarPageComponent } from '../car-page/car-page.component';
 import { IssuetablepageComponent } from '../issuetablepage/issuetablepage.component';
 import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-request-popup.component';
+import { MatDialog }  from '@angular/material/dialog'
+import { NewUserProfileComponent } from '../adminUserActions/new-user-profile/new-user-profile.component';
+import { DeleteUserComponent } from '../adminUserActions/delete-user/delete-user.component';
 @Component({
   selector: 'app-userprofilepage',
   standalone: true,
@@ -28,12 +31,18 @@ export class UserprofilepageComponent {
     private carHttp:CarDataService, 
     private userHttp:LoginService,
     ){}
+
+  readonly dialog = inject(MatDialog);
+
   user?:User;
   issues:Array<Issue> = [];
   isAdmin:boolean = false;
   usersIssues?:Array<Issue>;
 
   ngOnInit(){
+    let adminKey = localStorage.getItem('isadmin')
+    this.isAdmin = adminKey ? (JSON.parse(adminKey.toLowerCase()) === 'true') : false
+
     this.route.queryParams.subscribe({
       next:(value)=>{
         let userid = value['userId'];
@@ -93,7 +102,12 @@ export class UserprofilepageComponent {
       }
     })
   }
-
+  CreateUser() {
+    this.dialog.open(NewUserProfileComponent)
+  }
+  DeleteUser() {
+    this.dialog.open(DeleteUserComponent)
+  }
   deleteUser(result: number) {
     this.userHttp.deleteUser(this.user!.id).subscribe({
       next: (res) => {

@@ -26,7 +26,7 @@
                     <div class="openBtn" *ngIf="openButton">
                         <ng-container [ngTemplateOutlet]="openButton" [ngTemplateOutletContext]="{data:item}"></ng-container>
                     </div>
-                    <input type="button" class="deleteBtn" (click)="Delete.Open(row)" value="Delete">
+                    <input type="button" *ngIf="!hideDelete" class="deleteBtn" (click)="Delete.Open(row)" value="Delete">
                 </td>
                 <div class="mobileDrawer" *ngIf="drawer && SelectedRow == row">
                     <div class="drawerTitle"><span>{{drawerTitle}}</span></div>
@@ -59,7 +59,7 @@
                 <th class="header">Actions</th>
             </thead>
             <tbody (click)="SelectRow(row, $event)" [class]="[row%2==0 ? 'EvenTBody':'OddTBody']" *ngFor="let item of items; let row = index">
-                <tr  style="border-bottom: 1px solid black;" *ngIf="templates">
+                <tr  style="border-bottom: 1px solid black;"  *ngIf="templates">
                     @for (template of templates; track $index) {
                         <ng-container [ngTemplateOutlet]="template" [ngTemplateOutletContext]="{data:item}"></ng-container>
                     }
@@ -68,7 +68,8 @@
                         <div class="openBtn" *ngIf="openButton">
                             <ng-container [ngTemplateOutlet]="openButton" [ngTemplateOutletContext]="{data:item}"></ng-container>
                         </div>
-                        <input type="button" class="DeleteButton" (click)="Delete.Open(row)" value="Delete">
+
+                        <input type="button" *ngIf="!hideDelete" class="DeleteButton" (click)="Delete.Open(row)" value="Delete">
                     </td>
                 </tr>
                 <tr class="drawerRow" *ngIf="drawer && SelectedRow == row">

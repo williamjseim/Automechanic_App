@@ -91,7 +91,7 @@ export class CreateCarIssueComponent {
         const category = value['category'];
         const price = value['price'];
         const description = value['description'];
-
+        const coAuthors = value['coAuthors']
         if (carId) {
           this.patchCarSelect(carId);
         }
@@ -103,7 +103,11 @@ export class CreateCarIssueComponent {
           this.carIssueForm.controls.price.setValue(atob(price));
         if (description) 
           this.carIssueForm.controls.description.setValue(atob(description));
-
+        if(coAuthors) {
+          let parsedCoAuthors = JSON.parse(atob(coAuthors));
+          this.carIssueForm.controls.coAuthors.patchValue(parsedCoAuthors);
+          this.coAuthors = parsedCoAuthors;
+        }
       },
       error: (error) => {
         console.error(error);
@@ -146,13 +150,17 @@ export class CreateCarIssueComponent {
     }
   }
 
+  // TODO: Verify user existence with database
+  // Entered username => 
+  // check if username exist on database =>
+  // if exist, add username to array
   AddUser(username:string){
     this.coAuthors.push(username);
     this.carIssueForm.controls.coAuthors.reset(this.coAuthors)
   }
   
   RemoveUser(index:number){
-    this.coAuthors = this.coAuthors.slice(index, 1)
+    this.coAuthors.splice(index, 1);
     this.carIssueForm.controls.coAuthors.reset(this.coAuthors)
   }
 }

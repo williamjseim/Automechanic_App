@@ -1,36 +1,41 @@
-.DeletionDiv{
+.DeletionDiv {
     @media screen and (max-width: 400px) {
         top: 5vh;
         left: 5vw;
         width: 90vw;
-        .DeleteSpan{
-        color: red;
-        font-size: xx-Large;
-        width: 90%;
-        font-size: large;
+
+        .DeleteSpan {
+            color: red;
+            font-size: xx-Large;
+            width: 90%;
+            font-size: large;
         }
     }
+
     @media screen and (min-width:401px) {
-    left: 30vw;
-    top: 30vh;
-    width: 40vw;
-    font-size: x-large;
-        .DeleteSpan{
-        color: red;
-        font-size: xx-Large;
+        left: 30vw;
+        top: 30vh;
+        width: 40vw;
+        font-size: x-large;
+
+        .DeleteSpan {
+            color: red;
+            font-size: xx-Large;
         }
     }
-    div{
-    display: flex;
-    justify-content: space-evenly;
-    width: 100%;
+
+    div {
+        display: flex;
+        justify-content: space-evenly;
+        width: 100%;
     }
-                    text-align: center;
+
+    text-align: center;
     background-color: lightgray;
     border-radius: 10px;
     padding-top: 1%;
     padding-bottom: 1%;
-    position: absolute;
+    position: fixed;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -39,27 +44,27 @@
     z-index: 5;
 }
 
-@mixin baseBtn{
+@mixin baseBtn {
     width: 40%;
     border-radius: 5px;
     height: 40px;
     border: 0;
 }
 
-.DeletionConfirmBtn{
+.DeletionConfirmBtn {
     @include baseBtn();
     background-color: red;
 }
 
-.DeletionConfirmBtn:active{
+.DeletionConfirmBtn:active {
     box-shadow: 0px 0px 0px transparent !important;
 }
 
-.DeletionCancelBtn{
+.DeletionCancelBtn {
     @include baseBtn();
     background-color: limegreen;
 }
 
-.DeletionCancelBtn:active{
+.DeletionCancelBtn:active {
     box-shadow: 0px 0px 0px transparent !important;
 }

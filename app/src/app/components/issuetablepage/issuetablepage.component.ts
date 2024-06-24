@@ -18,7 +18,7 @@ import { TablePrefabComponent } from '../Prefabs/table-prefab/table-prefab.compo
 })
 export class IssuetablepageComponent {
   constructor(private carhttp:CarDataService){}
-  pages:number = 1;
+  pages:number = 0;
   currentPage:number = 0;
 
 
@@ -26,6 +26,7 @@ export class IssuetablepageComponent {
   itemprpage = 10;
 
   ngOnInit(){
+    this.GetIssuePages(this.itemprpage);
     this.RemoveFilters();
   }
 
@@ -34,39 +35,37 @@ export class IssuetablepageComponent {
   }
 
   searchForm = new FormGroup ({
-    username: new FormControl(),
     make: new FormControl(),
     plate: new FormControl(),
+    username: new FormControl(),
+    category: new FormControl(),
   })
 
   SelectRow(index:number, event:Event){}
 
-  Search(){
-    let username = this.searchForm.controls.username.value;
+  Search(skipGetPages: boolean = false){
+    let category = this.searchForm.controls.category.value;
     let make = this.searchForm.controls.make.value;
     let plate = this.searchForm.controls.plate.value;
-    this.carhttp.GetIssues(this.currentPage, this.itemprpage, username, plate, make).subscribe({
-      next:(value)=>{
-        if(value.status == 200){
-          this.issues = value.body;
-        }
-        else{
-          this.issues = [];
-        }
-      },
-      error:(err)=>{
-        this.issues = [];
-      }
-    })
+    let username = this.searchForm.controls.username.value;
+    this.GetIssuesHttp(category, make, plate, username);
+    if(!skipGetPages)
+        this.GetIssuePages(this.itemprpage, category, make, plate, username);
   }
 
   RemoveFilters(){
     this.searchForm.controls.make.reset("");
     this.searchForm.controls.plate.reset("");
     this.searchForm.controls.username.reset("");
+    this.searchForm.controls.category.reset("");
     this.Search();
   }
-  RemoveIssue(event:number){}
+  RemoveIssue(event:number){
+    let issue = this.issues![event];
+    this.carhttp.DeleteIssue(issue.id).subscribe({
+      next: (res) => { this.issues?.splice(event, 1) }
+    })
+  }
 
   ChangeNumberPrPage(event:number){
     this.itemprpage = event;
@@ -75,7 +74,19 @@ export class IssuetablepageComponent {
     this.Search();
   }
 
-  JumpToPage(index:number){
+  GetIssuesHttp(category: string  = "", make: string = "", plate: string = "", username: string = "") {
+    this.carhttp.GetIssues(this.currentPage, this.itemprpage, category, make, plate, username).subscribe({
+      next: (value) => {
+        if (value.status == 200) {
+          this.issues = value.body;
+        }
+        else {
+          this.issues = [];
+        }
+      },
+    });
+  }
+  JumpToPage(index:number) {
     if(index < 0){
       index = 0;
     }
@@ -83,7 +94,15 @@ export class IssuetablepageComponent {
     this.Search();
   }
 
-  GetIssuePages(itemprpage:number){
-
+  GetIssuePages(itemprpage: number, username: string = "", make: string = "", plate: string = "", category: string = "" ){
+     this.carhttp.GetIssuePageAmount(itemprpage, username, make, plate, category).subscribe({
+      next: (res) => {
+        this.pages = res
+        if (this.currentPage >= this.pages) {
+          this.currentPage = 0;
+          this.Search(true);
+        }
+      },
+     });
   }
 }

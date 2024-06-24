@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable } from 'rxjs';
+import { Observable, delay } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
 import { environment } from '../../environments/environment';
 @Injectable({
@@ -20,6 +20,9 @@ export class LoginService {
   
   logout() {
     this.localStorageService.removeFromLocalStorage('token');
+    this.localStorageService.removeFromLocalStorage('isadmin');
+    this.localStorageService.removeFromLocalStorage('refreshtoken');
+
   }
   login(username:string, password:string): Observable<any> {
     return this.http.post(`${this.url}/Login?username=${username}&password=${password}`,null, { responseType: "text", observe: "response"});
@@ -36,5 +39,15 @@ export class LoginService {
   deleteUser(userId: string): Observable<any> {
     return this.http.delete(`${this.url}/delete?userid=${userId}`);
   }
+
+  createUser(username: string, email: string, password: string, role: number) {
+    return this.http.post(`${this.url}/Register?username=${username}&email=${email}&password=${password}&role=${role}`, null, { responseType: "text", observe: "response"});
+  }
+  getAllUsers(page: number, amount: number): Observable<any> {
+    return this.http.get(`${this.url}/getallusers?startingIndex=${page}&amount=${amount}`);
+  }
+  getUserPages(amountPrPage: number): Observable<any> {
+    return this.http.get(`${this.url}/userpages?amountPrPage=${amountPrPage}`);
+  } 
 
 }

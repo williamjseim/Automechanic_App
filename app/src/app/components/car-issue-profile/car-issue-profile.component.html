@@ -5,7 +5,11 @@
         <mat-spinner></mat-spinner>
     </div>
     }
+
     @else {
+
+    <div *ngIf="uploadingVideo" class="overlay"><mat-spinner></mat-spinner></div>
+    
     <div class="container">
         <div class="car-detail-section">
             <div class="car-detail">
@@ -31,11 +35,12 @@
         </div>
 
         <div class="video-section">
-            <h2>Video(s)</h2>
+            <h2>Video</h2>
             @if (!loadingVideo) {
             @if (videoNotFound) {
             Not Found.
-            <app-video-capture [issueId]="issue?.id" (uploadStatus)="handleVideoUpload($event)"></app-video-capture>
+            <app-video-capture [issueId]="issue?.id" (uploadStatus)="handleVideoUpload($event)"
+                (videoUploadStart)="videoStartUpload()"></app-video-capture>
             }
             @else {
             <div class="videos">
@@ -71,6 +76,9 @@
                 </mat-form-field>
             </div>
         </div>
+                <div *ngIf="issue?.coAuthors?.length! > 0" class="coAuthorsDiv">
+                    <span *ngFor="let item of issue?.coAuthors; let i = index">{{item.username}}</span>
+                </div>
         <div class="button-section">
             <button [routerLink]="'/cars'" routerLinkActive="router-link-active" class="action-button">Gå
                 Back</button>

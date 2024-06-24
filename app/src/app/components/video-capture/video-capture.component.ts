@@ -16,6 +16,9 @@ import { VideoApiService } from '../../services/video-api.service';
 export class VideoCaptureComponent {
 
   @Input() issueId?: string;
+
+  @Output() videoUploadStart = new EventEmitter<boolean>();
+
   @Output() uploadStatus = new EventEmitter<{ success: boolean, message: string }>();
   videoFile!: File;
 
@@ -60,6 +63,8 @@ export class VideoCaptureComponent {
     }
     const formData = new FormData();
     formData.append('video', this.videoFile);
+
+    this.videoUploadStart.emit();
 
     this.videoHttp.uploadVideo(this.issueId ,formData).subscribe({
       next: (res) => {

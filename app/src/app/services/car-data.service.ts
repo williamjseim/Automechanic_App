@@ -18,15 +18,15 @@ export class CarDataService {
     return this.http.get(this.url + `/CarPages?amountPrPage=${amountPrPage}&make=${make}&model=${model}&plate=${plate}&vin=${vin}`);
   }
 
-  GetIssuePageAmount(amountPrPage: number, username: string = "", make: string = "", plate: string = "", category: string = ""): Observable<any> {
-    return this.http.get(this.url + `/IssuePages?amountPrPage=${amountPrPage}&username=${username}&make=${make}&plate=${plate}&category=${category}`);
+  GetIssuePageAmount(amountPrPage: number, category: string = "", make: string = "", plate: string = "", creatorName: string = ""): Observable<any> {
+    return this.http.get(this.url + `/IssuePages?amountPrPage=${amountPrPage}&username=${creatorName}&make=${make}&plate=${plate}&category=${category}`);
   }
 
   //Amount is the amount of car rows pr page
   GetCars(page: number, amount: number, make: string = "", model: string = "", plate: string = "", vin: string = ""): Observable<any> {
     return this.http.get<Car[]>(this.url + `/GetCars?startingIndex=${page}&amount=${amount}&make=${make}&model=${model}&plate=${plate}&vin=${vin}`, { responseType: "json" })};
 
-  GetIssues(startingIndex:number, amount:number, creatorName:string = "", plate:string = "", make:string = "", category:string=""):Observable<any>{
+  GetIssues(startingIndex: number, amount: number, category: string = "", make: string = "", plate: string = "", creatorName:string=""):Observable<any>{
     return this.http.get(this.url+`/GetIssues?startingIndex=${startingIndex}&amount=${amount}&creatorName=${creatorName}&plate=${plate}&make=${make}&category=${category}`, {observe: "response"});
   }
   
@@ -58,7 +58,7 @@ export class CarDataService {
   // Parameters - carId, categoryId, price
   // body - description (description is appended to the body because it contains new lines, "\n")
   CreateIssue(carId:string, categoryId:string | undefined | null, description:string, price:number, coAuthorNames:string[] = []){
-    return this.http.put(this.url+`/CreateCarIssue?carId=${carId}&categoryId=${categoryId}&description=${description}&price=${price}&coAuthorNames=${coAuthorNames}`,"");
+    return this.http.put(this.url+`/CreateCarIssue?carId=${carId}&categoryId=${categoryId}&price=${price}&coAuthorNames=${coAuthorNames}`, description);
   }
 
   GetUserIssues(startingIndex:number, amount:number, userId:string = "", make:string = "", model:string = "", plate:string = "", vin = "",) :Observable<any>{

@@ -51,7 +51,9 @@
                 <textarea matInput readonly="true" [value]="description"></textarea>
             </mat-form-field>
         </div>
-
+        <div *ngIf="coAuthors!.length > 0" class="coAuthorsDiv">
+            <span *ngFor="let item of coAuthors; let i = index">{{item}}</span>
+        </div>
         <div class="action-buttons">
             <button class="rounded-btn" (click)="onCancel()">
                 <mat-icon aria-hidden="false" aria-label="Video Icon" fontIcon="arrow_back">

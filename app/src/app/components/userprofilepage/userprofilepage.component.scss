@@ -6,13 +6,7 @@ body{
     width: 100vw;
     height: 50vh;
     display: flex;
-}
-
-.imgDiv{
-    height: 100%;
-    aspect-ratio: 1;
-    background-size: 100%;
-    background-repeat: round;
+    justify-content: space-evenly;
 }
 
 .infoDiv{
@@ -24,9 +18,12 @@ body{
     align-items:flex-start;
     flex-wrap: wrap;
 }
-
+.admin-action-btn {
+    margin: 1vw;
+}
 .btn{
     flex-grow: 0;
+    margin: 1vw;
 }
 
 .even{

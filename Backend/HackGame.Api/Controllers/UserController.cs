@@ -50,7 +50,7 @@ namespace Mechanic.Api.Controllers
             }
         }
 
-        [HttpPut("Register")]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register(string username, string email, string password, int role = 0)
         {
             try
@@ -95,11 +95,38 @@ namespace Mechanic.Api.Controllers
             }
         }
 
-        [JwtTokenAuthorization]
+        [JwtRoleAuthorization(Role.Admin)]
         [HttpGet("GetAllUsers")]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsers(int startingIndex, int amount)
         {
-            return Forbid();
+            try
+            {
+                var users = await _db.Users.Skip(startingIndex * amount).Take(amount).ToListAsync();
+
+                return Ok(users);
+            }
+            catch 
+            {
+                return StatusCode(500, " Something went wrong");
+            }
+        }
+
+        [JwtRoleAuthorization(Role.Admin)]
+        [HttpGet("UserPages")]
+        public async Task<IActionResult> UserPages(int amountPrPage)
+        {
+            try
+            {
+                float pages = (float)_db.Users.Count() / (float)amountPrPage;
+
+                int amount = (int)MathF.Ceiling(pages);
+                return Ok(amount);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+                return StatusCode(500, Json("Something went wrong"));
+            }
         }
 
         [JwtRoleAuthorization(Role.Admin)]
@@ -110,7 +137,7 @@ namespace Mechanic.Api.Controllers
             {
                 await _db.Users.Where(i => i.Id == userId).ExecuteDeleteAsync();
                 await _db.SaveChangesAsync();
-                return Ok("User deleted");
+                return Ok(Json("Deletion successful"));
             }
             catch
             {

@@ -31,6 +31,7 @@ export class CarIssueProfileComponent implements OnInit {
   video?: Video[]; 
   videos: string[] = [];
   loading: boolean = false;
+  uploadingVideo: boolean = false;
   loadingVideo: boolean = false;
   videoNotFound: boolean = false;
   issueNotFound: boolean = false;
@@ -105,8 +106,13 @@ createVideoObject() {
   });
   }
 
+  videoStartUpload() {
+    this.uploadingVideo = true;
+  }
+
   handleVideoUpload(event: { success: boolean, message: string }) {
     if (event.success) {
+      this.uploadingVideo = false;
       this.getVideo(this.issue?.id!);
     }
     else {
