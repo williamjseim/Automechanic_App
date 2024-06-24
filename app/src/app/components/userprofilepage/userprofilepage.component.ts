@@ -106,7 +106,9 @@ export class UserprofilepageComponent {
     this.dialog.open(NewUserProfileComponent)
   }
   DeleteUser() {
-    this.dialog.open(DeleteUserComponent)
+    this.dialog.open(DeleteUserComponent, { 
+      width: '75vh'
+    })
   }
   deleteUser(result: number) {
     this.userHttp.deleteUser(this.user!.id).subscribe({

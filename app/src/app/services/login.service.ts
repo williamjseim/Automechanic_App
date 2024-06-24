@@ -43,8 +43,8 @@ export class LoginService {
   createUser(username: string, email: string, password: string, role: number) {
     return this.http.post(`${this.url}/Register?username=${username}&email=${email}&password=${password}&role=${role}`, null, { responseType: "text", observe: "response"});
   }
-  getAllUsers(page: number, amount: number): Observable<any> {
-    return this.http.get(`${this.url}/getallusers?startingIndex=${page}&amount=${amount}`);
+  getAllUsers(page: number, amount: number, username: string = ""): Observable<any> {
+    return this.http.get(`${this.url}/getallusers?startingIndex=${page}&amount=${amount}&username=${username}`);
   }
   getUserPages(amountPrPage: number): Observable<any> {
     return this.http.get(`${this.url}/userpages?amountPrPage=${amountPrPage}`);

@@ -4,8 +4,13 @@
     [columns]="[rowtemplate1]"
     [headers]="['Username']"
     [openButton]="openbtn"
+    [FilterForm]="searchForm"
+    (RemoveFilter)="RemoveFilters()"
     (PageChange)="JumpToPage($event)"
     (DeleteItem)="deleteUser($event)"
+    (Search)="Search($event)"
+    [drawer]="drawerData"
+
     >
 </app-table-prefab>
 
@@ -16,4 +21,11 @@
 <ng-template #openbtn let-data="data">
     <input type="button" [routerLink]="['/profile']" [queryParams]="{userId: data.id}"
         routerLinkActive="router-link-active" value="Open">
+</ng-template>
+
+<ng-template #drawerData let-data="data">
+    <!-- <td [colSpan]="6">
+        <textarea (click)="$event.stopPropagation()" style="width: 100%; height: auto; border: 0; resize: none;"
+            readonly [value]="data.email"></textarea>
+    </td> -->
 </ng-template>

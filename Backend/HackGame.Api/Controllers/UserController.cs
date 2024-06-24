@@ -97,11 +97,11 @@ namespace Mechanic.Api.Controllers
 
         [JwtRoleAuthorization(Role.Admin)]
         [HttpGet("GetAllUsers")]
-        public async Task<IActionResult> GetAllUsers(int startingIndex, int amount)
+        public async Task<IActionResult> GetAllUsers(int startingIndex, int amount, string username = "")
         {
             try
             {
-                var users = await _db.Users.Skip(startingIndex * amount).Take(amount).ToListAsync();
+                var users = await _db.Users.Where(i => i.Username.Contains(username ?? "")).Skip(startingIndex * amount).Take(amount).ToListAsync();
 
                 return Ok(users);
             }

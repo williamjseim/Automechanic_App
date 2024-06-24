@@ -3,6 +3,7 @@ import { TablePrefabComponent } from '../../Prefabs/table-prefab/table-prefab.co
 import { LoginService } from '../../../services/login.service';
 import { User } from '../../../Interfaces/user';
 import { RouterLink } from '@angular/router';
+import { FormGroup, FormControl } from '@angular/forms';
 @Component({
   selector: 'app-delete-user',
   standalone: true,
@@ -15,17 +16,22 @@ export class DeleteUserComponent {
   pages: number = 0;
   currentPage: number = 0;
   itemsPrPage: number = 5;
+
+  searchForm = new FormGroup({
+    username: new FormControl(),
+  });
+  
   constructor(
     private userHttp: LoginService
   ) {}
 
   ngOnInit(): void {
-    this.getAllUsers();
+    this.RemoveFilters();
     this.getUserPages();
   }
 
-  getAllUsers() {
-    this.userHttp.getAllUsers(this.currentPage, this.itemsPrPage).subscribe({
+  getAllUsers(username: string = "") {
+    this.userHttp.getAllUsers(this.currentPage, this.itemsPrPage, username).subscribe({
       next: (res) => {
         this.users = res;
       },
@@ -34,12 +40,26 @@ export class DeleteUserComponent {
       }
     });
   }
+
+  //gets filtered cars from server
+  Search(skipGetPages: boolean = false) {
+    let username = this.searchForm.controls.username.value;
+
+    this.getAllUsers(username)
+    if (!skipGetPages)
+      this.getUserPages();
+  }
+
   JumpToPage(index: number) {
     if (index < 0) {
       index = 0;
     }
     this.currentPage = index;
     this.getAllUsers();
+  }
+  RemoveFilters() {
+    this.searchForm.controls.username.reset("");
+    this.Search();
   }
 
   getUserPages() {
