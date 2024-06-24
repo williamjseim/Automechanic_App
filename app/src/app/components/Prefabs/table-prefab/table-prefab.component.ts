@@ -1,5 +1,4 @@
 import { ChangeDetectorRef, Component, EventEmitter, HostListener, Input, Output, TemplateRef } from '@angular/core';
-import { CarDataService } from '../../../services/car-data.service';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgIf, NgFor, NgStyle, NgClass, KeyValuePipe, NgTemplateOutlet } from '@angular/common';
 import { MatIconModule } from '@angular/material/icon';
@@ -32,6 +31,7 @@ export class TablePrefabComponent {
   @Input({required:true}) headers?:string[];
   
   @Input() hideDelete: boolean = false; 
+  @Input() hideAmountPrPage = false;
   //emits a number when the page index is changed
   @Output() PageChange = new EventEmitter<number>();
   //changes how many items pr page

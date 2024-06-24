@@ -43,7 +43,7 @@
                     <td style="margin: 0; padding: 0;" [colSpan]="6">
                         <form [formGroup]="FilterForm" class="searchForm">
                             <input *ngFor="let item of FilterForm.controls | keyvalue" [formControlName]="item.key" placeholder="{{item.key}}" #MakeFilter matInput value="" (keyup.enter)="Search.emit()">
-                            <select #select placeholder="Select Option" (change)="ChangeNumberPrPage($event)">
+                            <select *ngIf="!hideAmountPrPage" #select placeholder="Select Option" (change)="ChangeNumberPrPage($event)">
                                 <option value="10">10 items</option>
                                 <option value="25">25 items</option>
                                 <option value="50">50 items</option>

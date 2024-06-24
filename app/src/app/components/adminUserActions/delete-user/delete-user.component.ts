@@ -26,8 +26,8 @@ export class DeleteUserComponent {
   ) {}
 
   ngOnInit(): void {
-    this.RemoveFilters();
     this.getUserPages();
+    this.RemoveFilters();
   }
 
   getAllUsers(username: string = "") {
@@ -45,9 +45,9 @@ export class DeleteUserComponent {
   Search(skipGetPages: boolean = false) {
     let username = this.searchForm.controls.username.value;
 
-    this.getAllUsers(username)
+    this.getAllUsers(username);
     if (!skipGetPages)
-      this.getUserPages();
+      this.getUserPages(username);
   }
 
   JumpToPage(index: number) {
@@ -62,8 +62,8 @@ export class DeleteUserComponent {
     this.Search();
   }
 
-  getUserPages() {
-    this.userHttp.getUserPages(this.itemsPrPage).subscribe({
+  getUserPages(username: string = "") {
+    this.userHttp.getUserPages(this.itemsPrPage, username).subscribe({
       next: (res) => {
         this.pages = res;
         if(this.currentPage >= this.pages) {
@@ -72,7 +72,12 @@ export class DeleteUserComponent {
       }
     });
   }
-
+  ChangeNumberPrPage(number: number) {
+    this.itemsPrPage = number;
+    this.currentPage = 0;
+    this.getUserPages();
+    this.Search();
+  }
   deleteUser(index: number) {
     let user = this.users![index];
     this.userHttp.deleteUser(user.id).subscribe({

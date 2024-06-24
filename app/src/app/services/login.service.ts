@@ -46,8 +46,8 @@ export class LoginService {
   getAllUsers(page: number, amount: number, username: string = ""): Observable<any> {
     return this.http.get(`${this.url}/getallusers?startingIndex=${page}&amount=${amount}&username=${username}`);
   }
-  getUserPages(amountPrPage: number): Observable<any> {
-    return this.http.get(`${this.url}/userpages?amountPrPage=${amountPrPage}`);
+  getUserPages(amountPrPage: number, username: string = ""): Observable<any> {
+    return this.http.get(`${this.url}/userpages?amountPrPage=${amountPrPage}&username=${username}`);
   } 
 
 }

@@ -113,11 +113,11 @@ namespace Mechanic.Api.Controllers
 
         [JwtRoleAuthorization(Role.Admin)]
         [HttpGet("UserPages")]
-        public async Task<IActionResult> UserPages(int amountPrPage)
+        public async Task<IActionResult> UserPages(int amountPrPage, string username = "")
         {
             try
             {
-                float pages = (float)_db.Users.Count() / (float)amountPrPage;
+                float pages = (float)_db.Users.Where(i => i.Username.Contains(username.ToLower())).Count() / (float)amountPrPage;
 
                 int amount = (int)MathF.Ceiling(pages);
                 return Ok(amount);

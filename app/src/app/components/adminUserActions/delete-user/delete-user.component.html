@@ -5,11 +5,13 @@
     [headers]="['Username']"
     [openButton]="openbtn"
     [FilterForm]="searchForm"
+    [drawer]="drawerData"
+    (AmountPrPage)="ChangeNumberPrPage($event)"
     (RemoveFilter)="RemoveFilters()"
     (PageChange)="JumpToPage($event)"
     (DeleteItem)="deleteUser($event)"
     (Search)="Search($event)"
-    [drawer]="drawerData"
+    [hideAmountPrPage]="true"
 
     >
 </app-table-prefab>
