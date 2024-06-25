@@ -10,6 +10,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatDialogClose } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-new-user-profile',
   standalone: true,
@@ -22,6 +23,7 @@ export class NewUserProfileComponent {
 
   constructor(
     private userHttp: LoginService,
+    private snackbar: MatSnackBar
   ) {}
 
   errortext: string = "";
@@ -58,6 +60,7 @@ export class NewUserProfileComponent {
       this.userHttp.createUser(username, email, password, isAdminRole).subscribe({
         next: (value) => {
           this.loading = false;
+          this.snackbar.open(`Created user: ${username}`, 'Close', { duration: 4000 });
           this.dialogRef.close();
         },
         error: (err) => {

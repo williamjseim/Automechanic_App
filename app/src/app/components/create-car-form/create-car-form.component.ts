@@ -47,11 +47,12 @@ export class CreateCarFormComponent {
     if(this.carform.valid){
       this.carhttp.CreateCar(make, model, plate, vin).subscribe({
         next:(value)=>{
-          this.snackbar.open(value.value, 'Close', { duration: 4000 });
+          console.log(value);
+          this.snackbar.open(value.value, 'Close', { duration: 3000 });
           this.router.navigate(['cars']);
         },
         error:(err)=>{
-          this.errortext = err;
+          this.errortext = err.error.value;
         }
       })
     }

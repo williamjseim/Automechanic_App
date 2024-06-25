@@ -24,6 +24,8 @@ export class LoginComponent {
     private localStorageService: LocalStorageService,
     private router: Router ) {}
 
+  error_text: string = "";
+
   // Form Controls
   usernameControl = new FormControl('', [Validators.required]);
   passwordControl = new FormControl('', [Validators.required]);
@@ -40,6 +42,10 @@ export class LoginComponent {
           this.localStorageService.addToLocalStorage("isadmin", (value.headers as HttpHeaders).get("permission"));
           this.localStorageService.addToLocalStorage("refreshtoken", (value.headers as HttpHeaders).get("refreshtoken"));
           this.router.navigateByUrl("");
+        },
+        error:(err) => {
+          this.error_text = err.error;
+
         }
       });
   }}

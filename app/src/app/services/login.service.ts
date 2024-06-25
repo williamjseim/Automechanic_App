@@ -40,7 +40,7 @@ export class LoginService {
     return this.http.delete(`${this.url}/delete?userid=${userId}`);
   }
 
-  createUser(username: string, email: string, password: string, role: number) {
+  createUser(username: string, email: string, password: string, role: number): Observable<any> {
     return this.http.post(`${this.url}/Register?username=${username}&email=${email}&password=${password}&role=${role}`, null, { responseType: "text", observe: "response"});
   }
   getAllUsers(page: number, amount: number, username: string = ""): Observable<any> {

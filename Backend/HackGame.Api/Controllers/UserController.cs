@@ -43,13 +43,13 @@ namespace Mechanic.Api.Controllers
                         return Ok(base64);
                     }
                 }
-                return NotFound(Json("username or password is wrong"));
+                return NotFound("username or password is wrong");
             }
             catch {
                 return StatusCode(501, " Something went really wrong Error"+ username + password);
             }
         }
-
+        [JwtRoleAuthorization(Role.Admin)]
         [HttpPost("Register")]
         public async Task<IActionResult> Register(string username, string email, string password, int role = 0)
         {
@@ -76,11 +76,17 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                if (userId != null)
+                Role userRole = JwtAuthorization.GetUserRole(Request.Headers.Authorization!, _config);
+
+                // Only admin can request other user profiles.
+                // If role type == user. Then own profile is returned
+
+                if (userId != null && userRole == Role.Admin)
                 {
                     var viewUser = await _db.Users.FirstOrDefaultAsync(i => i.Id == userId);
-                    return Ok(viewUser);
+                    return viewUser != null ? Ok(viewUser) : NotFound("no user found");
                 }
+
                 var token = this.HttpContext.Request.Headers.Authorization.ToString();
                 Guid id = JwtAuthorization.GetUserId(token, _config);
                 var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == id);
