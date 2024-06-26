@@ -34,6 +34,11 @@
 </ng-template>
 <ng-template #description let-data="data">
     <td [colSpan]="6">
-        <textarea (click)="$event.stopPropagation()" style="width: 100%; height: auto; border: 0; resize: none;" readonly [value]="data.description"></textarea>
+        <textarea cdkTextareaAutosize cdkAutosizeMaxRows="10" (click)="$event.stopPropagation()" style="width: 100%; font-size: xx-large;" readonly [value]="data.description"></textarea>
     </td>
 </ng-template>
+
+
+<h1 *ngIf="pages <= 0" style="text-align: center;">
+    No Issues Found
+</h1>

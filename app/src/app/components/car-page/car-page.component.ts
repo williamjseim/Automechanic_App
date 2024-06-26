@@ -10,10 +10,11 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-request-popup.component';
 import { TablePrefabComponent } from '../Prefabs/table-prefab/table-prefab.component';
 import { ColumnDefDirective } from '../../Directives/column-def.directive';
+import { MatInputModule } from '@angular/material/input';
 @Component({
   selector: 'app-car-page',
   standalone: true,
-  imports: [TablePrefabComponent, NgClass, ColumnDefDirective, NgTemplateOutlet, DatePipe, DeleteRequestPopupComponent, RouterLink, ReactiveFormsModule, FormsModule, NgIf, NgFor, NgStyle, NgClass],
+  imports: [TablePrefabComponent, NgClass, ColumnDefDirective, NgTemplateOutlet, DatePipe, DeleteRequestPopupComponent, RouterLink, ReactiveFormsModule, FormsModule, MatInputModule, NgIf, NgFor, NgStyle, NgClass],
   templateUrl: './car-page.component.html',
   styleUrl: './car-page.component.scss',
 })
@@ -23,13 +24,12 @@ export class CarPageComponent {
 
   cars?:Car[];
   isAdmin?:Observable<boolean>;
-  pages:number = 0;
+  pages:number = 1;
   currentPage:number = 0;
   SelectedRow:number = -1;
   itemsPrPage:number = 10;
 
   ngOnInit(){
-    this.GetCarPages(this.itemsPrPage);
     this.RemoveFilters();
   }
     
@@ -41,15 +41,14 @@ export class CarPageComponent {
   })
 
   //gets filtered cars from server
-  Search(skipGetPages: boolean = false){
+  Search(){
     let make = this.searchForm.controls.make.value;
     let model = this.searchForm.controls.model.value;
     let plate = this.searchForm.controls.plate.value;
     let vin = this.searchForm.controls.vinnr.value;
 
     this.GetCarsHttp(make, model, plate, vin)
-    if (!skipGetPages)
-        this.GetCarPages(this.itemsPrPage, make, model, plate, vin);
+    this.GetCarPages(this.itemsPrPage, make, model, plate, vin);
     this.SelectedRow = -1;
   }
 
@@ -77,6 +76,7 @@ export class CarPageComponent {
     let car = this.cars![index];
     this.carHttp.DeleteCar(car.id).subscribe({next:(value)=>{
       this.cars?.splice(index, 1);
+      this.Search();
     }});
   }
 
@@ -120,7 +120,6 @@ export class CarPageComponent {
       this.pages = value;
       if (this.currentPage >= this.pages) {
         this.currentPage = 0;
-        this.Search(true);
       }
     }});
   }

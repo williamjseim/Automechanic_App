@@ -8,17 +8,18 @@ import { MatIconModule } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TablePrefabComponent } from '../Prefabs/table-prefab/table-prefab.component';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-issuetablepage',
   standalone: true,
-  imports: [RouterLink, DatePipe, ReactiveFormsModule, FormsModule, MatIconModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, TablePrefabComponent],
+  imports: [RouterLink, DatePipe, ReactiveFormsModule, FormsModule, MatIconModule, MatInputModule, NgIf, NgFor, NgStyle, NgClass, MatProgressSpinnerModule, TablePrefabComponent],
   templateUrl: './issuetablepage.component.html',
   styleUrl: './issuetablepage.component.scss'
 })
 export class IssuetablepageComponent {
   constructor(private carhttp:CarDataService){}
-  pages:number = 0;
+  pages:number = 1;
   currentPage:number = 0;
 
 
@@ -26,7 +27,6 @@ export class IssuetablepageComponent {
   itemprpage = 10;
 
   ngOnInit(){
-    this.GetIssuePages(this.itemprpage);
     this.RemoveFilters();
   }
 
@@ -43,14 +43,13 @@ export class IssuetablepageComponent {
 
   SelectRow(index:number, event:Event){}
 
-  Search(skipGetPages: boolean = false){
+  Search(){
     let category = this.searchForm.controls.category.value;
     let make = this.searchForm.controls.make.value;
     let plate = this.searchForm.controls.plate.value;
     let username = this.searchForm.controls.username.value;
     this.GetIssuesHttp(category, make, plate, username);
-    if(!skipGetPages)
-        this.GetIssuePages(this.itemprpage, category, make, plate, username);
+    this.GetIssuePages(this.itemprpage, category, make, plate, username);
   }
 
   RemoveFilters(){
@@ -63,7 +62,10 @@ export class IssuetablepageComponent {
   RemoveIssue(event:number){
     let issue = this.issues![event];
     this.carhttp.DeleteIssue(issue.id).subscribe({
-      next: (res) => { this.issues?.splice(event, 1) }
+      next: (res) => { 
+        this.issues?.splice(event, 1);
+        this.Search();
+       }
     })
   }
 
@@ -100,7 +102,6 @@ export class IssuetablepageComponent {
         this.pages = res
         if (this.currentPage >= this.pages) {
           this.currentPage = 0;
-          this.Search(true);
         }
       },
      });
