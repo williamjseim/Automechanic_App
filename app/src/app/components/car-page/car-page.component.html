@@ -36,6 +36,7 @@
         [headers]="['Creator', 'Price', 'Creation date']"
         [openButton]="openIssueBtn"
         [items]="data?.issues"
+        [drawer]="description"
         [hideDelete]="true">
         </app-table-prefab>
     </td>
@@ -54,7 +55,10 @@
 </ng-template>
 <ng-template #description let-data="data">
     <td [colSpan]="6">
-        <span>Description</span>
-        <textarea (click)="$event.stopPropagation()" style="width: 99%; height: auto; font-size: xx-large;" readonly [value]="data.description"></textarea>
+        <textarea cdkTextareaAutosize cdkAutosizeMaxRows="10" (click)="$event.stopPropagation()" style="width: 100%; font-size: xx-large;" readonly [value]="data.description"></textarea>
     </td>
 </ng-template>
+
+<h1 *ngIf="pages <= 0" style="text-align: center;">
+    No Cars Found
+</h1>
