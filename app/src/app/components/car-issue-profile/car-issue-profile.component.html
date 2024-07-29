@@ -76,11 +76,15 @@
                 </mat-form-field>
             </div>
         </div>
-                <div *ngIf="issue?.coAuthors?.length! > 0" class="coAuthorsDiv">
-                    <span *ngFor="let item of issue?.coAuthors; let i = index">{{item.username}}</span>
-                </div>
+
+        <div class="co-author-section" *ngIf="issue?.coAuthors?.length! > 0">
+            <h2>Co-Author(s)</h2>
+            <div class="coAuthorsDiv">
+                <span *ngFor="let item of issue?.coAuthors; let i = index">{{item.username}}</span>
+            </div>
+        </div>
         <div class="button-section">
-            <button [routerLink]="'/cars'" routerLinkActive="router-link-active" class="action-button">Gå
+            <button [routerLink]="'/cars'" routerLinkActive="router-link-active" class="action-button">Go
                 Back</button>
             <button class="action-button">Mark as completed</button>
         </div>
