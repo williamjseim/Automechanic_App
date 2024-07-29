@@ -11,9 +11,9 @@
 (DeleteItem)="RemoveIssue($event)"
 (PageChange)="JumpToPage($event)"
 [drawer]="description"
-[DrawerTitle]="'Description'"
->
+[DrawerTitle]="'Description'">
 </app-table-prefab>
+
 <ng-template #rowtemplate1 let-data="data">
     <td>{{data.creator?.username ?? 'unknown'}}</td>
 </ng-template>
@@ -34,10 +34,9 @@
 </ng-template>
 <ng-template #description let-data="data">
     <td [colSpan]="6">
-        <textarea cdkTextareaAutosize cdkAutosizeMaxRows="10" (click)="$event.stopPropagation()" style="width: 100%; font-size: xx-large;" readonly [value]="data.description"></textarea>
+        <textarea cdkTextareaAutosize cdkAutosizeMaxRows="10" (click)="$event.stopPropagation()" style="width: 90%; font-size: xx-large; border: 0;" readonly [value]="data.description"></textarea>
     </td>
 </ng-template>
-
 
 <h1 *ngIf="pages <= 0" style="text-align: center;">
     No Issues Found
