@@ -9,6 +9,7 @@ import { RouterLink } from '@angular/router';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TablePrefabComponent } from '../Prefabs/table-prefab/table-prefab.component';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-issuetablepage',
@@ -18,7 +19,10 @@ import { MatInputModule } from '@angular/material/input';
   styleUrl: './issuetablepage.component.scss'
 })
 export class IssuetablepageComponent {
-  constructor(private carhttp:CarDataService){}
+  constructor(
+    private carhttp:CarDataService,
+    private snackbar: MatSnackBar
+  ){}
   pages:number = 1;
   currentPage:number = 0;
 
@@ -65,6 +69,13 @@ export class IssuetablepageComponent {
       next: (res) => { 
         this.issues?.splice(event, 1);
         this.Search();
+        this.snackbar.open(res.value, 'Close', { duration: 5000 });
+
+       },
+       error: (err) => {
+        console.log(err);
+         this.snackbar.open(err.error.value, 'Close', { duration: 5000 });
+
        }
     })
   }

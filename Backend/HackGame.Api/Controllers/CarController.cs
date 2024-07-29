@@ -113,7 +113,7 @@ namespace Mechanic.Api.Controllers
                 else
                 {
                     Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
-                    pages = (float)_db.CarIssues.Where(i => i.Creator.Id == userId && i.Car.Make.Contains(make.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Creator.Username.Contains(username.ToLower()) && i.Category.tag.Contains(category.ToLower())).Count() / (float)amountPrPage;
+                    pages = (float)_db.CarIssues.Include(i => i.CoAuthors).Where(i => i.Creator.Id == userId || i.CoAuthors.Any(i => i.Id == userId) && i.Car.Make.Contains(make.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Creator.Username.Contains(username.ToLower()) && i.Category.tag.Contains(category.ToLower())).Count() / (float)amountPrPage;
                 }
                 var amount = (int)MathF.Ceiling(pages);
                 return Ok(amount);
@@ -319,7 +319,7 @@ namespace Mechanic.Api.Controllers
                 CarIssue[] issues;
                 if (userRole == Role.Admin || userId == originUserId)
                 {
-                    issues = _db.CarIssues.Include(i => i.Creator).Where(i => i.Creator.Id == userId && i.Car.Make.Contains(make.ToLower()) && i.Car.Model.Contains(model.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Car.VinNumber.Contains(vin.ToLower())).Skip(startingIndex).Take(amount).Distinct().OrderBy(I => I.CreationTime).ToArray();
+                    issues = _db.CarIssues.Include(i => i.Creator).Include(i => i.CoAuthors).Where(i => i.Creator.Id == userId || i.CoAuthors.Any(i => i.Id == originUserId) && i.Car.Make.Contains(make.ToLower()) && i.Car.Model.Contains(model.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Car.VinNumber.Contains(vin.ToLower())).Skip(startingIndex).Take(amount).Distinct().OrderBy(I => I.CreationTime).ToArray();
                     return Ok(issues);
                 }
                 return Forbid();
