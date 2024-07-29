@@ -5,6 +5,13 @@ namespace Mechanic.Api
 {
     public static class Encrypter
     {
+        /// <summary>
+        /// returns encrypted jwt token which has be converted to base64 before being sendt to the user
+        /// </summary>
+        /// <param name="jsonString"></param>
+        /// <param name="EncryptedText"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
         public static bool Encrypt(string jsonString, out byte[] EncryptedText, IConfiguration config)
         {
             try
@@ -33,7 +40,14 @@ namespace Mechanic.Api
             }
         }
 
-        public static bool Decrypt(byte[] encryptedText, out byte[] decryptedText, IConfiguration config)
+        /// <summary>
+        /// return decrypted jwt token 
+        /// </summary>
+        /// <param name="encryptedbytes"></param>
+        /// <param name="decryptedText"></param>
+        /// <param name="config"></param>
+        /// <returns></returns>
+        public static bool Decrypt(byte[] encryptedbytes, out byte[] decryptedText, IConfiguration config)
         {
             try
             {
@@ -47,7 +61,7 @@ namespace Mechanic.Api
                     aes.Padding = PaddingMode.PKCS7;
                     using (var decrypter = aes.CreateDecryptor())
                     {
-                        var bytes = decrypter.TransformFinalBlock(encryptedText, 0, encryptedText.Length);
+                        var bytes = decrypter.TransformFinalBlock(encryptedbytes, 0, encryptedbytes.Length);
                         decryptedText = bytes;
                     }
                 }
