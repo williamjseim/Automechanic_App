@@ -46,8 +46,11 @@ app-video-capture {
         justify-content: center;
     } 
 }
-
-.button-section {
+.co-author-section {
+    border-bottom: 1px solid;
+    padding: 1vh 5vw;
+}
+    .button-section {
     padding-top: 3vh;
     display: flex;
     justify-content: space-evenly;
