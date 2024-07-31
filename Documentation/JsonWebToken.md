@@ -3,7 +3,6 @@
 #### [Filtering http calls with jwt token](#filtering-http-call-with-jwttokens)
 #### [Filtering JWT token based on user roles](#filtering-http-call-with-jwttokens)
 #### [Token Renewal](#jwt-token-renewal)
-
 #### [Token encryption](./Encryption.md)
 
 ### creating a jwt
@@ -284,7 +283,7 @@ Jwt tokens should not last for long since they can get compromised with a man in
 
 #### Renewal Middleware use
 
-the middleware check if the jwt token's life span is less than half and if the renewal token is valid, if both are true it sends a header with a new token
+the middleware checks if the jwt token's life span is less than half and if the renewal token is valid, if both are true it sends a header with a new token
 
 #### Renewal Middleware class
 

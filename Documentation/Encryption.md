@@ -3,7 +3,7 @@
 #### Static encrypter class
 
 ##### Decryption
-to decrypt jwt tokens remove bearer and excess \\" then convert from base64 to bytes and give to encrypter class if successful it will return true and give decrypted bytes which can then be converted to string and then to jwt token which can be read and verified
+to decrypt jwt tokens remove "bearer" and excess \\" from string, then convert from base64 to bytes and give to encrypter class if successful it will return true and give decrypted bytes which can then be converted to string and then to jwt token which can be read and verified
 
 ##### Encryption
 to encrypt just give the encrypter a string and it will return encrypted bytes which can then be turned to base64 and given to the client
