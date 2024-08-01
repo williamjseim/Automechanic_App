@@ -11,6 +11,9 @@ using System.Web.Http.Controllers;
 
 namespace Mechanic.Api.Filters
 {
+    /// <summary>
+    /// allows user with valid jwt token in
+    /// </summary>
     public class JwtTokenAuthorization : Attribute, IAuthorizationFilter
     {
         public void OnAuthorization(AuthorizationFilterContext context)

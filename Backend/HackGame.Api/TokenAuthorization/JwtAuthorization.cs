@@ -11,6 +11,12 @@ namespace Mechanic.Api.TokenAuthorization
 {
     public static class JwtAuthorization
     {
+        /// <summary>
+        /// takes the user infomation and makes a personalized jwt token so the user can be identified later
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="_config"></param>
+        /// <returns>unencrypted jwt token</returns>
         public static string GenerateJsonWebToken(User user, IConfiguration _config)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtSettings:Key"]!));
@@ -41,6 +47,13 @@ namespace Mechanic.Api.TokenAuthorization
             return refreshToken.WriteToken();
         }
 
+/// <summary>
+/// use to check if refresh token is still valid 
+/// </summary>
+/// <param name="encryptedbase64"></param>
+/// <param name="id"></param>
+/// <param name="config"></param>
+/// <returns>true or false based on if its valid</returns>
         public static bool ValidateRefreshToken(string encryptedbase64, Guid id, IConfiguration config)
         {
             if(encryptedbase64 != string.Empty)
@@ -97,6 +110,12 @@ namespace Mechanic.Api.TokenAuthorization
             return false;
         }
 
+/// <summary>
+/// decrypts jwt token so it can be read
+/// </summary>
+/// <param name="encryptedBase64"></param>
+/// <param name="config"></param>
+/// <returns>user id if jwt is valid</returns>
         public static Guid GetUserId(string encryptedBase64, IConfiguration config)
         {
             encryptedBase64 = encryptedBase64.Replace("Bearer ", string.Empty);
@@ -114,6 +133,12 @@ namespace Mechanic.Api.TokenAuthorization
             return Guid.Empty;
         }
 
+/// <summary>
+/// decrypts jwt token so role can be read
+/// </summary>
+/// <param name="encryptedBase64"></param>
+/// <param name="config"></param>
+/// <returns>user role</returns>
         public static Role GetUserRole(string encryptedBase64, IConfiguration config)
         {
             encryptedBase64 = encryptedBase64.Replace("Bearer ", string.Empty);

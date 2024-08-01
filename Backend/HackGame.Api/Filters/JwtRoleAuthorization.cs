@@ -14,6 +14,10 @@ namespace Mechanic.Api.Filters
         User = 0,
         Admin = 1,
     }
+
+    /// <summary>
+    /// only allows in roles added in the constructor parameters
+    /// </summary>
     public class JwtRoleAuthorization : Attribute, IAuthorizationFilter
     {
         //array of roles that are allowed to acces this api call
