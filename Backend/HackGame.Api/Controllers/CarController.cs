@@ -169,11 +169,15 @@ namespace Mechanic.Api.Controllers
                     Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
                     test = await _db.CarIssues.Where(i => i.Id == issueId && i.Creator.Id == userId).ExecuteDeleteAsync();
                 }
-                if (test == 1)
+                switch (test)
                 {
-                    return Ok(Json("Deletion successful"));
+                    case 0:
+                        return BadRequest(Json("Deletion failed - Owner can only delete"));
+                    case 1:
+                        return Ok(Json("Deletion successful"));
+                    default:
+                        return Forbid();
                 }
-                return Forbid();
             }
             catch (Exception ex)
             {
