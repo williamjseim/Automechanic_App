@@ -1,5 +1,6 @@
 import { Observable } from "rxjs";
 import { Issue } from "./issue";
+import { User } from "./user";
 
 export interface Car {
     id:string;
@@ -9,4 +10,5 @@ export interface Car {
     make:string;
     model:string;
     issues:Issue[];
+    creator?:User;
 }

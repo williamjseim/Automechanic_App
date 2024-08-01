@@ -41,7 +41,7 @@ export class IssuetablepageComponent {
   searchForm = new FormGroup ({
     make: new FormControl(),
     plate: new FormControl(),
-    username: new FormControl(),
+    creator: new FormControl(),
     category: new FormControl(),
   })
 
@@ -51,7 +51,7 @@ export class IssuetablepageComponent {
     let category = this.searchForm.controls.category.value;
     let make = this.searchForm.controls.make.value;
     let plate = this.searchForm.controls.plate.value;
-    let username = this.searchForm.controls.username.value;
+    let username = this.searchForm.controls.creator.value;
     this.GetIssuesHttp(category, make, plate, username);
     this.GetIssuePages(this.itemprpage, category, make, plate, username);
   }
@@ -59,7 +59,7 @@ export class IssuetablepageComponent {
   RemoveFilters(){
     this.searchForm.controls.make.reset("");
     this.searchForm.controls.plate.reset("");
-    this.searchForm.controls.username.reset("");
+    this.searchForm.controls.creator.reset("");
     this.searchForm.controls.category.reset("");
     this.Search();
   }

@@ -21,7 +21,7 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpGet("GetCars")]
-        public async Task<IActionResult> GetCars(int startingIndex, int amount, string make = "", string model = "", string plate = "", string vin = "")
+        public async Task<IActionResult> GetCars(int startingIndex, int amount, string creatorName = "", string make = "", string model = "", string plate = "", string vin = "")
         {
             try
             {
@@ -30,12 +30,12 @@ namespace Mechanic.Api.Controllers
                 Car[] cars;
                 if (userRole == Role.Admin)
                 {
-                    cars = await _db.Cars.Distinct().OrderBy(i => i.CreationTime).Reverse().Include(i => i.Creator).Where(i => i.Make.Contains(make ?? "") && i.Model.Contains(model ?? "") && i.Plate.Contains(plate ?? "") && i.VinNumber.Contains(vin ?? "")).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
+                    cars = await _db.Cars.Distinct().OrderBy(i => i.CreationTime).Reverse().Include(i => i.Creator).Where(i => i.Make.Contains(make ?? "") && i.Creator.Username.Contains(creatorName) && i.Model.Contains(model ?? "") && i.Plate.Contains(plate ?? "") && i.VinNumber.Contains(vin ?? "")).Skip(startingIndex * amount).Take(amount).ToArrayAsync();
                 }
                 else
                 {
                     Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
-                    cars = await _db.Cars.Include(i => i.Creator).Where(i => i.Creator.Id == userId && i.Make.Contains(make ?? "") && i.Model.Contains(model ?? "") && i.Plate.Contains(plate ?? "") && i.VinNumber.Contains(vin ?? "")).Skip(startingIndex * amount).Take(amount).Distinct().OrderBy(i => i.CreationTime).Reverse().ToArrayAsync();
+                    cars = await _db.Cars.Include(i => i.Creator).Where(i => i.Creator.Id == userId && i.Make.Contains(make ?? "") && i.Creator.Username.Contains(creatorName) && i.Model.Contains(model ?? "") && i.Plate.Contains(plate ?? "") && i.VinNumber.Contains(vin ?? "")).Skip(startingIndex * amount).Take(amount).Distinct().OrderBy(i => i.CreationTime).Reverse().ToArrayAsync();
                 }
                 return Ok(cars);
             }
@@ -74,7 +74,7 @@ namespace Mechanic.Api.Controllers
 
         [JwtTokenAuthorization]
         [HttpGet("CarPages")]
-        public async Task<IActionResult> CarPages(int amountPrPage, string make = "", string model = "", string plate = "", string vin = "")
+        public async Task<IActionResult> CarPages(int amountPrPage, string creatorName = "", string make = "", string model = "", string plate = "", string vin = "")
         {
             try
             {
@@ -100,7 +100,7 @@ namespace Mechanic.Api.Controllers
         }
         [JwtTokenAuthorization]
         [HttpGet("IssuePages")]
-        public async Task<IActionResult> IssuePages(int amountPrPage, string make = "", string plate = "", string username = "", string category = "")
+        public async Task<IActionResult> IssuePages(int amountPrPage, string creatorName = "", string make = "", string plate = "", string username = "", string category = "")
         {
             try
             {
@@ -247,10 +247,11 @@ namespace Mechanic.Api.Controllers
                     .Include(i => i.Creator)
                     .Include(i => i.Car)
                     .Include(i => i.Category)
-                    .Where(i => i.Creator.Username.Contains(creatorName.ToLower()) &&
-                            i.Car.Plate.Contains(plate.ToLower()) &&
-                            i.Car.Make.Contains(make.ToLower()) && 
-                            i.Category!.tag.Contains(category.ToLower()))
+                    .Where(i =>
+                        i.Creator.Username.Contains(creatorName.ToLower()) &&
+                        i.Car.Plate.Contains(plate.ToLower()) &&
+                        i.Car.Make.Contains(make.ToLower()) && 
+                        i.Category!.tag.Contains(category.ToLower()))
                     .Skip(startingIndex * amount)
                     .Take(amount)
                     .ToArrayAsync();

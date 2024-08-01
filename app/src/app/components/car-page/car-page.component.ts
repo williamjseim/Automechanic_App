@@ -34,6 +34,7 @@ export class CarPageComponent {
   }
     
   searchForm = new FormGroup ({
+    creator: new FormControl(),
     make: new FormControl(),
     model: new FormControl(),
     plate: new FormControl(),
@@ -42,12 +43,13 @@ export class CarPageComponent {
 
   //gets filtered cars from server
   Search(){
+    let creator = this.searchForm.controls.creator.value;
     let make = this.searchForm.controls.make.value;
     let model = this.searchForm.controls.model.value;
     let plate = this.searchForm.controls.plate.value;
     let vin = this.searchForm.controls.vinnr.value;
 
-    this.GetCarsHttp(make, model, plate, vin)
+    this.GetCarsHttp(make, creator, model, plate, vin)
     this.GetCarPages(this.itemsPrPage, make, model, plate, vin);
     this.SelectedRow = -1;
   }
@@ -81,6 +83,7 @@ export class CarPageComponent {
   }
 
   RemoveFilters(){
+    this.searchForm.controls.creator.reset("");
     this.searchForm.controls.make.reset("");
     this.searchForm.controls.model.reset("");
     this.searchForm.controls.plate.reset("");
@@ -96,8 +99,8 @@ export class CarPageComponent {
   }
 
   //gets 10 from  cars from database
-  private GetCarsHttp(make:string='', model:string='', plate:string='', vin:string = ''){
-    this.carHttp.GetCars(this.currentPage, this.itemsPrPage, make, model, plate, vin).subscribe({
+  private GetCarsHttp(make:string='', creator:string = "", model:string='', plate:string='', vin:string = ''){
+    this.carHttp.GetCars(this.currentPage, this.itemsPrPage, creator, make, model, plate, vin).subscribe({
     next:(value)=>{
       this.cars = value;
     },

@@ -62,14 +62,16 @@ export class CarProfileComponent {
     make: new FormControl(),
     model: new FormControl(),
     plate: new FormControl(),
-    vinnr: new FormControl()
+    vinnr: new FormControl(),
+    creator: new FormControl(),
   })
 
   searchForm = new FormGroup ({
     make: new FormControl(),
     model: new FormControl(),
     plate: new FormControl(),
-    vinnr: new FormControl()
+    vinnr: new FormControl(),
+    creator: new FormControl(),
   })
 
   GetIssues(carId:string){
@@ -111,6 +113,7 @@ export class CarProfileComponent {
     let model = this.searchForm.controls.model.value;
     let plate = this.searchForm.controls.plate.value;
     let vinnr = this.searchForm.controls.vinnr.value;
+    let creator = this.searchForm.controls.creator.value;
     //todo add filter call
   }
 

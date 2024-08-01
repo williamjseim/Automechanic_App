@@ -40,6 +40,10 @@
             <form [formGroup]="carForm" #form>
                 <div>
                     <mat-form-field appearance="outline">
+                        <mat-label>Creator</mat-label>
+                        <input [formControl]="carForm.controls.creator" [value]="car?.creator?.username" #makeInfo matInput>
+                    </mat-form-field>
+                    <mat-form-field appearance="outline">
                         <mat-label>Make</mat-label>
                         <input [formControl]="carForm.controls.make" [value]="car?.make" #makeInfo matInput>
                     </mat-form-field>
