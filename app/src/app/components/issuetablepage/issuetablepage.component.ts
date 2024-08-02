@@ -11,6 +11,16 @@ import { TablePrefabComponent } from '../Prefabs/table-prefab/table-prefab.compo
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
+/**
+ * IssuetablepageComponent 
+ * 
+ * This component displays a paginated table of issues with search and filter functionality.
+ * Users can search for issues based on criteria such as make, plate, creator, and category.
+ * The component allows users to remove issues, change the number of items displayed per page, 
+ * and navigate between pages. It uses services to fetch and delete issues and handles feedback 
+ * through snack bars.
+ */
+
 @Component({
   selector: 'app-issuetablepage',
   standalone: true,

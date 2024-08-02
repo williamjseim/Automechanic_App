@@ -1,14 +1,22 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import {MatSelectModule} from '@angular/material/select';
 import {MatInput, MatInputModule} from '@angular/material/input';
-import {MatFormFieldModule, matFormFieldAnimations} from '@angular/material/form-field';
+import {MatFormFieldModule} from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { CarDataService } from '../../services/car-data.service';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
-import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 
+/**
+ * CreateCarFormComponent 
+ * 
+ * This component provides a form for creating a new car record. 
+ * It includes fields for make, model, plate, and VIN number, with validation to ensure that all fields are filled out.
+ * Upon successful form submission, it interacts with the `CarDataService` to create the car record and navigates to the 'cars' page.
+ * Errors are displayed using a snack bar.
+ */
 @Component({
   selector: 'app-create-car-form',
   standalone: true,

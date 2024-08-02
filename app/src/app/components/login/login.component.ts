@@ -10,6 +10,18 @@ import { LocalStorageService } from '../../services/local-storage.service';
 import { Router } from '@angular/router';
 import { HttpHeaders } from '@angular/common/http';
 
+
+/**
+ * LoginComponent 
+ * 
+ * This component handles user login functionality.
+ * It provides form controls for username and password,
+ * validates the form inputs, and interacts with the LoginService
+ * to authenticate the user. On successful login, user credentials
+ * and tokens are stored in local storage, and the user is redirected
+ * to the main page. Errors are handled and displayed as appropriate.
+ */
+
 @Component({
   selector: 'app-login',
   standalone: true,

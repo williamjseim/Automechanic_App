@@ -1,6 +1,12 @@
 import { NgClass, NgFor, NgIf, NgStyle } from '@angular/common';
 import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 
+/**
+ * DeleteRequestPopup
+ * 
+ * This component confirms the deletion of an entity
+ */
+
 @Component({
   selector: 'app-delete-request-popup',
   standalone: true,

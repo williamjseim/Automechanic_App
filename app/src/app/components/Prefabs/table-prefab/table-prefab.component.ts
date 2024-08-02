@@ -6,6 +6,13 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { RouterLink } from '@angular/router';
 import { DeleteRequestPopupComponent } from '../../delete-request-popup/delete-request-popup.component';
 
+/**
+ * TablePrefabComponent
+ * 
+ * This component provides a flexible table structure with support for paging, filtering, 
+ * and row expansion. It allows customization of table columns, headers, and expandable content.
+ */
+
 @Component({
   selector: 'app-table-prefab',
   standalone: true,

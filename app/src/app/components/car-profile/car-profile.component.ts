@@ -14,6 +14,16 @@ import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-requ
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { TablePrefabComponent } from '../Prefabs/table-prefab/table-prefab.component';
+
+/**
+ * CarProfileComponent 
+ * 
+ * This component is used to display and manage the profile of a car. 
+ * It fetches and shows car details and associated issues based on the car ID passed via query parameters. 
+ * The component provides functionality to search, filter, and delete issues, as well as delete the car itself.
+ * Users can also create new issues associated with the car.
+ */
+
 @Component({
   selector: 'app-car-profile',
   standalone: true,
