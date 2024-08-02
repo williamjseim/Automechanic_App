@@ -11,6 +11,16 @@ import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-requ
 import { TablePrefabComponent } from '../Prefabs/table-prefab/table-prefab.component';
 import { ColumnDefDirective } from '../../Directives/column-def.directive';
 import { MatInputModule } from '@angular/material/input';
+
+
+/**
+ * CarPageComponent
+ * 
+ * This component manages and displays a paginated list of cars.
+ * It allows searching, filtering, and pagination of car data.
+ * Additionally, it handles operations such as deleting cars and viewing car issues.
+ */
+
 @Component({
   selector: 'app-car-page',
   standalone: true,

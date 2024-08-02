@@ -4,6 +4,16 @@ import { LoginService } from '../../../services/login.service';
 import { User } from '../../../Interfaces/user';
 import { RouterLink } from '@angular/router';
 import { FormGroup, FormControl } from '@angular/forms';
+
+/**
+ * DeleteUserComponent:
+ * 
+ * This component provides functionality to view and manage users in a paginated list. It includes 
+ * features for searching users, deleting users, and handling pagination. Users can be filtered 
+ * by username, and the list of users can be navigated through pagination controls. The component also 
+ * interacts with a backend service to retrieve user data and perform deletions.
+ */
+
 @Component({
   selector: 'app-delete-user',
   standalone: true,

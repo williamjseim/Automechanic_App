@@ -20,6 +20,16 @@ import { Car } from '../../../Interfaces/car';
 import { CarDataService } from '../../../services/car-data.service';
 import { Category } from '../../../Interfaces/category';
 
+
+/**
+ * CreateCarIssueComponent 
+ * 
+ * This component is responsible for providing a form to create a new issue for a car.
+ * It allows users to select a car, choose a category, enter a price and description, and specify co-authors.
+ * The component fetches available cars and categories from the service, initializes the form with query parameters if provided,
+ * and handles form submission by navigating to a different route with encoded query parameters.
+ */
+
 export class MyErrorStateMatcher implements ErrorStateMatcher {
   isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
     const isSubmitted = form && form.submitted;

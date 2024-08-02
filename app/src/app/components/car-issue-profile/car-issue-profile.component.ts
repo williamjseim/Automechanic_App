@@ -11,6 +11,15 @@ import { VideoCaptureComponent } from '../video-capture/video-capture.component'
 import { VideoApiService } from '../../services/video-api.service';
 import { Video } from '../../Interfaces/video';
 import { environment } from '../../../environments/environment';
+
+/**
+ * CarIssueProfileComponent
+ * 
+ * This component manages the detailed view of a specific car issue, including displaying issue details
+ * and handling associated videos. It retrieves and displays information about the issue and related videos.
+ * Video can be uploaded to the issue if there is nothing.
+ * 
+ */
 @Component({
   selector: 'app-car-issue-profile',
   standalone: true,

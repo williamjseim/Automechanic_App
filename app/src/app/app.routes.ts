@@ -15,23 +15,35 @@ import { FrontpageComponent } from './components/frontpage/frontpage.component';
 import { IssuetablepageComponent } from './components/issuetablepage/issuetablepage.component';
 import { TablePrefabComponent } from './components/Prefabs/table-prefab/table-prefab.component';
 
+/**
+ * Routes configuration for the Angular application.
+ * 
+ * This configuration defines the different routes and their corresponding components 
+ * within the application. The routes are mapped to components that represent 
+ * different pages or views.
+ */
 
 export const routes: Routes = [
 
- { path: '', component: FrontpageComponent },
- { path: 'logout', component: LogoutComponent },
- { path: 'login', component: LoginComponent },
- { path: 'issue', component: CarIssueComponent,
+  { path: '', component: FrontpageComponent },
+  { path: 'logout', component: LogoutComponent },
+  { path: 'login', component: LoginComponent },
+
+  // Routes related to car issues
+  {
+    path: 'issue', component: CarIssueComponent,
     children: [
-      { path: '', component: CreateCarIssueComponent},
-      { path: 'submit', component: ReviewCarIssueComponent}
- ]},
- { path: 'issueprofile', component: CarIssueProfileComponent},
- { path: 'createcar', component: CreateCarFormComponent },
- { path: 'cars', component: CarPageComponent },
- { path: 'issues', component: IssuetablepageComponent },
- { path: 'carprofile', component: CarProfileComponent},
- { path: 'profile', component: UserprofilepageComponent},
- { path: 'test', component: TablePrefabComponent},
- { path: '**', component: ErrorComponent },
+      { path: '', component: CreateCarIssueComponent },
+      { path: 'submit', component: ReviewCarIssueComponent }
+    ]
+  },
+
+  { path: 'issueprofile', component: CarIssueProfileComponent },
+  { path: 'createcar', component: CreateCarFormComponent },
+  { path: 'cars', component: CarPageComponent },
+  { path: 'issues', component: IssuetablepageComponent },
+  { path: 'carprofile', component: CarProfileComponent },
+  { path: 'profile', component: UserprofilepageComponent },
+  { path: 'test', component: TablePrefabComponent },
+  { path: '**', component: ErrorComponent },
 ];

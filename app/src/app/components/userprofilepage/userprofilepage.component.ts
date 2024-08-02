@@ -18,6 +18,15 @@ import { DeleteRequestPopupComponent } from '../delete-request-popup/delete-requ
 import { MatDialog }  from '@angular/material/dialog'
 import { NewUserProfileComponent } from '../adminUserActions/new-user-profile/new-user-profile.component';
 import { DeleteUserComponent } from '../adminUserActions/delete-user/delete-user.component';
+
+/**
+ * UserProfilePageComponent
+ * 
+ * This component displays and manages user profiles. It allows for viewing user details,
+ * searching for user-related issues, and performing user management actions such as
+ * creating or deleting users. The component uses Angular Material dialogs for user management
+ * actions and Angular Reactive Forms for filtering issues.
+ */
 @Component({
   selector: 'app-userprofilepage',
   standalone: true,
@@ -27,18 +36,22 @@ import { DeleteUserComponent } from '../adminUserActions/delete-user/delete-user
 })
 export class UserprofilepageComponent {
   constructor(
-    private route: ActivatedRoute,
-    private carHttp:CarDataService, 
-    private userHttp:LoginService,
-    ){}
+    private route: ActivatedRoute,        // Service to access route parameters
+    private carHttp: CarDataService,       // Service to fetch car-related data
+    private userHttp: LoginService,        // Service to handle user-related actions
+  ) { }
 
-  readonly dialog = inject(MatDialog);
+  readonly dialog = inject(MatDialog);    // Inject the MatDialog service for displaying dialogs
 
-  user?:User;
-  issues:Array<Issue> = [];
-  isAdmin:boolean = false;
-  usersIssues?:Array<Issue>;
+  user?: User;                            // Holds the user object
+  issues: Array<Issue> = [];              // Array to store issues related to the user
+  isAdmin: boolean = false;              // Flag to indicate if the current user is an admin
+  usersIssues?: Array<Issue>;            // Array to store issues of a specific user
 
+  /**
+   * On initialization, retrieves user information based on the query parameters
+   * and checks if the user is an admin.
+   */
   ngOnInit(){
     let adminKey = localStorage.getItem('isadmin')
     this.isAdmin = adminKey ? (JSON.parse(adminKey.toLowerCase()) === 'true') : false

@@ -10,6 +10,16 @@ import { CarDataService } from '../../../services/car-data.service';
 import { MatSnackBar } from '@angular/material/snack-bar'
 import { Car } from '../../../Interfaces/car';
 import { Category } from '../../../Interfaces/category';
+
+/**
+ * ReviewCarIssueComponent 
+ * 
+ * This component is used to review the details of a car issue before finalizing it.
+ * It retrieves query parameters containing car issue details, displays them to the user,
+ * and provides options to either cancel the review or accept and create the issue.
+ * The component uses a progress spinner while creating the issue and displays a snackbar notification on success.
+ */
+
 @Component({
   selector: 'app-review-car-issue',
   standalone: true,

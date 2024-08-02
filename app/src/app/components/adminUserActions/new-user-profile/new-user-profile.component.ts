@@ -11,6 +11,16 @@ import { MatDialogClose } from '@angular/material/dialog';
 import { MatDialogRef } from '@angular/material/dialog';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
+
+/**
+ * NewUserProfileComponent:
+ * 
+ * This component provides a form for creating a new user profile. It includes fields for 
+ * username, email, password, repeated password, and admin role selection. The component validates 
+ * the input fields and manages the user creation process through a service. It also provides feedback 
+ * to the user about the success or failure of the user creation process and handles loading states 
+ * and error messages.
+ */
 @Component({
   selector: 'app-new-user-profile',
   standalone: true,
