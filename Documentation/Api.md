@@ -31,6 +31,15 @@
             }
           },
           {
+            "name": "creatorName",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
             "name": "make",
             "in": "query",
             "style": "form",
@@ -113,6 +122,15 @@
             }
           },
           {
+            "name": "creatorName",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          },
+          {
             "name": "make",
             "in": "query",
             "style": "form",
@@ -169,6 +187,15 @@
             "schema": {
               "type": "integer",
               "format": "int32"
+            }
+          },
+          {
+            "name": "creatorName",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "default": ""
             }
           },
           {
@@ -701,6 +728,29 @@
       "get": {
         "tags": [
           "Car"
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    },
+    "/cars/ChangeIssueStatus": {
+      "put": {
+        "tags": [
+          "Car"
+        ],
+        "parameters": [
+          {
+            "name": "issueId",
+            "in": "query",
+            "style": "form",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
         ],
         "responses": {
           "200": {
