@@ -19,5 +19,6 @@ export interface Issue {
     price:number;
     creationTime:Date;
     category: Category
+    isCompleted: boolean;
     coAuthors?: User[];
 }

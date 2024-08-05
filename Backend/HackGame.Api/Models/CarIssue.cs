@@ -19,6 +19,7 @@ namespace Mechanic.Api.Models
             this.Creator = creator;
             this.Car = car;
             this.Category = category;
+            this.IsCompleted = false;
         }
         public Guid Id { get; set; }
         public Car Car { get; set; }
@@ -27,6 +28,7 @@ namespace Mechanic.Api.Models
         public decimal Price { get; set; }
         public DateTime CreationTime { get; set; }
         public CarCategory? Category { get; set; }
+        public bool IsCompleted { get; set; }
         public ICollection<User> CoAuthors { get; set; }
     }
 }

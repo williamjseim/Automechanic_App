@@ -128,4 +128,11 @@ createVideoObject() {
       console.log("Upload failed: ", event.message);
     }
   }
+
+  completeIssue() { 
+    this.carHttp.ChangeIssueStatus(this.issue?.id!).subscribe({
+      next: (value) => { this.getIssue(this.issue?.id!) },
+      error: (err) => { }
+    })
+  }
 }

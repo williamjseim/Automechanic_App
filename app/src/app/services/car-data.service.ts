@@ -165,6 +165,15 @@ export class CarDataService {
   }
 
   /**
+  * Updates the status of issue completion.
+  * @param issueId The ID of the issue to update.
+  * @returns An Observable indicating the result of the operation.
+  */
+  ChangeIssueStatus(issueId: string): Observable<any> {
+    return this.http.put(`${this.url}/ChangeIssueStatus?issueId=${issueId}`, null);
+  }
+
+  /**
    * Retrieves a list of available car issue categories.
    * @returns An Observable with a list of car issue categories.
    */
@@ -180,6 +189,8 @@ export class CarDataService {
   CreateCarCategory(tag: string): Observable<any> {
     return this.http.put(`${this.url}/createcarissuecategory?tag=${tag}`, "");
   }
+
+
 
   /**
  * Deletes a car issue category.

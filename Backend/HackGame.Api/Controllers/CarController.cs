@@ -510,6 +510,31 @@ namespace Mechanic.Api.Controllers
             }
         }
 
+        [JwtTokenAuthorization]
+        [HttpPut("ChangeIssueStatus")]
+        public async Task<IActionResult> ChangeIssueStatus(Guid issueId) {
+
+            try
+            {
+                Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+
+                CarIssue issue = await _db.CarIssues.Where(i => i.Creator.Id == userId || i.CoAuthors.Any(i => i.Id == userId)).FirstOrDefaultAsync(i => i.Id == issueId);
+                if (issue == null)
+                {
+                    return NotFound("Issue not found");
+
+                }
+                issue.IsCompleted = !issue.IsCompleted;
+                _db.Update(issue);
+                await _db.SaveChangesAsync();
+                return Ok(Json($"Issue completion status is now: {issue.IsCompleted}"));
+            }
+            catch (System.Exception ex)
+            {
+                return StatusCode(500, "Something went wrong");
+            }
+        }
+
         [JwtRoleAuthorization(Role.Admin)]
         [HttpDelete("DeleteCarIssueCategory")]
         public async Task<IActionResult> DeleteCarIssueCategory(Guid categoryId)
