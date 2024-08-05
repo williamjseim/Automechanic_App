@@ -86,7 +86,12 @@
         <div class="button-section">
             <button [routerLink]="'/cars'" routerLinkActive="router-link-active" class="action-button">Go
                 Back</button>
-            <button class="action-button">Mark as completed</button>
+                @if (!issue?.isCompleted) {
+                    <button class="action-button" (click)="completeIssue()">Mark as completed</button>
+                }
+                @else {
+                    <button class="action-button" (click)="completeIssue()">Mark as incompleted</button>
+                }
         </div>
     </div>
     }
