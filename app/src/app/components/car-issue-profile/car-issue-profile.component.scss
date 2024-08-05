@@ -121,3 +121,24 @@ mat-form-field {
         }
     }
 }
+
+.issue-completed {
+    margin: 0;
+    padding: 0;
+    height: auto;
+    width: 100%;
+    background-color: lightgreen;
+    overflow: hidden;
+    position: sticky;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+
+    .issue-completion-mark {
+        float: right;
+        color: green;
+    
+    }
+    
+}

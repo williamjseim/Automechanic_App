@@ -4,6 +4,7 @@ import { Issue } from '../../Interfaces/issue';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CarDataService } from '../../services/car-data.service';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIcon } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { RouterLink } from '@angular/router';
 
@@ -23,7 +24,7 @@ import { environment } from '../../../environments/environment';
 @Component({
   selector: 'app-car-issue-profile',
   standalone: true,
-  imports: [VideoCaptureComponent, CommonModule, MatProgressSpinnerModule, MatInputModule, RouterLink],
+  imports: [VideoCaptureComponent, CommonModule, MatProgressSpinnerModule, MatInputModule, RouterLink, MatIcon],
   templateUrl: './car-issue-profile.component.html',
   styleUrl: './car-issue-profile.component.scss'
 })
@@ -131,7 +132,10 @@ createVideoObject() {
 
   completeIssue() { 
     this.carHttp.ChangeIssueStatus(this.issue?.id!).subscribe({
-      next: (value) => { this.getIssue(this.issue?.id!) },
+      next: (value) => { 
+        this.getIssue(this.issue?.id!);
+         window.scroll({ top: 0, left: 0, behavior: 'smooth'});
+      },
       error: (err) => { }
     })
   }

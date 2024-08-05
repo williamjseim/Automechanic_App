@@ -9,8 +9,16 @@
     @else {
 
     <div *ngIf="uploadingVideo" class="overlay"><mat-spinner></mat-spinner></div>
-    
+
     <div class="container">
+        @if (issue?.isCompleted) {
+        <div class="issue-completed">
+            <h4>The issue has been marked as completed</h4>
+            <mat-icon class="issue-completion-mark" aria-hidden="false" aria-label="Checkmark"
+                fontIcon="offline_pin"></mat-icon>
+
+        </div>
+        }
         <div class="car-detail-section">
             <div class="car-detail">
                 <mat-form-field appearance="outline">
@@ -86,12 +94,12 @@
         <div class="button-section">
             <button [routerLink]="'/cars'" routerLinkActive="router-link-active" class="action-button">Go
                 Back</button>
-                @if (!issue?.isCompleted) {
-                    <button class="action-button" (click)="completeIssue()">Mark as completed</button>
-                }
-                @else {
-                    <button class="action-button" (click)="completeIssue()">Mark as incompleted</button>
-                }
+            @if (!issue?.isCompleted) {
+            <button class="action-button" (click)="completeIssue()">Mark as completed</button>
+            }
+            @else {
+            <button class="action-button" (click)="completeIssue()">Mark as incompleted</button>
+            }
         </div>
     </div>
     }
