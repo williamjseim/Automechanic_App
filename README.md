@@ -1,5 +1,8 @@
 # Automechanic_App
 
+server ip
+10.108.57.3
+ 
 for frontend
 ```ts
 videoStream?:Blob;
