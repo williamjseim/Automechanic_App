@@ -134,11 +134,18 @@ mat-form-field {
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    animation-name: completedIssue;
+    animation-delay: 0s;
+    animation-play-state: running;
+    animation-duration: 1s;
 
     .issue-completion-mark {
         float: right;
         color: green;
     
     }
-    
+    @keyframes completedIssue {
+        from { transform: translate(0, -100%);}
+        to { transform: translate(0, 0);}
+    }
 }
