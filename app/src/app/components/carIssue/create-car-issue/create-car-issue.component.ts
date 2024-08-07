@@ -19,6 +19,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Car } from '../../../Interfaces/car';
 import { CarDataService } from '../../../services/car-data.service';
 import { Category } from '../../../Interfaces/category';
+import { LoginService } from '../../../services/login.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 
 /**
@@ -66,7 +68,9 @@ export class CreateCarIssueComponent {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private carService: CarDataService
+    private carService: CarDataService,
+    private userHttp: LoginService,
+    private snackbar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -165,8 +169,18 @@ export class CreateCarIssueComponent {
   // check if username exist on database =>
   // if exist, add username to array
   AddUser(username:string){
-    this.coAuthors.push(username);
-    this.carIssueForm.controls.coAuthors.reset(this.coAuthors)
+
+    this.userHttp.DiscoverUser(username).subscribe({
+      next: () => {
+        this.coAuthors.push(username);
+        this.carIssueForm.controls.coAuthors.reset(this.coAuthors)
+      },
+
+      error: () => {
+        this.snackbar.open("User not found", 'close', { duration: 1500 })
+      }
+    })
+    
   }
   
   RemoveUser(index:number){

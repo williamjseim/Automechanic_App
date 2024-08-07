@@ -71,6 +71,25 @@ namespace Mechanic.Api.Controllers
         }
 
         [JwtTokenAuthorization]
+        [HttpGet("DiscoverUser")]
+        public async Task<IActionResult> DiscoverUser(string username) {
+
+            try
+            {
+                User user = await _db.Users.FirstOrDefaultAsync(i => i.Username == username);
+                if(user == null) {
+                    return NotFound();
+                }
+                return Ok();
+            }
+            catch (System.Exception)
+            {
+                return StatusCode(500, " Something went wrong");
+                throw;
+            }
+
+        }
+        [JwtTokenAuthorization]
         [HttpGet("GetUser")]
         public async Task<IActionResult> GetUser(Guid? userId)
         {

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 
-import { Observable, delay } from 'rxjs';
+import { Observable } from 'rxjs';
 import { LocalStorageService } from './local-storage.service';
 import { environment } from '../../environments/environment';
 
@@ -66,6 +66,15 @@ export class LoginService {
   }
 
   /**
+   * Discovers the user by the username, used to see if user exists.
+   * @param username username of the user to discover in the database
+   * @returns An http response with no user data as this is just to check if the user exists 
+   */
+  DiscoverUser(username: string): Observable<any> {
+    return this.http.get(`${this.url}/Discoveruser?username=${username}`);
+  }
+
+   /**
    * Deletes a user from the system.
    * @param userId The ID of the user to delete.
    * @returns An Observable indicating the result of the operation.
