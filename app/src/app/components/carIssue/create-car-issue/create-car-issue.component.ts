@@ -21,6 +21,7 @@ import { CarDataService } from '../../../services/car-data.service';
 import { Category } from '../../../Interfaces/category';
 import { LoginService } from '../../../services/login.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatButtonModule } from '@angular/material/button';
 
 
 /**
@@ -42,7 +43,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 @Component({
   selector: 'app-create-car-issue',
   standalone: true,
-  imports: [ProgressBarComponent, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatIcon, CommonModule, MatSelectModule],
+  imports: [ProgressBarComponent, FormsModule, MatFormFieldModule, MatInputModule, ReactiveFormsModule, MatIcon, MatButtonModule, CommonModule, MatSelectModule],
   templateUrl: './create-car-issue.component.html',
   styleUrl: './create-car-issue.component.scss'
 })

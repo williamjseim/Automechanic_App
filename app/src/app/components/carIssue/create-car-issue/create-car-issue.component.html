@@ -65,8 +65,10 @@
                 <span *ngFor="let item of coAuthors; let i = index" (click)="RemoveUser(i)">{{item}}<mat-icon>close</mat-icon></span>
             </div>
             <div>
-                <input #UserAdder type="text" placeholder="CoAuthor">
-                <button type="button" (click)="AddUser(UserAdder.value)">Add</button>
+                <form>
+                    <input #UserAdder type="text" placeholder="CoAuthor">
+                    <button mat-stroked-button type="submit" (click)="AddUser(UserAdder.value)">Add</button>
+                </form>
             </div>
             <div class="navigation-button">
                 <button class="rounded-btn" type="submit">
