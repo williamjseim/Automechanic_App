@@ -872,7 +872,7 @@
         }
       }
     },
-        "/User/DiscoverUser": {
+    "/User/DiscoverUser": {
       "get": {
         "tags": [
           "User"
