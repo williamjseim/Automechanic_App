@@ -13,10 +13,12 @@ namespace Mechanic.Api.Controllers
     {
         private MechanicDatabase _db;
         private IConfiguration _config;
+        private string _uploadFolder;
         public CarController(IConfiguration config, MechanicDatabase db)
         {
             this._config = config;
             this._db = db;
+            _uploadFolder = _config["Videos:FolderPath"];
         }
 
         [JwtTokenAuthorization]
@@ -159,16 +161,38 @@ namespace Mechanic.Api.Controllers
             {
 
                 Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
-                int test;
+                CarIssue issue;
+                int test = 0;
                 if (userRole == Role.Admin)
                 {
-                    test = await _db.CarIssues.Where(i => i.Id == issueId).ExecuteDeleteAsync();
+                    issue = await _db.CarIssues.Where(i => i.Id == issueId).FirstOrDefaultAsync();
                 }
                 else
                 {
                     Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
-                    test = await _db.CarIssues.Where(i => i.Id == issueId && i.Creator.Id == userId).ExecuteDeleteAsync();
+                    issue = await _db.CarIssues.Where(i => i.Id == issueId && i.Creator.Id == userId).FirstOrDefaultAsync();
                 }
+
+                if(issue == null)
+                {
+                    return NotFound();
+                }
+
+                if(issue != null)
+                {
+                    var videos = await _db.Videos.Where(i => i.Issue.Id == issue.Id).ToArrayAsync();
+                    foreach (var item in videos)
+                    {
+                        if(await DeleteVideo(item.Id))
+                        {
+                            await _db.Videos.Where(i => i.Id == item.Id).ExecuteDeleteAsync();
+                        }
+
+                    }
+                }
+
+                test = await _db.CarIssues.Where(i => i.Id == issue.Id).ExecuteDeleteAsync();
+
                 switch (test)
                 {
                     case 0:
@@ -193,15 +217,36 @@ namespace Mechanic.Api.Controllers
             {
                 Role userRole = JwtAuthorization.GetUserRole(this.Request.Headers.Authorization!, _config);
                 Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+                Car car;
                 int i;
                 if (userRole == Role.Admin)
                 {
-                    i = await _db.Cars.Where(i => i.Id == carId).ExecuteDeleteAsync();
+                    car = await _db.Cars.Where(i => i.Id == carId).FirstOrDefaultAsync();
                 }
                 else
                 {
-                    i = await _db.Cars.Where(i => i.Id == carId && i.Creator.Id == userId).ExecuteDeleteAsync();
+                    car = await _db.Cars.Where(i => i.Id == carId && i.Creator.Id == userId).FirstOrDefaultAsync();
                 }
+
+                if(car == null)
+                {
+                    return NotFound();
+                }
+
+                var issues = await _db.CarIssues.Where(i=>i.Id == carId).ToListAsync();
+
+                List<Video> videoesForDeletion = new List<Video>();
+
+                foreach (var issue in issues)
+                {
+                    videoesForDeletion.AddRange(await _db.Videos.Where(i=>i.Issue.Id == issue.Id).ToListAsync());
+                }
+
+                foreach (var item in videoesForDeletion)
+                {
+                    await DeleteVideo(item.Id);
+                }
+
                 return Ok(Json("Deletion successful"));
             }
             catch (Exception ex)
@@ -602,5 +647,30 @@ namespace Mechanic.Api.Controllers
             return Ok();
         }
 
+        private async Task<bool> DeleteVideo(Guid videoId)
+        {
+            try
+            {
+                Video video = await _db.Videos.FirstOrDefaultAsync(x => x.Id == videoId);
+
+                if (video == null)
+                    return false;
+
+                _db.Videos.Remove(video);
+                _db.SaveChangesAsync();
+
+                string fileLocation = Path.Combine(_uploadFolder, video.VideoPath);
+                if (System.IO.File.Exists(fileLocation))
+                {
+                    System.IO.File.Delete(fileLocation);
+                }
+
+                return true;
+            }
+            catch (System.Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }
