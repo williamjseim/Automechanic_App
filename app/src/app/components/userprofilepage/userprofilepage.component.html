@@ -43,6 +43,8 @@
             </thead>
             <thead>
                 <th>Creator</th>
+                <th>Car make</th>
+                <th>Car model</th>
                 <th>CreationTime</th>
                 <th>Price</th>
                 <th>Actions</th>
@@ -50,6 +52,8 @@
             <tbody *ngIf="issues != null">
                 <tr *ngFor="let item of issues!; let row = index;" [class]="(row%2 == 0) ? 'even':'odd'">
                     <td><a>{{item.creator!.username}}</a></td>
+                    <td>{{item.car?.make ?? ""}}</td>
+                    <td>{{item.car?.model ?? ""}}</td>
                     <td>{{item.creationTime | date:'dd/MM/yyyy HH:mm'}}</td>
                     <td>{{item.price}}</td>
                     <td class="ActionTd">

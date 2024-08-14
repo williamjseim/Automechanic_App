@@ -1,5 +1,14 @@
 # Deployment
 
+10.108.50.0
+
+sysadm
+
+andeby!andeby spørg it support om hvad det betyder
+
+systemctl restart MechanicBackend && systemctl status MechanicBackend 
+systemctl restart nginx && systemctl status nginx
+
 ## Backend
 
 ### Backend path

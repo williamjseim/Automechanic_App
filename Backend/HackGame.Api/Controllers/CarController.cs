@@ -324,7 +324,7 @@ namespace Mechanic.Api.Controllers
                 CarIssue[] issues;
                 if (userRole == Role.Admin || userId == originUserId)
                 {
-                    issues = _db.CarIssues.Include(i => i.Creator).Include(i => i.CoAuthors).Where(i => i.Creator.Id == userId || i.CoAuthors.Any(i => i.Id == originUserId) && i.Car.Make.Contains(make.ToLower()) && i.Car.Model.Contains(model.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Car.VinNumber.Contains(vin.ToLower())).Skip(startingIndex).Take(amount).Distinct().OrderBy(I => I.CreationTime).ToArray();
+                    issues = _db.CarIssues.Include(i => i.Creator).Include(i=>i.Car).Include(i => i.CoAuthors).Where(i => i.Creator.Id == userId || i.CoAuthors.Any(i => i.Id == originUserId) && i.Car.Make.Contains(make.ToLower()) && i.Car.Model.Contains(model.ToLower()) && i.Car.Plate.Contains(plate.ToLower()) && i.Car.VinNumber.Contains(vin.ToLower())).Skip(startingIndex).Take(amount).Distinct().OrderBy(I => I.CreationTime).ToArray();
                     return Ok(issues);
                 }
                 return Forbid();

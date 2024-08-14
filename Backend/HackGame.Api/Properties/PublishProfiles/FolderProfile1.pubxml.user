@@ -1,0 +1,11 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!--
+https://go.microsoft.com/fwlink/?LinkID=208121.
+-->
+<Project>
+  <PropertyGroup>
+    <_PublishTargetUrl>C:\Users\zbcwise\Documents\GitHub\Automechanic_App\Backend\HackGame.Api\bin\Release\net7.0\publish\</_PublishTargetUrl>
+    <History>True|2024-08-14T08:45:40.5446113Z;True|2024-08-14T10:45:30.6305848+02:00;True|2024-08-14T09:59:53.3269875+02:00;True|2024-08-14T09:51:02.8731472+02:00;True|2024-08-14T09:10:52.5655200+02:00;</History>
+    <LastFailureDetails />
+  </PropertyGroup>
+</Project>
