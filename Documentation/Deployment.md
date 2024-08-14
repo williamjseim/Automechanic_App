@@ -16,6 +16,10 @@ var/www/DeploymentFolder
 
 replace all files in this folder when deploying and restart the service
 
+### Video Path
+
+/home/sysadm/videos
+
 #### Command
 Service MechanicApp restart
 
