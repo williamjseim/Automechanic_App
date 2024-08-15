@@ -13,7 +13,7 @@
             <mat-label>Username</mat-label>
             <input [formControl]="userForm.controls.username" #make required matInput>
         </mat-form-field>
-        <mat-form-field appearance="outline" class="matField">
+        <!--<mat-form-field appearance="outline" class="matField">
             <mat-label>Email</mat-label>
             <input [formControl]="userForm.controls.email" #model required matInput>
         </mat-form-field>
@@ -24,7 +24,7 @@
         <mat-form-field appearance="outline" class="matField">
             <mat-label>Repeat Password</mat-label>
             <input type="password" [formControl]="userForm.controls.repeatedPassword" equired matInput>
-        </mat-form-field>
+        </mat-form-field>-->
         <button class="btn" mat-raised-button color="success" (click)="CreateUser()" [disabled]="loading">
             Submit
         </button>
