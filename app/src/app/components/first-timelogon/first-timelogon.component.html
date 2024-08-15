@@ -1,0 +1,10 @@
+<body>
+    <form class="formdiv">
+        <Span>Input user information</Span>
+        <input placeholder="Full name" type="text" #fullname>
+        <input placeholder="Email" type="email" #email>
+        <input placeholder="Password" type="password" #password>
+        <input placeholder="Verify Password" type="password" #verifypassword>
+        <input type="button" value="Submit" class="Submit" (click)="SubmitUserInfo(fullname.value, email.value, password.value, verifypassword.value)">
+    </form>
+</body>
