@@ -49,9 +49,10 @@ namespace Mechanic.Api.Controllers
                 return StatusCode(501, " Something went really wrong Error"+ username + password);
             }
         }
+
         [JwtRoleAuthorization(Role.Admin)]
         [HttpPost("Register")]
-        public async Task<IActionResult> Register(string username, string email, string password, int role = 0)
+        public async Task<IActionResult> Register(string username, string email = "", string password = "Kode1234!", int role = 0)
         {
             try
             {
@@ -60,12 +61,69 @@ namespace Mechanic.Api.Controllers
                 {
                     return BadRequest("Username or email already in use");
                 }
-                var newUser = new User(username, password, email, (Role)role, _config);
+                var newUser = new User(username, password, "", email, (Role)role, _config);
                 await _db.AddAsync(newUser);
                 await _db.SaveChangesAsync();
                 return Ok("Welcome " + username);
             }
             catch {
+                return StatusCode(500, " Something went wrong");
+            }
+        }
+
+        [JwtTokenAuthorization]
+        [HttpGet("isUserSetup")]
+        public async Task<IActionResult> IsUserSetup()
+        {
+            try
+            {
+                Guid id = JwtAuthorization.GetUserId(Request.Headers.Authorization!, _config);
+                User user = await _db.Users.FirstOrDefaultAsync(i => i.Id == id);
+                if(user == null)
+                {
+                    return BadRequest("User doesnt exist");
+                }
+                if(user.FullName != "" && user.Email != "")
+                {
+                    return Ok(true);
+                }
+                return Ok(false);
+            }
+            catch
+            {
+                return StatusCode(500, " Something went wrong");
+            }
+        }
+
+        [JwtTokenAuthorization]
+        [HttpPost("SetupUser")]
+        public async Task<IActionResult> SetupUser(string fullname, string email, string password)
+        {
+            try
+            {
+                if (!email.Contains('@'))
+                {
+                    return BadRequest("not valid email");
+                }
+                if(password == "Kode1234!")
+                {
+                    return BadRequest("Cant use that password");
+                }
+                Guid id = JwtAuthorization.GetUserId(Request.Headers.Authorization!, _config);
+                User user = await _db.Users.FirstOrDefaultAsync(i => i.Id == id);
+                if(user == null)
+                {
+                    return BadRequest("id doesnt exist");
+                }
+                user.FullName = fullname;
+                user.Email = email;
+                user.Password = PasswordHasher.HashPassword(password + _config["Password:Seed"]);
+                _db.Users.Update(user);
+                await _db.SaveChangesAsync();
+                return Ok("Welcome " + user.Username);
+            }
+            catch
+            {
                 return StatusCode(500, " Something went wrong");
             }
         }
@@ -190,7 +248,7 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                var newUser = new User("admin", "admin", "admin@email.com", Role.Admin, _config);
+                var newUser = new User("admin", "admin", "", "admin@email.com", Role.Admin, _config);
                 await _db.AddAsync(newUser);
                 await _db.SaveChangesAsync();
                 return Ok("Welcome " + "admin");

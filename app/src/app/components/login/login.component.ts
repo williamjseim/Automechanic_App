@@ -53,7 +53,16 @@ export class LoginComponent {
           this.localStorageService.addToLocalStorage("token", value.body);
           this.localStorageService.addToLocalStorage("isadmin", (value.headers as HttpHeaders).get("permission"));
           this.localStorageService.addToLocalStorage("refreshtoken", (value.headers as HttpHeaders).get("refreshtoken"));
-          this.router.navigateByUrl("");
+          this.loginService.isUserSet().subscribe({
+            next:(value)=>{
+              if(value){
+                this.router.navigateByUrl("");
+              }
+              else{
+                this.router.navigateByUrl("firstlogon");
+              }
+            }
+          })
         },
         error:(err) => {
           this.error_text = err.error;

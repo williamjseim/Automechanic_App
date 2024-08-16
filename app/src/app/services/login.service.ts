@@ -94,6 +94,14 @@ export class LoginService {
   createUser(username: string, email: string, password: string, role: number): Observable<any> {
     return this.http.post(`${this.url}/Register?username=${username}&email=${email}&password=${password}&role=${role}`, null, { responseType: "text", observe: "response"});
   }
+  
+  SetupUser(email: string, password: string, fullname:string){
+    return this.http.post(`${this.url}/SetupUser?email=${email}&password=${password}&fullname=${fullname}`, null, { responseType: "text", observe: "response"});
+  }
+  
+  isUserSet(){
+    return this.http.get(`${this.url}/isUserSetup`);
+  }
 
   /**
  * Retrieves a list of all users, optionally filtered by username.

@@ -11,10 +11,11 @@ namespace Mechanic.Api.Models
         {
             
         }
-        public User(string username, string password, string email, Role role, IConfiguration config)
+        public User(string username, string password, string fullName, string email, Role role, IConfiguration config)
         {
             Id = Guid.NewGuid();
             this.CreationDate = DateTime.Now;
+            this.FullName = fullName;
             this.Email = email;
             this.Username = username;
             this.Password = PasswordHasher.HashPassword(password + config["Password:Seed"]);
@@ -24,6 +25,7 @@ namespace Mechanic.Api.Models
         public Guid Id { get; set; }
         public Role Role { get; set; }
         public string Username { get; set; }
+        public string FullName { get; set; }
         [JsonIgnore]
         public string Password { get; set; }
         [JsonIgnore]

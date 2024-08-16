@@ -14,6 +14,7 @@ import { CarIssueProfileComponent } from './components/car-issue-profile/car-iss
 import { FrontpageComponent } from './components/frontpage/frontpage.component';
 import { IssuetablepageComponent } from './components/issuetablepage/issuetablepage.component';
 import { TablePrefabComponent } from './components/Prefabs/table-prefab/table-prefab.component';
+import { FirstTimelogonComponent } from './components/first-timelogon/first-timelogon.component';
 
 /**
  * Routes configuration for the Angular application.
@@ -45,5 +46,6 @@ export const routes: Routes = [
   { path: 'carprofile', component: CarProfileComponent },
   { path: 'profile', component: UserprofilepageComponent },
   { path: 'test', component: TablePrefabComponent },
+  { path: "firstlogon", component: FirstTimelogonComponent },
   { path: '**', component: ErrorComponent },
 ];

@@ -10,5 +10,6 @@ export interface User{
     role:number;
     rolename:string;
     username:string;
+    fullName:string;
     creationDate:Date;
 }
