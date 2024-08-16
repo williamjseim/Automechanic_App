@@ -178,16 +178,12 @@ namespace Mechanic.Api.Controllers
                     return NotFound();
                 }
 
-                if(issue != null)
+                var videos = await _db.Videos.Where(i => i.Issue.Id == issue.Id).ToArrayAsync();
+                foreach (var item in videos)
                 {
-                    var videos = await _db.Videos.Where(i => i.Issue.Id == issue.Id).ToArrayAsync();
-                    foreach (var item in videos)
+                    if(await DeleteVideo(item.Id))
                     {
-                        if(await DeleteVideo(item.Id))
-                        {
-                            await _db.Videos.Where(i => i.Id == item.Id).ExecuteDeleteAsync();
-                        }
-
+                        await _db.Videos.Where(i => i.Id == item.Id).ExecuteDeleteAsync();
                     }
                 }
 
@@ -246,6 +242,8 @@ namespace Mechanic.Api.Controllers
                 {
                     await DeleteVideo(item.Id);
                 }
+
+                _db.Cars.Where(i => i.Id == car.Id).ExecuteDelete();
 
                 return Ok(Json("Deletion successful"));
             }
