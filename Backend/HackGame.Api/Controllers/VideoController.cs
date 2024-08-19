@@ -48,7 +48,7 @@ public class VideoController : Controller
     {
         Video video = await _db.Videos.FirstOrDefaultAsync(x => x.Id == videoId);
 
-        if (video == null)
+            if (video == null)
         {
             return Results.NotFound();
         }
@@ -63,7 +63,7 @@ public class VideoController : Controller
         catch (Exception ex)
         {
             Console.WriteLine(ex.Message, $"Something Went Wrong in the {nameof(Stream)}");
-            return Results.BadRequest();
+            return Results.BadRequest(Json(ex));
         }
     }
     [JwtTokenAuthorization]

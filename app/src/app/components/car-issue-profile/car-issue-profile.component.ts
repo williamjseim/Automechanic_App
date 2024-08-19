@@ -12,6 +12,7 @@ import { VideoCaptureComponent } from '../video-capture/video-capture.component'
 import { VideoApiService } from '../../services/video-api.service';
 import { Video } from '../../Interfaces/video';
 import { environment } from '../../../environments/environment';
+import { HttpEvent, HttpEventType } from '@angular/common/http';
 
 /**
  * CarIssueProfileComponent
@@ -102,15 +103,20 @@ export class CarIssueProfileComponent implements OnInit {
     });
   }
 
+videoStream?:Blob;
+
 createVideoObject() {
   this.video?.forEach(i => {
     this.videoHttp.getVideoStream(i.id).subscribe({
-      next: (value) => {
-        const blob = new Blob([value]);
-        this.videos.push(URL.createObjectURL(blob));
+      next: (Event: HttpEvent<ArrayBuffer>)=>{
+        if(Event.type == HttpEventType.Response){
+          this.videoStream = new Blob([Event.body!], {type:"video/mp4"});
+          this.videos.push(URL.createObjectURL(this.videoStream!));
+        }
       },
-      error: () => {
+      error: (err) => {
         this.videoNotFound = true;
+        console.log(err);
       }
     });
   });
