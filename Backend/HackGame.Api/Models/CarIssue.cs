@@ -30,5 +30,6 @@ namespace Mechanic.Api.Models
         public CarCategory? Category { get; set; }
         public bool IsCompleted { get; set; }
         public ICollection<User> CoAuthors { get; set; }
+        public Guid? AnonymousUserKey { get; set; }
     }
 }

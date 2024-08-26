@@ -93,6 +93,9 @@ namespace Mechanic.Api.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("char(36)");
 
+                    b.Property<Guid?>("AnonymousUserKey")
+                        .HasColumnType("char(36)");
+
                     b.Property<Guid>("CarId")
                         .HasColumnType("char(36)");
 

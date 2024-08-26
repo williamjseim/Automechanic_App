@@ -670,5 +670,68 @@ namespace Mechanic.Api.Controllers
                 return false;
             }
         }
+
+        [JwtTokenAuthorization]
+        [HttpPut("AnonymousIssue")]
+        public async Task<IActionResult> CreateAnonymousIssue(Guid issueId)
+        {
+            try
+            {
+                Guid userId = JwtAuthorization.GetUserId(this.Request.Headers.Authorization!, _config);
+
+                var user = await _db.Users.FirstOrDefaultAsync(i => i.Id == userId);
+                if(user == null)
+                {
+                    return BadRequest();
+                }
+
+                var issue = await _db.CarIssues.Where(i => i.Id == issueId).FirstOrDefaultAsync();
+                if (issue == null)
+                {
+                    return NotFound();
+                }
+                if(user.Role != Role.Admin && user.Id != issue.Creator.Id)
+                {
+                    return BadRequest();
+                }
+
+                issue.AnonymousUserKey = Guid.NewGuid();
+
+                _db.Update(issue);
+
+                await _db.SaveChangesAsync();
+
+                return Ok(issue);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
+
+        /// <summary>
+        /// For the customer to see issues related to their car
+        /// </summary>
+        /// <param name="issueId"></param>
+        /// <param name="anonymouskey"></param>
+        /// <returns></returns>
+        [HttpGet("AnonymousIssue")]
+        public async Task<IActionResult> GetAnonymousIssue(Guid issueId, Guid anonymouskey)
+        {
+            try
+            {
+                var issue = await _db.CarIssues.Where(i=>i.Id == issueId && i.AnonymousUserKey == anonymouskey).FirstOrDefaultAsync();
+                if (issue == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(issue);
+            }
+            catch
+            {
+                return StatusCode(500);
+            }
+        }
     }
 }
