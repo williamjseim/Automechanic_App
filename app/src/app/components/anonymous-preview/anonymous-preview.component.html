@@ -8,8 +8,6 @@
 
     @else {
 
-    <div *ngIf="uploadingVideo" class="overlay"><mat-spinner></mat-spinner></div>
-
     <div class="container">
         @if (issue?.isCompleted) {
         <div class="issue-completed">
@@ -47,8 +45,6 @@
             @if (!loadingVideo) {
             @if (videoNotFound) {
             Not Found.
-            <app-video-capture [issueId]="issue?.id" (uploadStatus)="handleVideoUpload($event)"
-                (videoUploadStart)="videoStartUpload()"></app-video-capture>
             }
             @else {
             <div class="videos">
@@ -90,19 +86,6 @@
             <div class="coAuthorsDiv">
                 <span *ngFor="let item of issue?.coAuthors; let i = index">{{item.username}}</span>
             </div>
-        </div>
-        <div class="button-section">
-            <button [routerLink]="'/cars'" routerLinkActive="router-link-active" class="action-button">Go
-                Back</button>
-
-            <button (click)="createShareLink()" class="action-button"><mat-icon>share</mat-icon><br>share</button>
-
-            @if (!issue?.isCompleted) {
-            <button class="action-button" (click)="completeIssue()">Mark as completed</button>
-            }
-            @else {
-            <button class="action-button" (click)="completeIssue()">Mark as incompleted</button>
-            }
         </div>
     </div>
     }

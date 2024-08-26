@@ -137,6 +137,25 @@ export class CarDataService {
   } 
 
   /**
+   * 
+   * @param issueId 
+   * @param anonymousKey 
+   * @returns issue details only for viewing purposes
+   */
+  GetAnonoymousIssue(issueId: string, anonymousKey: string): Observable<any> {
+    return this.http.get(this.url +`/AnonymousIssue?issueId=${issueId}&anonymouskey=${anonymousKey}`)
+  }
+
+  /**
+   * 
+   * @param issueId 
+   * @returns anonymous key for sharing
+   */
+  CreateAnonymousIssue(issueId: string): Observable<any> {
+    return this.http.put(this.url + `/AnonymousIssue?issueId=${issueId}`, "")
+  }
+
+  /**
  * Creates a new issue for a car.
  * @param carId The ID of the car.
  * @param categoryId The category ID for the issue.

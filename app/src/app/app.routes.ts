@@ -15,6 +15,7 @@ import { FrontpageComponent } from './components/frontpage/frontpage.component';
 import { IssuetablepageComponent } from './components/issuetablepage/issuetablepage.component';
 import { TablePrefabComponent } from './components/Prefabs/table-prefab/table-prefab.component';
 import { FirstTimelogonComponent } from './components/first-timelogon/first-timelogon.component';
+import { AnonymousPreviewComponent } from './components/anonymous-preview/anonymous-preview.component';
 
 /**
  * Routes configuration for the Angular application.
@@ -40,6 +41,7 @@ export const routes: Routes = [
   },
 
   { path: 'issueprofile', component: CarIssueProfileComponent },
+  { path: 'issuepreview', component: AnonymousPreviewComponent},
   { path: 'createcar', component: CreateCarFormComponent },
   { path: 'cars', component: CarPageComponent },
   { path: 'issues', component: IssuetablepageComponent },

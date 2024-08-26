@@ -42,7 +42,6 @@ public class VideoController : Controller
 
     }
 
-    [JwtTokenAuthorization]
     [HttpGet("StreamVideo")]
     public async Task<IResult> Stream(Guid videoId)
     {
@@ -66,7 +65,7 @@ public class VideoController : Controller
             return Results.BadRequest(Json(ex));
         }
     }
-    [JwtTokenAuthorization]
+    
     [HttpGet("GetVideoIssue")]
     public async Task<IActionResult> GetVideoIssue(Guid issueId)
     {

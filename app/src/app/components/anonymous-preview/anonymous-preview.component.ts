@@ -13,8 +13,7 @@ import { VideoApiService } from '../../services/video-api.service';
 import { Video } from '../../Interfaces/video';
 import { environment } from '../../../environments/environment';
 import { HttpEvent, HttpEventType } from '@angular/common/http';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Clipboard } from '@angular/cdk/clipboard';
+
 /**
  * CarIssueProfileComponent
  * 
@@ -27,37 +26,37 @@ import { Clipboard } from '@angular/cdk/clipboard';
   selector: 'app-car-issue-profile',
   standalone: true,
   imports: [VideoCaptureComponent, CommonModule, MatProgressSpinnerModule, MatInputModule, RouterLink, MatIcon],
-  templateUrl: './car-issue-profile.component.html',
-  styleUrl: './car-issue-profile.component.scss'
+  templateUrl: './anonymous-preview.component.html',
+  styleUrl: './anonymous-preview.component.scss'
 })
-export class CarIssueProfileComponent implements OnInit {
+export class AnonymousPreviewComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private carHttp: CarDataService,
     public videoHttp: VideoApiService,
-    private snackbar: MatSnackBar,
-    private clipboard: Clipboard
   ) { }
 
   issue?: Issue;
-  video?: Video[]; 
+  video?: Video[];
   videos: string[] = [];
   loading: boolean = false;
-  uploadingVideo: boolean = false;
   loadingVideo: boolean = false;
   videoNotFound: boolean = false;
   issueNotFound: boolean = false;
 
   environment_API: string = environment.API_URL; // For video streaming directly on the html template
-  
+
   ngOnInit() {
     this.loading = true;
     this.route.queryParams.subscribe({
       next: (value) => {
-        this.getIssue(value['issueId']);
-        this.getVideo(value['issueId']);
+        var issueId = value['issueId'];
+        var anonymousKey = value['anonymousKey'];
+        
+        this.getIssue(issueId, anonymousKey);
+        this.getVideo(issueId);
       },
       error: (error) => {
         this.issueNotFound = true;
@@ -67,8 +66,8 @@ export class CarIssueProfileComponent implements OnInit {
     });
   }
 
-  getIssue(issueId: string) {
-    this.carHttp.GetIssue(issueId).subscribe({
+  getIssue(issueId: string, anonymousKey: string) {
+    this.carHttp.GetAnonoymousIssue(issueId, anonymousKey).subscribe({
       next: (issue) => {
         this.issue = issue;
         this.loading = false;
@@ -92,11 +91,11 @@ export class CarIssueProfileComponent implements OnInit {
         this.video = video;
         this.createVideoObject();
 
-        if (this.video == null || this.video.length <= 0 )
+        if (this.video == null || this.video.length <= 0)
           this.videoNotFound = true;
         else
           this.videoNotFound = false;
-             
+
         this.loadingVideo = false;
       },
       error: (error) => {
@@ -106,61 +105,22 @@ export class CarIssueProfileComponent implements OnInit {
     });
   }
 
-videoStream?:Blob;
+  videoStream?: Blob;
 
-createVideoObject() {
-  this.video?.forEach(i => {
-    this.videoHttp.getVideoStream(i.id).subscribe({
-      next: (Event: HttpEvent<ArrayBuffer>)=>{
-        if(Event.type == HttpEventType.Response){
-          this.videoStream = new Blob([Event.body!], {type:"video/mp4"});
-          this.videos.push(URL.createObjectURL(this.videoStream!));
+  createVideoObject() {
+    this.video?.forEach(i => {
+      this.videoHttp.getVideoStream(i.id).subscribe({
+        next: (Event: HttpEvent<ArrayBuffer>) => {
+          if (Event.type == HttpEventType.Response) {
+            this.videoStream = new Blob([Event.body!], { type: "video/mp4" });
+            this.videos.push(URL.createObjectURL(this.videoStream!));
+          }
+        },
+        error: (err) => {
+          this.videoNotFound = true;
+          console.log(err);
         }
-      },
-      error: (err) => {
-        this.videoNotFound = true;
-        console.log(err);
-      }
+      });
     });
-  });
-  }
-
-  videoStartUpload() {
-    this.uploadingVideo = true;
-  }
-
-  handleVideoUpload(event: { success: boolean, message: string }) {
-    if (event.success) {
-      this.uploadingVideo = false;
-      this.getVideo(this.issue?.id!);
-    }
-    else {
-      console.log("Upload failed: ", event.message);
-    }
-  }
-
-  completeIssue() { 
-    this.carHttp.ChangeIssueStatus(this.issue?.id!).subscribe({
-      next: (value) => { 
-        this.getIssue(this.issue?.id!);
-         window.scroll({ top: 0, left: 0, behavior: 'smooth'});
-      },
-      error: (err) => { }
-    })
-  }
-
-  createShareLink() {
-    this.carHttp.CreateAnonymousIssue(this.issue?.id!).subscribe({
-      next: (value) => {
-        const snackbarRef = this.snackbar.open('Share link created', 'copy', { duration: 999999})
-        
-        snackbarRef.onAction().subscribe(() => {
-          const link = `${window.location.origin}/issuepreview?issueId=${this.issue?.id}&anonymousKey=${value.anonymousUserKey}`
-          this.clipboard.copy(link);
-          this.snackbar.open('Link copied to clipboard!', '', { duration: 2000 });
-        });
-      }
-    })
-
   }
 }

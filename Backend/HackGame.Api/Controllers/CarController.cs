@@ -720,7 +720,12 @@ namespace Mechanic.Api.Controllers
         {
             try
             {
-                var issue = await _db.CarIssues.Where(i=>i.Id == issueId && i.AnonymousUserKey == anonymouskey).FirstOrDefaultAsync();
+                var issue = await _db.CarIssues
+                .Include(i => i.Car)
+                .Include(i => i.Category)
+                .Include(i => i.CoAuthors)
+                .Include(i => i.Creator)
+                .Where(i=>i.Id == issueId && i.AnonymousUserKey == anonymouskey).FirstOrDefaultAsync();
                 if (issue == null)
                 {
                     return NotFound();
