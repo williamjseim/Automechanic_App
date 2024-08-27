@@ -1,10 +1,7 @@
 # Automechanic_App
-
-server ip
-10.108.57.3
-
-sysadm
-4Ndet0wn!4Ndet0wn
+server ip: 10.108.50.0
+server username: sysadm
+server password: 4Ndet0wn!4Ndet0wn
 
 mysql
 
