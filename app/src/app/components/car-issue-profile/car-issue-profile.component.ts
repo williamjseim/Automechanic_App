@@ -111,11 +111,10 @@ videoStream?:Blob;
 createVideoObject() {
   this.video?.forEach(i => {
     this.videoHttp.getVideoStream(i.id).subscribe({
-      next: (Event: HttpEvent<ArrayBuffer>)=>{
-        if(Event.type == HttpEventType.Response){
-          this.videoStream = new Blob([Event.body!], {type:"video/mp4"});
+      next: (Event)=>{
+          this.videoStream = new Blob([Event], {type:"video/mp4"});
           this.videos.push(URL.createObjectURL(this.videoStream!));
-        }
+        
       },
       error: (err) => {
         this.videoNotFound = true;
